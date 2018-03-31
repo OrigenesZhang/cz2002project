@@ -1,8 +1,6 @@
 About HRPS Class diagram file
 - The class diagram is design using draw.io https://www.draw.io/
 
-Current Status: Half-Done
-
 How to use:
 1) Download the file 'HRPS Class Diagram.xml' 
 
