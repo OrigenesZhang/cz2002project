@@ -16,7 +16,7 @@ public class Main {
         do {
             System.out.println("");
             System.out.println("============================================");
-            System.out.println("======Please Select from the following:=====");
+            System.out.println("======Please Select from the Following:=====");
             System.out.println("============================================");
 
             System.out.println("(1) Create/Update/Search GUEST detail;");
@@ -30,7 +30,7 @@ public class Main {
             System.out.println("(9) Print ROOM STATUS statistic report");
             System.out.println("(10) Exit");
             System.out.println("");
-            System.out.println("        Enter the number of your choice: ");
+            System.out.printf("        Enter the number of your choice: ");
             choice = sc.nextInt();
             switch (choice) {
                 case 1: /* (1) Create/Update/Search GUEST detail */

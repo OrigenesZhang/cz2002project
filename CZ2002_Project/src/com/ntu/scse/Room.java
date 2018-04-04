@@ -122,4 +122,43 @@ public class Room {
         this.isSmoking = smoking;
     }
 
+    public int getRoomType() {
+        return roomType;
+    }
+
+    public int getRoomFloor() {
+        return roomFloor;
+    }
+
+    public int getRoomNo() {
+        return roomNo;
+    }
+
+    public int getBedType() {
+        return bedType;
+    }
+
+    public int getRoomFacing() {
+        return roomFacing;
+    }
+
+    public int getRoomStatus() {
+        return roomStatus;
+    }
+
+    public double getRoomRate() {
+        return roomRate;
+    }
+
+    public boolean isEnabledWifi() {
+        return enabledWifi;
+    }
+
+    public boolean isSmoking() {
+        return isSmoking;
+    }
+
+    public int getRoomTypeNum() {
+        return roomTypeNum;
+    }
 }

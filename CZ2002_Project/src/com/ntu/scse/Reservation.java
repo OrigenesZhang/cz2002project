@@ -6,16 +6,17 @@ import com.ntu.scse.Status.*;
 
 
 public class Reservation {
-    private int resvNo, resvStatus, guestID;
+    private int resvNo, resvStatus;
+    private Guest guest;
     private Date dateCheckIn, dateCheckOut;
 
     public Reservation(int resvNo,
                        int resvStatus,
-                       int guestID,
+                       Guest guest,
                        Date dateCheckIn) {
         this.resvNo = resvNo;
         this.resvStatus = resvStatus;
-        this.guestID = guestID;
+        this.guest = guest;
         this.dateCheckIn = dateCheckIn;
         this.dateCheckOut = null;
     }
@@ -28,20 +29,20 @@ public class Reservation {
         this.resvNo = resvNo;
     }
 
+    public Guest getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+    }
+
     public int getResvStatus() {
         return resvStatus;
     }
 
     public void setResvStatus(int resvStatus) {
         this.resvStatus = resvStatus;
-    }
-
-    public int getGuestID() {
-        return guestID;
-    }
-
-    public void setGuestID(int guestID) {
-        this.guestID = guestID;
     }
 
     public Date getDateCheckIn() {

@@ -1,20 +1,23 @@
 package com.ntu.scse;
 
-import com.ntu.scse.InvalidInfoException.*;
-
+class IDType{
+    public static final int
+            DRIVINGLICENSE = 1,
+            PASSPORT = 2;
+}
 public class Guest {
     private int guestID, idType;
     private char gender;
-    private String[] firstName, lastName, creditCardNo, address, country, id;
+    private String firstName, lastName, creditCardNo, address, country, idNumber;
 
     public Guest(int guestID,
-                 int idType,
+                 String firstName,
+                 String lastName,
                  char gender,
-                 String[] firstName,
-                 String[] lastName,
-                 String[] creditCardNo,
-                 String[] address,
-                 String[] id) throws InvalidInfoException {
+                 String creditCardNo,
+                 String address,
+                 int idType,
+                 String idNumber) throws InvalidInfoException {
         this.guestID = guestID;
         this.gender = gender;
         this.idType = idType;
@@ -22,7 +25,7 @@ public class Guest {
         this.lastName = lastName;
         this.creditCardNo = creditCardNo;
         this.address = address;
-        this.id = id;
+        this.idNumber = idNumber;
     }
 
     //GETTER
@@ -38,28 +41,28 @@ public class Guest {
         return gender;
     }
 
-    public String[] getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public String[] getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    public String[] getCreditCardNo() {
+    public String getCreditCardNo() {
         return creditCardNo;
     }
 
-    public String[] getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public String[] getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public String[] getId() {
-        return id;
+    public String getIdNumber() {
+        return idNumber;
     }
 
     //SETTER
@@ -68,31 +71,36 @@ public class Guest {
         this.idType = idType;
     }
 
-    public void setGender(char gender) {
-        this.gender = gender;
+    public void setGender(char gender) throws InvalidInfoException {
+        if (Character.toUpperCase(gender) == 'M' ||
+                Character.toUpperCase(gender) == 'F') {
+            this.gender = gender;
+        } else {
+            throw new InvalidInfoException("Setting Gender");
+        }
     }
 
-    public void setFirstName(String[] firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(String[] lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public void setCreditCardNo(String[] creditCardNo) {
+    public void setCreditCardNo(String creditCardNo) {
         this.creditCardNo = creditCardNo;
     }
 
-    public void setAddress(String[] address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setCountry(String[] country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public void setId(String[] id) {
-        this.id = id;
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 }
