@@ -1,13 +1,20 @@
 package com.ntu.scse;
 
+import com.ntu.scse.InvalidInfoException.*;
+
 public class Guest {
     private int guestID, idType;
     private char gender;
     private String[] firstName, lastName, creditCardNo, address, country, id;
 
-    public Guest(int guestID, int idType, char gender,
-                 String[] firstName, String[] lastName, String[] creditCardNo,
-                 String[] address, String[] id) throws Main.InvalidInfoException {
+    public Guest(int guestID,
+                 int idType,
+                 char gender,
+                 String[] firstName,
+                 String[] lastName,
+                 String[] creditCardNo,
+                 String[] address,
+                 String[] id) throws InvalidInfoException {
         this.guestID = guestID;
         this.gender = gender;
         this.idType = idType;

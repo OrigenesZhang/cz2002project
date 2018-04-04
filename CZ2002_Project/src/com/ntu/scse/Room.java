@@ -1,13 +1,14 @@
 package com.ntu.scse;
 
 import static com.ntu.scse.Status.*;
+import com.ntu.scse.InvalidInfoException.*;
 
 
 class BedType {
     public static final int SINGLE = 1, DOUBLE = 2, MASTER = 3;
 }
 
-class Facing{
+class Facing {
     public static final int NORTH = 1, SOUTH = 2, EAST = 3, WEST = 4;
 }
 
@@ -17,6 +18,7 @@ class Status {
     public static final int RESERVED = 3;
     public static final int UNDER_MAINTENANCE = 4;
 }
+
 public class Room {
     private int roomType, roomFloor, roomNo, bedType, roomFacing, roomStatus;
     private double roomRate;
@@ -28,8 +30,16 @@ public class Room {
     public final int facingNum = 4; // Facing: 1.North, 2.South, 3.East, 4.West
     public final int statusNum = 4; // Status: 1.Vacant, 2.Occupied, 3.Reserved, 4.Under Maintenance
 
-    public Room(int roomType, double roomRate, int roomFloor, int roomNo, int bedType, int roomFacing,
-                int roomStatus, boolean enabledWifi, boolean isSmoking) throws Main.InvalidInfoException {
+    public Room(int roomFloor,
+                int roomNo,
+                int roomType,
+                double roomRate,
+                int bedType,
+                int roomFacing,
+                int roomStatus,
+                boolean enabledWifi,
+                boolean isSmoking)
+            throws InvalidInfoException {
 
         this.setType(roomType);
         this.setRate(roomRate);
@@ -51,9 +61,9 @@ public class Room {
 //    }
 
     //************SETTER*************
-    public void setType(int type) throws Main.InvalidInfoException {
+    public void setType(int type) throws InvalidInfoException {
         if (type < 1 || type > roomTypeNum) {
-            throw new Main.InvalidInfoException("Room Type");
+            throw new InvalidInfoException("Room Type");
         } else {
             this.roomType = type;
         }
@@ -63,41 +73,41 @@ public class Room {
         this.roomRate = rate;
     }
 
-    public void setFloor(int floor) throws Main.InvalidInfoException {
+    public void setFloor(int floor) throws InvalidInfoException {
         if (floor < minFloor || floor > maxFloor) {
-            throw new Main.InvalidInfoException("Floor");
+            throw new InvalidInfoException("Floor");
         } else {
             this.roomFloor = floor;
         }
     }
 
-    public void setNumber(int number) throws Main.InvalidInfoException {
+    public void setNumber(int number) throws InvalidInfoException {
         if (number < 1 || number > maxNo) {
-            throw new Main.InvalidInfoException("Room No");
+            throw new InvalidInfoException("Room No");
         } else {
             this.roomNo = number;
         }
     }
 
-    public void setBedtype(int bedtype) throws Main.InvalidInfoException {
+    public void setBedtype(int bedtype) throws InvalidInfoException {
         if (bedtype < 1 || bedtype > bedTypeNum) {
-            throw new Main.InvalidInfoException("Bed Type");
+            throw new InvalidInfoException("Bed Type");
         } else {
             this.bedType = bedtype;
         }
     }
 
-    public void setFacing(int facing) throws Main.InvalidInfoException {
+    public void setFacing(int facing) throws InvalidInfoException {
         if (facing < 1 || facing > facingNum) {
-            throw new Main.InvalidInfoException("Facing");
+            throw new InvalidInfoException("Facing");
         } else {
             this.roomFacing = facing;
         }
     }
 
-    public void setStatus(int status) throws Main.InvalidInfoException {
+    public void setStatus(int status) throws InvalidInfoException {
         if (status < 1 || status > statusNum) {
-            throw new Main.InvalidInfoException("Facing");
+            throw new InvalidInfoException("Facing");
         } else {
             this.roomStatus = status;
         }

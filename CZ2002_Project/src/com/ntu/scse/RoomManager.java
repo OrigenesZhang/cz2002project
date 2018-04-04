@@ -4,17 +4,24 @@ package com.ntu.scse;
 //        int roomStatus, boolean enabledWifi, boolean isSmoking
 
 import static com.ntu.scse.updateName.*;
+import com.ntu.scse.InvalidInfoException.*;
 
 class updateName {
-    public static final int RMTYPE = 1, RMRATE = 2, BDTYPE = 3, RMFACING = 4,
-            RMSTATUS = 5, RMWIFI = 6, RMSMOKING = 7;
+    public static final int
+            RMTYPE = 1,
+            RMRATE = 2,
+            BDTYPE = 3,
+            RMFACING = 4,
+            RMSTATUS = 5,
+            RMWIFI = 6,
+            RMSMOKING = 7;
 }
 
 public class RoomManager {
 
     private Room[][] roomList = new Room[6][8];
 
-    public void createRoom() throws Main.InvalidInfoException {
+    public void createRoom() throws InvalidInfoException {
         for (int floor = 0; floor < 6; floor++) {
             // Only private loop starts from zero,
             // any outer index/para remains the same as the real world info, floor-2, rm-1
@@ -28,7 +35,7 @@ public class RoomManager {
         }
     }
 
-    public void updateRoom(int floor, int rm, int choice, double value) throws Main.InvalidInfoException {
+    public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
         try {
             switch (choice) {
                 case RMTYPE:
@@ -53,7 +60,7 @@ public class RoomManager {
                     roomList[floor - 2][rm - 1].setSmoking(!((int) value == 0));
 
                 default:
-                    throw new Main.InvalidInfoException("Update Room");
+                    throw new InvalidInfoException("Update Room");
             }
         } catch (Exception NullPointerException) {
 

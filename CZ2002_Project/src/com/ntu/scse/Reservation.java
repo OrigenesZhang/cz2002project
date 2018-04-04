@@ -1,6 +1,7 @@
 package com.ntu.scse;
 
 import java.util.Date;
+import com.ntu.scse.InvalidInfoException.*;
 import com.ntu.scse.Status.*;
 
 
@@ -8,7 +9,10 @@ public class Reservation {
     private int resvNo, resvStatus, guestID;
     private Date dateCheckIn, dateCheckOut;
 
-    public Reservation(int resvNo, int resvStatus, int guestID, Date dateCheckIn) {
+    public Reservation(int resvNo,
+                       int resvStatus,
+                       int guestID,
+                       Date dateCheckIn) {
         this.resvNo = resvNo;
         this.resvStatus = resvStatus;
         this.guestID = guestID;
