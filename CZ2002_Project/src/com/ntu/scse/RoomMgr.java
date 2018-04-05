@@ -17,9 +17,55 @@ class roomUpdateChoice {
             ROOMSMOKING = 7;
 }
 
+class roomStatusRecord {
+    private int roomFloor;
+    private int roomNo;
+    private int roomType;
+    private int roomStatus;
+
+    public roomStatusRecord(int roomFloor, int roomNo, int roomType, int roomStatus) {
+        this.roomFloor = roomFloor;
+        this.roomNo = roomNo;
+        this.roomType = roomType;
+        this.roomStatus = roomStatus;
+    }
+
+    public int getRoomFloor() {
+        return roomFloor;
+    }
+
+    public void setRoomFloor(int roomFloor) {
+        this.roomFloor = roomFloor;
+    }
+
+    public int getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(int roomNo) {
+        this.roomNo = roomNo;
+    }
+
+    public int getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(int roomType) {
+        this.roomType = roomType;
+    }
+
+    public int getRoomStatus() {
+        return roomStatus;
+    }
+
+    public void setRoomStatus(int roomStatus) {
+        this.roomStatus = roomStatus;
+    }
+}
+
 public class RoomMgr {
 
-    private Room[][] roomList = new Room[6][8];    
+    private static Room[][] roomList = new Room[6][8];    
     
     public RoomMgr (Room[][] roomList) { //Initialize with room array from main
     	for (int i=0 ; i<6 ; i++) {
@@ -32,22 +78,6 @@ public class RoomMgr {
     	
     }
     
-    public void createRoom() throws InvalidInfoException { //INITIALIZING THE ROOM FROM THE FILE
-    	
-    	for (int floor = 0; floor < 6; floor++) {
-            // Only private loop starts from zero,
-            // Any outer index/para remains the same as the real world info, floor-2, rm-1
-            for (int rm = 0; rm < 8; rm++) {
-//                try: read in one line from the file
-//                except: don't have info; throw IO exception: !!!need define one
-//                try: new room; Remember the output of the room info should be translated;
-//                except: room return exception;
-//                roomList[floor][rm] = theRoom;
-            }
-        }
-    	
-        
-    }
 
     public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
         try {
@@ -81,8 +111,20 @@ public class RoomMgr {
         }
     }
 
-    public void print(){
-//        dunno what happened
+    public roomStatusRecord checkStatus(int floor, int rm) throws InvalidInfoException { // RETURN the Status index
+        roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
+                roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
+        return rmRecord;
+    }
+
+    public roomStatusRecord[][] reportStatus() throws InvalidInfoException {
+        roomStatusRecord[][] roomReport = new roomStatusRecord[6][8];
+        for (int i = 0; i < 6; i++){
+            for (int j = 0; j < 8; j++){
+                checkStatus(i+2, j+1);
+            }
+        }
+        return roomReport;
     }
     
     

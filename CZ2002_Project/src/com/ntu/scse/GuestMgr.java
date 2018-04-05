@@ -110,7 +110,7 @@ public class GuestMgr {
 
     public void writeGuestInfo(int guestID, char value, int choice)
             throws InvalidInfoException{
-        if (choice!=GENDER){
+        if (choice != GENDER){
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -122,7 +122,7 @@ public class GuestMgr {
 
     public void writeGuestInfo(int guestID, int value, int choice)
             throws InvalidInfoException{
-        if (choice!=IDTYPE){
+        if (choice != IDTYPE){
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -179,7 +179,7 @@ public class GuestMgr {
                             String creditCardNo,
                             String address,
                             int idType,
-                            String idNumber){
+                            String idNumber) {
         try {
 
             Guest newGuest = new Guest(guestID, firstName, lastName, gender,

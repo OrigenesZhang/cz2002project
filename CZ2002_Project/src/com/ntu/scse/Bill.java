@@ -20,4 +20,44 @@ public class Bill {
 //        this.total = this.price * this.quantity * this.discount * (1+this.taxRate);  // YET TO IMPLEMENT MENU
 
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public double getTaxRate() {
+        return taxRate;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public Menu getItem() {
+        return item;
+    }
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public void setTaxRate(double taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public void setItem(Menu item) {
+        this.item = item;
+    }
 }
