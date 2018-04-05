@@ -1,8 +1,5 @@
 package com.ntu.scse;
 
-import static com.ntu.scse.Status.*;
-import com.ntu.scse.InvalidInfoException.*;
-
 
 class BedType {
     public static final int SINGLE = 1, DOUBLE = 2, MASTER = 3;
@@ -12,7 +9,7 @@ class Facing {
     public static final int NORTH = 1, SOUTH = 2, EAST = 3, WEST = 4;
 }
 
-class Status {
+class RoomStatus {
     public static final int VACANT = 1;
     public static final int OCCUPIED = 2;
     public static final int RESERVED = 3;
@@ -28,7 +25,7 @@ public class Room {
     public final int maxNo = 8; // Room No 1-8
     public final int bedTypeNum = 3; // Bed Type: 1.single/ 2.double/ 3.master
     public final int facingNum = 4; // Facing: 1.North, 2.South, 3.East, 4.West
-    public final int statusNum = 4; // Status: 1.Vacant, 2.Occupied, 3.Reserved, 4.Under Maintenance
+    public final int statusNum = 4; // RoomStatus: 1.Vacant, 2.Occupied, 3.Reserved, 4.Under Maintenance
 
     public Room(int roomFloor,
                 int roomNo,
