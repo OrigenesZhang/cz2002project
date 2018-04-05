@@ -6,6 +6,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 class guestUpdateChoice {
     public static final int
@@ -25,6 +26,9 @@ public class GuestMgr {
 //    2. Given a guestID, read/write his/her information from file;
 //    3. ASK to create a new guest if not found or required
 
+	static ArrayList<Guest> guestList;
+	int numOfGuest;
+		
     class GuestBrief {
         private int guestID;
         private String lastName, firstName;
@@ -41,7 +45,7 @@ public class GuestMgr {
             this.firstName = firstName;
         }
     }
-
+/*
     public GuestMgr() {//Initialize
         int n;
 //        **Get the Total File Number
@@ -63,6 +67,13 @@ public class GuestMgr {
 //            **Write the list back to file
 
         }
+    }
+*/
+    
+    public GuestMgr(ArrayList<Guest> guestList) { //Initialize
+        this.guestList = new ArrayList<>(guestList);
+        numOfGuest = this.guestList.size();
+        System.out.println("Number of guests: " + numOfGuest); //FOR IO TESTING
     }
 
     public Guest readGuestInfo(int guestID) {
@@ -193,13 +204,18 @@ public class GuestMgr {
 //        Update the GuestBrief List File
     }
 
-    public void saveToFile(String guestFileName) { //NOT DONE
+    public void saveToFile(String guestFileName) { 
+    	guestList.add(new Guest(1)); //FOR IO TESTING
+    	numOfGuest = guestList.size();
+    	
     	try {
 			FileOutputStream foStream = new FileOutputStream(guestFileName);
 			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
 			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
 			
-			//WRITE GUEST DETAILS TO FILE
+			for (int i = 0 ; i < numOfGuest ; i++) {
+				doStream.writeObject(guestList.get(i)); //Write guest list into file
+			}
 			doStream.close();
 		}
 		catch (IOException e){

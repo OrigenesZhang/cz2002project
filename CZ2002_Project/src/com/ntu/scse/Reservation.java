@@ -1,11 +1,12 @@
 package com.ntu.scse;
 
+import java.io.Serializable;
 import java.util.Date;
 import com.ntu.scse.InvalidInfoException.*;
 import com.ntu.scse.Status.*;
 
 
-public class Reservation {
+public class Reservation implements Serializable {
     private int resvNo, resvStatus;
     private Guest guest;
     private Date dateCheckIn, dateCheckOut;
@@ -19,6 +20,10 @@ public class Reservation {
         this.guest = guest;
         this.dateCheckIn = dateCheckIn;
         this.dateCheckOut = null;
+    }
+    
+    public Reservation (int resvNo) { //TESTING CONSTRUCTOR FOR IO TESTING
+    	this.resvNo = resvNo;
     }
 
     public int getResvNo() {

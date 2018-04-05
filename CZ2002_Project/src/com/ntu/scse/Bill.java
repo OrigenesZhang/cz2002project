@@ -1,7 +1,8 @@
 package com.ntu.scse;
 
+import java.io.Serializable;
 
-public class Bill {
+public class Bill implements Serializable {
     private double price, quantity, discount, taxRate, total;
     private Menu item;
 
@@ -19,6 +20,10 @@ public class Bill {
 //        this.price = this.item.price;  // YET TO IMPLEMENT MENU
 //        this.total = this.price * this.quantity * this.discount * (1+this.taxRate);  // YET TO IMPLEMENT MENU
 
+    }
+    
+    public Bill (double price) { //TESTING CONSTRUCTOR FOR IO TESTING
+    	this.price = price;
     }
 
     public double getPrice() {

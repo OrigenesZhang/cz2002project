@@ -71,9 +71,9 @@ public class RoomMgr {
     	for (int i=0 ; i<6 ; i++) {
     		for (int j=0 ; j<8 ; j++) {
     			this.roomList[i][j] = roomList[i][j];
-    			//System.out.print(roomList[i][j].getRoomFloor() + "-" + roomList[i][j].getRoomNo() + " ");
+    			System.out.print(this.roomList[i][j].getRoomFloor() + "-" + this.roomList[i][j].getRoomNo() + " "); //FOR IO TESTING
     		}
-    		//System.out.println("");
+    		System.out.println(""); //FOR IO TESTING
     	}
     }
     
