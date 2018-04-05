@@ -42,6 +42,7 @@ public class GuestMgr {
         }
     }
 
+    public GuestMgr() {//Initialize
         int n;
 //        **Get the Total File Number
         n = 20;//TEST
@@ -69,6 +70,7 @@ public class GuestMgr {
 //        Open the file with the name guestID;
 //        If UNSUCCESSFUL return exception.
         return theGuest;
+    }
 
     public Guest readGuestInfo(String lastName, String firstName) {
         GuestBrief guestBrief = searchGuest(lastName, firstName);
@@ -78,6 +80,7 @@ public class GuestMgr {
         return theGuest;
     }
 
+    public void writeGuestInfo(int guestID, String value, int choice)
             throws InvalidInfoException {
         Guest theGuest = readGuestInfo(guestID);
         switch (choice) {
@@ -106,8 +109,8 @@ public class GuestMgr {
 //    NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, char value, int choice)
-            throws InvalidInfoException{
-        if (choice != GENDER){
+            throws InvalidInfoException {
+        if (choice != GENDER) {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -118,8 +121,8 @@ public class GuestMgr {
 //        NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, int value, int choice)
-            throws InvalidInfoException{
-        if (choice != IDTYPE){
+            throws InvalidInfoException {
+        if (choice != IDTYPE) {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -186,8 +189,10 @@ public class GuestMgr {
             e.printStackTrace();
         }
 
+//        Write this guest info to a new file
+//        Update the GuestBrief List File
     }
-    
+
     public void saveToFile(String guestFileName) { //NOT DONE
     	try {
 			FileOutputStream foStream = new FileOutputStream(guestFileName);
@@ -201,4 +206,4 @@ public class GuestMgr {
 			System.out.println("[Guest] File IO Error!" + e.getMessage());
 		}
     }
-}
+}//Need to WRITE TO A NEW FILE!!!
