@@ -28,6 +28,8 @@ public class Guest {
         this.idNumber = idNumber;
     }
 
+
+
     //GETTER
     public int getGuestID() {
         return guestID;
@@ -57,9 +59,6 @@ public class Guest {
         return address;
     }
 
-    public String getCountry() {
-        return country;
-    }
 
     public String getIdNumber() {
         return idNumber;
@@ -94,10 +93,6 @@ public class Guest {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public void setIdNumber(String idNumber) {

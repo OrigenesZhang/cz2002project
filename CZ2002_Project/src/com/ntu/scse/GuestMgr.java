@@ -104,8 +104,8 @@ public class GuestMgr {
 //    NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, char value, int choice)
-            throws InvalidInfoException{
-        if (choice!=GENDER){
+            throws InvalidInfoException {
+        if (choice != GENDER) {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -116,8 +116,8 @@ public class GuestMgr {
 //        NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, int value, int choice)
-            throws InvalidInfoException{
-        if (choice!=IDTYPE){
+            throws InvalidInfoException {
+        if (choice != IDTYPE) {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
@@ -174,7 +174,7 @@ public class GuestMgr {
                             String creditCardNo,
                             String address,
                             int idType,
-                            String idNumber){
+                            String idNumber) {
         try {
 
             Guest newGuest = new Guest(guestID, firstName, lastName, gender,
@@ -184,6 +184,7 @@ public class GuestMgr {
             e.printStackTrace();
         }
 
-
+//        Write this guest info to a new file
+//        Update the GuestBrief List File
     }
-}
+}//Need to WRITE TO A NEW FILE!!!
