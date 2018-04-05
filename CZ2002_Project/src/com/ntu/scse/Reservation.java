@@ -1,5 +1,6 @@
 package com.ntu.scse;
 
+import java.io.Serializable;
 import java.util.Date;
 
 class ResvStatus {
@@ -10,8 +11,14 @@ class ResvStatus {
             UNDER_MT = 4;
 }
 
+<<<<<<< HEAD
 public class Reservation {
     private int resvNo, resvStatus, adultNo, kidNo, roomFloor, roomNo, guestID;
+=======
+public class Reservation implements Serializable {
+    private int resvNo, resvStatus;
+    private Guest guest;
+>>>>>>> 79c26be47a76d2106884d5922c80c49939392d83
     private Date dateCheckIn, dateCheckOut;
 
 
@@ -30,6 +37,10 @@ public class Reservation {
         this.roomNo = roomNo;
         this.guestID = guestID;
         this.dateCheckIn = dateCheckIn;
+    }
+    
+    public Reservation (int resvNo) { //TESTING CONSTRUCTOR FOR IO TESTING
+    	this.resvNo = resvNo;
     }
 
     public int getResvNo() {

@@ -1,11 +1,13 @@
 package com.ntu.scse;
 
+import java.io.Serializable;
+
 class IDType{
     public static final int
             DRIVINGLICENSE = 1,
             PASSPORT = 2;
 }
-public class Guest {
+public class Guest implements Serializable{
     private int guestID, idType;
     private char gender;
     private String firstName, lastName, creditCardNo, address, country, idNumber;
@@ -28,6 +30,9 @@ public class Guest {
         this.idNumber = idNumber;
     }
 
+    public Guest (int guestID) { //TESTING CONSTRUCTOR FOR IO TESTING
+    	this.guestID = guestID;
+    }
 
 
     //GETTER

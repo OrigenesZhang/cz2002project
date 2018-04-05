@@ -1,5 +1,11 @@
 package com.ntu.scse;
 
+<<<<<<< HEAD
+=======
+import static com.ntu.scse.Status.*;
+import com.ntu.scse.InvalidInfoException.*;
+import java.io.Serializable;
+>>>>>>> 79c26be47a76d2106884d5922c80c49939392d83
 
 class BedType {
     public static final int SINGLE = 1, DOUBLE = 2, MASTER = 3;
@@ -16,7 +22,7 @@ class RoomStatus {
     public static final int UNDER_MAINTENANCE = 4;
 }
 
-public class Room {
+public class Room implements Serializable {
     private int roomType, roomFloor, roomNo, bedType, roomFacing, roomStatus;
     private double roomRate;
     private boolean enabledWifi, isSmoking;
@@ -47,6 +53,11 @@ public class Room {
         this.setStatus(roomStatus);
         this.setWifi(enabledWifi);
         this.setSmoking(isSmoking);
+    }
+    
+    public Room (int roomFloor, int roomNo) throws InvalidInfoException  { //TEMP CONSTRUCTOR TO TEST FILE IO
+    	this.setFloor(roomFloor);
+        this.setNumber(roomNo);
     }
 
 //    public void avaiRoom() throws Main.InvalidInfoException {

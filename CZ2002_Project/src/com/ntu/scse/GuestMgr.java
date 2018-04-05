@@ -2,6 +2,12 @@ package com.ntu.scse;
 
 import static com.ntu.scse.guestUpdateChoice.*;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 class guestUpdateChoice {
     public static final int
             FIRSTNAME = 1,
@@ -20,6 +26,9 @@ public class GuestMgr {
 //    2. Given a guestID, read/write his/her information from file;
 //    3. ASK to create a new guest if not found or required
 
+	static ArrayList<Guest> guestList;
+	int numOfGuest;
+		
     class GuestBrief {
         private int guestID;
         private String lastName, firstName;
@@ -36,8 +45,8 @@ public class GuestMgr {
             this.firstName = firstName;
         }
     }
-
-    public GuestMgr() {//Initialize: Generate a list of GuestBrief
+/*
+    public GuestMgr() {//Initialize
         int n;
 //        **Get the Total File Number
         n = 20;//TEST
@@ -56,18 +65,23 @@ public class GuestMgr {
             GuestList[i] = new GuestBrief(guestID, lastName, firstName);
 
 //            **Write the list back to file
-            writeGuestBrief();
-
 
         }
     }
+*/
+    
+    public GuestMgr(ArrayList<Guest> guestList) { //Initialize
+        this.guestList = new ArrayList<>(guestList);
+        numOfGuest = this.guestList.size();
+        System.out.println("Number of guests: " + numOfGuest); //FOR IO TESTING
+    }
 
-    private Guest readGuestInfo(int guestID) {
+    public Guest readGuestInfo(int guestID) {
         Guest theGuest = null;
 //        Open the file with the name guestID;
 //        If UNSUCCESSFUL return exception.
         return theGuest;
-    } // READ FROM FILE
+    }
 
     public Guest readGuestInfo(String lastName, String firstName) {
         GuestBrief guestBrief = searchGuest(lastName, firstName);
@@ -77,7 +91,7 @@ public class GuestMgr {
         return theGuest;
     }
 
-    public void updateGuestInfo(int guestID, String value, int choice)
+    public void writeGuestInfo(int guestID, String value, int choice)
             throws InvalidInfoException {
         Guest theGuest = readGuestInfo(guestID);
         switch (choice) {
@@ -105,7 +119,7 @@ public class GuestMgr {
     } // firstName, lastName, creditCardNo, Addr, idNo;
 //    NEED WRITE BACK TO THE FILE!
 
-    public void updateGuestInfo(int guestID, char value, int choice)
+    public void writeGuestInfo(int guestID, char value, int choice)
             throws InvalidInfoException {
         if (choice != GENDER) {
             throw new InvalidInfoException("Updating Gender");
@@ -117,7 +131,7 @@ public class GuestMgr {
     } // gender;
 //        NEED WRITE BACK TO THE FILE!
 
-    public void updateGuestInfo(int guestID, int value, int choice)
+    public void writeGuestInfo(int guestID, int value, int choice)
             throws InvalidInfoException {
         if (choice != IDTYPE) {
             throw new InvalidInfoException("Updating Gender");
@@ -129,7 +143,28 @@ public class GuestMgr {
     } // idType;
 //        NEED WRITE BACK TO THE FILE!
 
-    private GuestBrief[] readGuestBrief() {
+    public GuestBrief searchGuest(String lastName, String firstName) {
+        GuestBrief[] guestList = readGuestList();
+        for (GuestBrief guestBrief : guestList) {
+            if (lastName.toUpperCase().equals(guestBrief.lastName.toUpperCase()) &&
+                    firstName.toUpperCase().equals(guestBrief.lastName.toUpperCase())) {
+                return guestBrief;
+            }
+        }
+        return null;
+    }
+
+//    public GuestBrief searchGuest(int guestID) {
+//        GuestBrief[] guestList = readGuestList();
+//        for (GuestBrief guestBrief : guestList) {
+//            if (guestBrief.guestID == guestID) {
+//                return guestBrief;
+//            }
+//        }
+//        return null;
+//    }
+
+    private GuestBrief[] readGuestList() {
         int n;
         n = 20; //TEST
 
@@ -147,29 +182,6 @@ public class GuestMgr {
         }
         return GuestList;
     }
-
-    private void writeGuestBrief(){} // WRITE FROM FILE
-
-    public GuestBrief searchGuest(String lastName, String firstName) {
-        GuestBrief[] guestList = readGuestBrief();
-        for (GuestBrief guestBrief : guestList) {
-            if (lastName.toUpperCase().equals(guestBrief.lastName.toUpperCase()) &&
-                    firstName.toUpperCase().equals(guestBrief.lastName.toUpperCase())) {
-                return guestBrief;
-            }
-        }
-        return null;
-    }
-
-    //    public GuestBrief searchGuest(int guestID) {
-//        GuestBrief[] guestList = readGuestBrief();
-//        for (GuestBrief guestBrief : guestList) {
-//            if (guestBrief.guestID == guestID) {
-//                return guestBrief;
-//            }
-//        }
-//        return null;
-//    }
 
     public void addNewGuest(int guestID,
                             String firstName,
@@ -190,5 +202,24 @@ public class GuestMgr {
 
 //        Write this guest info to a new file
 //        Update the GuestBrief List File
+    }
+
+    public void saveToFile(String guestFileName) { 
+    	guestList.add(new Guest(1)); //FOR IO TESTING
+    	numOfGuest = guestList.size();
+    	
+    	try {
+			FileOutputStream foStream = new FileOutputStream(guestFileName);
+			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
+			
+			for (int i = 0 ; i < numOfGuest ; i++) {
+				doStream.writeObject(guestList.get(i)); //Write guest list into file
+			}
+			doStream.close();
+		}
+		catch (IOException e){
+			System.out.println("[Guest] File IO Error!" + e.getMessage());
+		}
     }
 }//Need to WRITE TO A NEW FILE!!!
