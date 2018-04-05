@@ -115,6 +115,18 @@ public class GuestMgr {
     } // gender;
 //        NEED WRITE BACK TO THE FILE!
 
+    public void writeGuestInfo(int guestID, int value, int choice)
+            throws InvalidInfoException{
+        if (choice!=IDTYPE){
+            throw new InvalidInfoException("Updating Gender");
+        } else {
+            Guest theGuest = readGuestInfo(guestID);
+            theGuest.setIdType(value);
+//            NEED WRITE BACK TO THE FILE!
+        }
+    } // idType;
+//        NEED WRITE BACK TO THE FILE!
+
     public GuestBrief searchGuest(String lastName, String firstName) {
         GuestBrief[] guestList = readGuestList();
         for (GuestBrief guestBrief : guestList) {
@@ -153,5 +165,25 @@ public class GuestMgr {
             GuestList[i] = new GuestBrief(guestID, lastName, firstName);
         }
         return GuestList;
+    }
+
+    public void addNewGuest(int guestID,
+                            String firstName,
+                            String lastName,
+                            char gender,
+                            String creditCardNo,
+                            String address,
+                            int idType,
+                            String idNumber){
+        try {
+
+            Guest newGuest = new Guest(guestID, firstName, lastName, gender,
+                    creditCardNo, address, idType, idNumber);
+
+        } catch (InvalidInfoException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }
