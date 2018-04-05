@@ -112,13 +112,9 @@ public class RoomMgr {
         }
     }
 
-<<<<<<< HEAD
-    public roomStatusRecord checkStatus(int floor, int rm) throws InvalidInfoException { // RETURN the RoomStatus index
-        roomList = readRoomList();
-=======
-    public roomStatusRecord checkStatus(int floor, int rm) throws InvalidInfoException { // RETURN the Status index
+
+    public roomStatusRecord checkStatus(int floor, int rm) { // RETURN the Status index
         //roomList = readRoomList();
->>>>>>> 79c26be47a76d2106884d5922c80c49939392d83
         roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
                 roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
         return rmRecord;

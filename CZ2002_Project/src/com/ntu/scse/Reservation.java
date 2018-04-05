@@ -11,14 +11,8 @@ class ResvStatus {
             UNDER_MT = 4;
 }
 
-<<<<<<< HEAD
-public class Reservation {
+public class Reservation implements Serializable{
     private int resvNo, resvStatus, adultNo, kidNo, roomFloor, roomNo, guestID;
-=======
-public class Reservation implements Serializable {
-    private int resvNo, resvStatus;
-    private Guest guest;
->>>>>>> 79c26be47a76d2106884d5922c80c49939392d83
     private Date dateCheckIn, dateCheckOut;
 
 

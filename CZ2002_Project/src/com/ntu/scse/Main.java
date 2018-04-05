@@ -43,7 +43,7 @@ public class Main {
             System.out.println("(10) Save to file");
             System.out.println("(11) Exit");
             System.out.println("");
-            System.out.printf("        Enter the number of your choice: ");
+            System.out.print("        Enter the number of your choice: ");
             choice = sc.nextInt();
             switch (choice) {
                 case 1: /* (1) Create/Update/Search GUEST detail */
@@ -111,6 +111,7 @@ public class Main {
         System.out.println("Welcome to HRPS for SCSE Hotel!");
         System.out.println("");
 
+//      ======================================
         System.out.println("Initializing the room information...");
 //                Initialize the room information;
 //				  Set all rooms to default
@@ -150,7 +151,9 @@ public class Main {
 			e.printStackTrace();
 		}
         roomMgr = new RoomMgr(roomList); //Instantiate RoomMgr object and pass room array to it
-        
+
+
+//		======================================
         System.out.println("Initializing the guest information...");
 //                Initialize the guest information;
         try {
@@ -178,7 +181,8 @@ public class Main {
 		}
         guestMgr = new GuestMgr(guestList); //Instantiate GuestMgr object and pass guest list to it
         
-        
+
+//		======================================
         System.out.println("Initializing the reservation information...");
 //                Initialize the reservation information;
         try {
@@ -206,7 +210,8 @@ public class Main {
 		}
         reservationMgr = new ReservationMgr(reservationList); //Instantiate ReservationMgr object and pass reservation list to it
         
-        
+
+//		======================================
         System.out.println("Initializing the billing information...");
 //                Initialize the billing information;
         try {
@@ -233,7 +238,9 @@ public class Main {
 			e.printStackTrace();
 		}
         billMgr = new BillMgr(billList); //Instantiate BillMgr object and pass bill list to it
-        
+
+
+//		======================================
         System.out.println("Successfully initialized the system!");
     }
 
