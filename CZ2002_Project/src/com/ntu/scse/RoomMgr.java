@@ -61,10 +61,13 @@ class roomStatusRecord {
 }
 
 public class RoomMgr {
-
     private Room[][] roomList = new Room[6][8];
 
-    public Room[][] readRoomList() throws InvalidInfoException { //INITIALIZING THE ROOM FROM THE FILE
+    public RoomMgr() throws InvalidInfoException { //INITIALIZING
+        this.roomList = readRoomList();
+    }
+
+    private Room[][] readRoomList() throws InvalidInfoException { //INITIALIZING THE ROOM FROM THE FILE
         Room[][] roomList = new Room[6][8];
         for (int floor = 0; floor < 6; floor++) {
             // Only private loop starts from zero,
@@ -83,8 +86,10 @@ public class RoomMgr {
 //    OTHER WAYS OF INITIALIZATION ALSO CAN
 //    OR JUST NO NEED INITIALIZATION BUT READ IN BINARY FILE FOR EVERY UPDATING OR SEARCHING
 
+    private void writeRoomList(){} //DUNNO HOW
+
     public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
-        Room[][] roomList = readRoomList();
+        roomList = readRoomList();
         try {
             switch (choice) {
                 case ROOMTYPE:
@@ -118,7 +123,7 @@ public class RoomMgr {
                 default:
                     throw new InvalidInfoException("Update Room");
             }
-//            WRITE BACK TO FILE!!!
+            writeRoomList();
 
         } catch (Exception NullPointerException) {
 
@@ -126,14 +131,14 @@ public class RoomMgr {
     }
 
     public roomStatusRecord checkStatus(int floor, int rm) throws InvalidInfoException { // RETURN the Status index
-        Room[][] roomList = readRoomList();
+        roomList = readRoomList();
         roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
                 roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
         return rmRecord;
     }
 
     public roomStatusRecord[][] reportStatus() throws InvalidInfoException {
-        Room[][] roomList = readRoomList();
+        roomList = readRoomList();
         roomStatusRecord[][] roomReport = new roomStatusRecord[6][8];
         for (int i = 0; i < 6; i++){
             for (int j = 0; j < 8; j++){

@@ -37,7 +37,7 @@ public class GuestMgr {
         }
     }
 
-    public GuestMgr() {//Initialize
+    public GuestMgr() {//Initialize: Generate a list of GuestBrief
         int n;
 //        **Get the Total File Number
         n = 20;//TEST
@@ -56,16 +56,18 @@ public class GuestMgr {
             GuestList[i] = new GuestBrief(guestID, lastName, firstName);
 
 //            **Write the list back to file
+            writeGuestBrief();
+
 
         }
     }
 
-    public Guest readGuestInfo(int guestID) {
+    private Guest readGuestInfo(int guestID) {
         Guest theGuest = null;
 //        Open the file with the name guestID;
 //        If UNSUCCESSFUL return exception.
         return theGuest;
-    }
+    } // READ FROM FILE
 
     public Guest readGuestInfo(String lastName, String firstName) {
         GuestBrief guestBrief = searchGuest(lastName, firstName);
@@ -75,7 +77,7 @@ public class GuestMgr {
         return theGuest;
     }
 
-    public void writeGuestInfo(int guestID, String value, int choice)
+    public void updateGuestInfo(int guestID, String value, int choice)
             throws InvalidInfoException {
         Guest theGuest = readGuestInfo(guestID);
         switch (choice) {
@@ -103,7 +105,7 @@ public class GuestMgr {
     } // firstName, lastName, creditCardNo, Addr, idNo;
 //    NEED WRITE BACK TO THE FILE!
 
-    public void writeGuestInfo(int guestID, char value, int choice)
+    public void updateGuestInfo(int guestID, char value, int choice)
             throws InvalidInfoException {
         if (choice != GENDER) {
             throw new InvalidInfoException("Updating Gender");
@@ -115,7 +117,7 @@ public class GuestMgr {
     } // gender;
 //        NEED WRITE BACK TO THE FILE!
 
-    public void writeGuestInfo(int guestID, int value, int choice)
+    public void updateGuestInfo(int guestID, int value, int choice)
             throws InvalidInfoException {
         if (choice != IDTYPE) {
             throw new InvalidInfoException("Updating Gender");
@@ -127,28 +129,7 @@ public class GuestMgr {
     } // idType;
 //        NEED WRITE BACK TO THE FILE!
 
-    public GuestBrief searchGuest(String lastName, String firstName) {
-        GuestBrief[] guestList = readGuestList();
-        for (GuestBrief guestBrief : guestList) {
-            if (lastName.toUpperCase().equals(guestBrief.lastName.toUpperCase()) &&
-                    firstName.toUpperCase().equals(guestBrief.lastName.toUpperCase())) {
-                return guestBrief;
-            }
-        }
-        return null;
-    }
-
-//    public GuestBrief searchGuest(int guestID) {
-//        GuestBrief[] guestList = readGuestList();
-//        for (GuestBrief guestBrief : guestList) {
-//            if (guestBrief.guestID == guestID) {
-//                return guestBrief;
-//            }
-//        }
-//        return null;
-//    }
-
-    private GuestBrief[] readGuestList() {
+    private GuestBrief[] readGuestBrief() {
         int n;
         n = 20; //TEST
 
@@ -166,6 +147,29 @@ public class GuestMgr {
         }
         return GuestList;
     }
+
+    private void writeGuestBrief(){} // WRITE FROM FILE
+
+    public GuestBrief searchGuest(String lastName, String firstName) {
+        GuestBrief[] guestList = readGuestBrief();
+        for (GuestBrief guestBrief : guestList) {
+            if (lastName.toUpperCase().equals(guestBrief.lastName.toUpperCase()) &&
+                    firstName.toUpperCase().equals(guestBrief.lastName.toUpperCase())) {
+                return guestBrief;
+            }
+        }
+        return null;
+    }
+
+    //    public GuestBrief searchGuest(int guestID) {
+//        GuestBrief[] guestList = readGuestBrief();
+//        for (GuestBrief guestBrief : guestList) {
+//            if (guestBrief.guestID == guestID) {
+//                return guestBrief;
+//            }
+//        }
+//        return null;
+//    }
 
     public void addNewGuest(int guestID,
                             String firstName,
