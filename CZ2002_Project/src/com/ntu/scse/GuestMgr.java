@@ -2,6 +2,11 @@ package com.ntu.scse;
 
 import static com.ntu.scse.guestUpdateChoice.*;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 class guestUpdateChoice {
     public static final int
             FIRSTNAME = 1,
@@ -184,6 +189,19 @@ public class GuestMgr {
             e.printStackTrace();
         }
 
-
+    }
+    
+    public void saveToFile(String guestFileName) { //NOT DONE
+    	try {
+			FileOutputStream foStream = new FileOutputStream(guestFileName);
+			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
+			
+			//WRITE GUEST DETAILS TO FILE
+			doStream.close();
+		}
+		catch (IOException e){
+			System.out.println("[Guest] File IO Error!" + e.getMessage());
+		}
     }
 }
