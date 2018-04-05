@@ -42,7 +42,6 @@ public class GuestMgr {
         }
     }
 
-    public GuestMgr() {//Initialize
         int n;
 //        **Get the Total File Number
         n = 20;//TEST
@@ -70,7 +69,6 @@ public class GuestMgr {
 //        Open the file with the name guestID;
 //        If UNSUCCESSFUL return exception.
         return theGuest;
-    }
 
     public Guest readGuestInfo(String lastName, String firstName) {
         GuestBrief guestBrief = searchGuest(lastName, firstName);
@@ -80,7 +78,6 @@ public class GuestMgr {
         return theGuest;
     }
 
-    public void writeGuestInfo(int guestID, String value, int choice)
             throws InvalidInfoException {
         Guest theGuest = readGuestInfo(guestID);
         switch (choice) {

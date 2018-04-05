@@ -76,8 +76,33 @@ public class RoomMgr {
     		//System.out.println("");
     	}
     	
+=======
+    private Room[][] roomList = new Room[6][8];
+
+    public RoomMgr() throws InvalidInfoException { //INITIALIZING
+        this.roomList = readRoomList();
+    }
+
+    private Room[][] readRoomList() throws InvalidInfoException { //INITIALIZING THE ROOM FROM THE FILE
+        Room[][] roomList = new Room[6][8];
+        for (int floor = 0; floor < 6; floor++) {
+            // Only private loop starts from zero,
+            // Any outer index/para remains the same as the real world info, floor-2, rm-1
+            for (int rm = 0; rm < 8; rm++) {
+//                try: read in one line from the file
+//                except: don't have info; throw IO exception: !!!need define one
+//                try: new room; Remember the output of the room info should be translated;
+//                except: room return exception;
+//                roomList[floor][rm] = theRoom;
+            }
+        }
+
+        return roomList;
+>>>>>>> 6121299dfac6fa27c753f118bdfed39b86a88e4a
     }
     
+
+    private void writeRoomList(){} //DUNNO HOW
 
     public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
         try {
@@ -106,18 +131,31 @@ public class RoomMgr {
                 default:
                     throw new InvalidInfoException("Update Room");
             }
+<<<<<<< HEAD
+=======
+            writeRoomList();
+
+>>>>>>> 6121299dfac6fa27c753f118bdfed39b86a88e4a
         } catch (Exception NullPointerException) {
 
         }
     }
 
     public roomStatusRecord checkStatus(int floor, int rm) throws InvalidInfoException { // RETURN the Status index
+<<<<<<< HEAD
+=======
+        roomList = readRoomList();
+>>>>>>> 6121299dfac6fa27c753f118bdfed39b86a88e4a
         roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
                 roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
         return rmRecord;
     }
 
     public roomStatusRecord[][] reportStatus() throws InvalidInfoException {
+<<<<<<< HEAD
+=======
+        roomList = readRoomList();
+>>>>>>> 6121299dfac6fa27c753f118bdfed39b86a88e4a
         roomStatusRecord[][] roomReport = new roomStatusRecord[6][8];
         for (int i = 0; i < 6; i++){
             for (int j = 0; j < 8; j++){
