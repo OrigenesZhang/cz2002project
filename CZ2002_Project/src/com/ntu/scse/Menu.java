@@ -33,7 +33,6 @@ public class Menu implements Serializable{
 
     public void setId(int i) {
         this.id = i;
-
     }
 
     public void setfName(String fName) {
@@ -47,6 +46,5 @@ public class Menu implements Serializable{
     public void setPrice(float price) {
         this.price = price;
     }
-
 
 }

@@ -11,12 +11,12 @@ public class Main {
 	static final String guestFileName = "guestData.dat";
 	static final String billFileName = "billData.dat";
 	static final String reservationFileName = "reservationData.dat";
-	static final String roomServiceFileName = "data.dat";
+	static final String menuFileName = "menu.dat";
 	static RoomMgr roomMgr;
 	static GuestMgr guestMgr;
 	static BillMgr billMgr;
 	static ReservationMgr reservationMgr;
-	static RoomServiceMgr roomServiceMgr;
+	static RoomService roomService = null;
 	
     public static void main(String[] args) {
 
@@ -101,7 +101,7 @@ public class Main {
     	ArrayList<Guest> guestList = new ArrayList<>();
     	ArrayList<Bill> billList = new ArrayList<>();
     	ArrayList<Reservation> reservationList = new ArrayList<>();
-    	Object obj;
+    	Object obj = null;
     	
         System.out.println("__        __   _");
         System.out.println("\\ \\      / /__| | ___ ___  _ __ ___   ___");
@@ -243,9 +243,28 @@ public class Main {
 
 
 //		======================================
-        System.out.println("Initializing the Room Service (Menu) information...");
-//      Initialize the Room Service Info
-        roomServiceMgr = new RoomServiceMgr();
+        System.out.println("Initializing the Room Service Menu information...");
+//      Initialize the Room Service Menu Info
+        try {
+            fiStream = new FileInputStream(menuFileName);
+            biStream = new BufferedInputStream(fiStream);
+            diStream = new ObjectInputStream(biStream);
+            obj = diStream.readObject();
+        }
+        catch (FileNotFoundException e) { //File does not exist, no data to load
+            System.out.println("IOError: menu file not found! No existing menu...");
+        }
+        catch (EOFException e) {
+            System.out.println("Loaded from " + menuFileName);
+        }
+        catch (IOException e) { //Other IO Exception
+            System.out.println("[Menu] File IO Error!" + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            System.out.println("[Menu] Class not found!" + e.getMessage());
+            e.printStackTrace();
+        }
+        roomService = new RoomService((ArrayList<Menu>)obj);
       
         System.out.println("Successfully initialized the system!");
     }
@@ -260,7 +279,9 @@ public class Main {
 		billMgr.saveToFile(billFileName);
 		//Save reservation info
 		reservationMgr.saveToFile(reservationFileName);
-		
+		//Save room service menu info
+		roomService.saveToFile(menuFileName);
+				
 		System.out.println("Saved to file!");
 	}
 }

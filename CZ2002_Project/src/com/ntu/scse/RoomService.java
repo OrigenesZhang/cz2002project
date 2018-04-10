@@ -1,24 +1,23 @@
 package com.ntu.scse;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;;
 
 public class RoomService implements Serializable{
-    private ArrayList<Menu> menus;
-    //private ArrayList<Order> orders;
+    static ArrayList<Menu> menus = null;
 
 
-    public RoomService ()
+    public RoomService (ArrayList<Menu> menus)
     {
-        menus = new ArrayList<Menu>();
-        //orders = new ArrayList<Order>();
-    }
+        this.menus = menus;
+        if (menus == null){
+            this.menus = new ArrayList<Menu>();
+            initialize();
+        }
 
-    public void addMenu(Menu mm)
-    {
-        menus.add(mm);
     }
 
     public void viewMenu()
@@ -29,8 +28,6 @@ public class RoomService implements Serializable{
 
         for(Menu mm : menus)
         {
-
-
             System.out.format("%s%-9d%-40s%-100s%.2f\n", " ",  mm.getID(), mm.getFood(), mm.getDesc(), mm.getPrice());
             //System.out.println("  " + mm.getID() + "\t " + mm.getFood() + "\t " + mm.getDesc() + "\t\t\t" + mm.getPrice());
         }
@@ -45,8 +42,10 @@ public class RoomService implements Serializable{
             {
                 System.out.println("You have selected: ");
                 System.out.println(mm.getFood() + ", " + mm.getDesc() + ", " + mm.getPrice());
+                return;
             }
         }
+        System.out.println("Item does not exist!");
     }
 
     public Object removeItem(int id)
@@ -142,13 +141,117 @@ public class RoomService implements Serializable{
 
     public int lastItemID()
     {
-        int i = 0;
+        return (menus.get(menus.size()-1).getID());
+    }
 
-        for(Menu mm : menus)
-        {
-            i = mm.getID();
+    public void ShowRoomServiceOption() {
+        int index, choice = 0;
+        do {
+            boolean errorInput = false;
+            int noItem = 0;
+
+            Scanner input = new Scanner(System.in);
+            System.out.println("1. Read Menu");
+            System.out.println("2. Add item to menu");
+            System.out.println("3. Delete item from menu");
+            System.out.println("4. Update menu item");
+            System.out.println("5. Return main screen");
+
+            do {
+                System.out.print("Select an option: ");
+                try {
+                    errorInput = false;
+                    choice = input.nextInt();
+                } catch (InputMismatchException e) {
+                    input.next();
+                    System.out.println("Error input\n");
+                    errorInput = true;
+                }
+            } while (errorInput);
+
+
+            switch (choice) {
+                case 1:
+                    viewMenu();
+                    break;
+
+                case 2:
+                    int tempID = lastItemID();
+                    String fn, desc;
+                    float p;
+
+                    System.out.print("\nEnter amount of item to add: ");
+                    noItem = input.nextInt();
+                    input.nextLine();
+
+                    for (int i = 1; i <= noItem; i++) {
+                        System.out.println("\nEnter information for item " + i);
+                        System.out.print("Enter food name: ");
+                        fn = input.nextLine();
+                        System.out.print("Enter food description: ");
+                        desc = input.nextLine();
+                        System.out.print("Enter food price: ");
+                        p = input.nextFloat();
+                        input.nextLine();
+                        tempID += 1;
+                        menus.add(new Menu(tempID, fn, desc, p));
+                    }
+                    System.out.println("");
+                    break;
+
+                case 3:
+                    viewMenu();
+                    System.out.print("Select the index to delete item from menu: ");
+                    index = input.nextInt();
+                    input.nextLine();
+                    menus.remove(index);
+                    break;
+
+                case 4:
+                    viewMenu();
+                    System.out.print("Select the index to update item from menu: ");
+                    index = input.nextInt();
+                    input.nextLine();
+                    updateItem(index);
+                    break;
+
+                case 5:
+                    System.out.println("Returning to main screen...");
+                    break;
+
+                default:
+                    System.out.println("Error input");
+                    break;
+            }
+        } while (choice != 5);
+    }
+
+    public void saveToFile(String menuFileName){
+        try {
+            FileOutputStream foStream = new FileOutputStream(menuFileName);
+            BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+            ObjectOutputStream doStream = new ObjectOutputStream(boStream);
+
+            doStream.writeObject(menus); //Write guest list into file
+
+            System.out.println("Menu saved to " + menuFileName);
+            doStream.close();
         }
+        catch (IOException e){
+            System.out.println("[Menu] File IO Error!" + e.getMessage());
+        }
+    }
 
-        return i;
+
+    //To set menu for the very first time or return to default
+    //initialize(rsM, list, sdb);
+    //once menu has been set, meaning program has run once,
+    //initialize() must be comment out
+    //then uncomment the section below (must), to read menu of all existing changes made
+
+    private void initialize() {
+        menus.add(new Menu(1, "Chicken Chop", "Plain-grilled chicken with black pepper", 6));
+        menus.add(new Menu(2, "Fish & Chip", "Fried battered fish with french fries", 6));
+        menus.add(new Menu(3, "Aglio E Olio", "Freshly grounded garlic with chili flakes", 7));
     }
 }
