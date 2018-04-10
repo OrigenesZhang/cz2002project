@@ -7,15 +7,11 @@ import com.ntu.scse.InvalidInfoException.*;
 
 public class Main {
 
-	static final String roomFileName = "roomData.dat";
-	static final String guestFileName = "guestData.dat";
-	static final String billFileName = "billData.dat";
-	static final String reservationFileName = "reservationData.dat";
-	static final String menuFileName = "menu.dat";
-	static RoomMgr roomMgr;
-	static GuestMgr guestMgr;
-	static BillMgr billMgr;
-	static ReservationMgr reservationMgr;
+	static final String dataFileName = "data.dat";
+	static RoomMgr roomMgr = null;
+	static GuestMgr guestMgr = null;
+	static BillMgr billMgr = null;
+	static ReservationMgr reservationMgr = null;
 	static RoomService roomService = null;
 	
     public static void main(String[] args) {
@@ -49,6 +45,7 @@ public class Main {
             choice = sc.nextInt();
             switch (choice) {
                 case 1: /* (1) Create/Update/Search GUEST detail */
+                    guestMgr.addNewGuest("Christopher", "Lim", 'M',"12345","54321",1,"24680");//TEMPORARY
                     break;
 
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */
@@ -61,6 +58,7 @@ public class Main {
                     break;
 
                 case 5: /* (5) Create/Update/Remove ROOM SERVICE MENU items */
+                    roomService.ShowRoomServiceOption();
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
@@ -96,12 +94,6 @@ public class Main {
     	FileInputStream fiStream;
 		BufferedInputStream biStream;
 		ObjectInputStream diStream;
-		
-    	Room[][] roomList = new Room[6][8];
-    	ArrayList<Guest> guestList = new ArrayList<>();
-    	ArrayList<Bill> billList = new ArrayList<>();
-    	ArrayList<Reservation> reservationList = new ArrayList<>();
-    	Object obj = null;
     	
         System.out.println("__        __   _");
         System.out.println("\\ \\      / /__| | ___ ___  _ __ ___   ___");
@@ -114,47 +106,36 @@ public class Main {
         System.out.println("");
 
 //      ======================================
-        System.out.println("Initializing the room information...");
-//                Initialize the room information;
-//				  Set all rooms to default
-        for (int i=0 ; i<6 ; i++) {
-    		for (int j=0 ; j<8 ; j++) {
-    			try {
-					roomList[i][j] = new Room(i+2,j+1); //USING TEMP CONSTRUCTOR, NOT SURE WHAT THE OTHER DEFAULTS SHOULD BE
-				} catch (InvalidInfoException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    		}
-    	}
+        System.out.println("Initializing data from file...");
 //			Try reading from file, if file doesn't exist or if exception, use defaults
         try {
-        	fiStream = new FileInputStream(roomFileName);
+        	fiStream = new FileInputStream(dataFileName);
     		biStream = new BufferedInputStream(fiStream);
     		diStream = new ObjectInputStream(biStream);
-        	
-    		for (int i=2 ; i<8 ; i++) { //Reads in 48 Rooms by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-    			for (int j=1 ; j<9 ; j++) { //Reads in 48 Rooms by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-        			obj = diStream.readObject();
-    				roomList[i-2][j-1] = (Room) obj;
-        		}
-    		}
-    		diStream.close();
-    		System.out.println("Loaded from " + roomFileName);
+
+            roomMgr = new RoomMgr((ArrayList)diStream.readObject()); //Instantiate RoomMgr object and pass room array to it
+            guestMgr = new GuestMgr((ArrayList)diStream.readObject()); //Instantiate GuestMgr object and pass guest list to it
+            reservationMgr = new ReservationMgr((ArrayList)diStream.readObject()); //Instantiate ReservationMgr object and pass reservation list to it
+            billMgr = new BillMgr((ArrayList)diStream.readObject()); //Instantiate BillMgr object and pass bill list to it
+            roomService = new RoomService((ArrayList)diStream.readObject());
         }
     	catch (FileNotFoundException e) { //File does not exist, no data to load
-    		System.out.println("IOError: Room file not found! Using default settings...");
+    		System.out.println("No data file found! Initializing using default settings...");
+
+            roomMgr = new RoomMgr(null); //Instantiate default RoomMgr
+            guestMgr = new GuestMgr(null); //Instantiate default GuestMgr
+            reservationMgr = new ReservationMgr(null); //Instantiate default ReservationMgr
+            billMgr = new BillMgr(null); //Instantiate default BillMgr
+            roomService = new RoomService(null); //Instantiate default Menu
     	}
     	catch (IOException e) { //Other IO Exception
-    		System.out.println("[Room] File IO Error!" + e.getMessage());
+    		System.out.println("File IO Error!" + e.getMessage());
     	} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-    		System.out.println("[Room] Class not found!" + e.getMessage());
+    		System.out.println("Class not found!" + e.getMessage());
 			e.printStackTrace();
 		}
-        roomMgr = new RoomMgr(roomList); //Instantiate RoomMgr object and pass room array to it
 
-
+/*
 //		======================================
         System.out.println("Initializing the guest information...");
 //                Initialize the guest information;
@@ -265,12 +246,30 @@ public class Main {
             e.printStackTrace();
         }
         roomService = new RoomService((ArrayList<Menu>)obj);
-      
+        */
         System.out.println("Successfully initialized the system!");
     }
 
 
 	private static void saveToFile() {
+        //ROOM GUEST RESV BILL ROOMSVC
+        try {
+            FileOutputStream foStream = new FileOutputStream(dataFileName);
+            BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+            ObjectOutputStream doStream = new ObjectOutputStream(boStream);
+
+            doStream.writeObject(roomMgr.saveToFile());
+            doStream.writeObject(guestMgr.saveToFile());
+            doStream.writeObject(reservationMgr.saveToFile());
+            doStream.writeObject(billMgr.saveToFile());
+            doStream.writeObject(roomService.saveToFile());
+
+            doStream.close();
+        }
+        catch (IOException e){
+            System.out.println("File IO Error! " + e.getMessage());
+        }
+        /*
 		//Save room info
 		roomMgr.saveToFile(roomFileName);
 		//Save guest info
@@ -281,7 +280,7 @@ public class Main {
 		reservationMgr.saveToFile(reservationFileName);
 		//Save room service menu info
 		roomService.saveToFile(menuFileName);
-				
+		*/
 		System.out.println("Saved to file!");
 	}
 }

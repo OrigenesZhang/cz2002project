@@ -2,6 +2,7 @@ package com.ntu.scse;
 
 import static com.ntu.scse.roomUpdateChoice.*;
 import java.io.*;
+import java.util.ArrayList;
 
 class roomUpdateChoice {
     public static final int
@@ -62,16 +63,29 @@ class roomStatusRecord {
 
 public class RoomMgr {
 
-    private static Room[][] roomList = new Room[6][8];    
+    private static Room[][] roomList = new Room[6][8];
     
-    public RoomMgr (Room[][] roomList) { //Initialize with room array from main
-    	for (int i=0 ; i<6 ; i++) {
-    		for (int j=0 ; j<8 ; j++) {
-    			this.roomList[i][j] = roomList[i][j];
-    			System.out.print(this.roomList[i][j].getRoomFloor() + "-" + this.roomList[i][j].getRoomNo() + " "); //FOR IO TESTING
-    		}
-    		System.out.println(""); //FOR IO TESTING
-    	}
+    public RoomMgr (ArrayList<Room> roomList) { //Initialize with room array from main
+    	if (roomList == null){ //Initialize
+            for (int i=0 ; i<6 ; i++) {
+                for (int j=0 ; j<8 ; j++) {
+                    try {
+                        this.roomList[i][j] = new Room(i+2,j+1); //USING TEMP CONSTRUCTOR, NOT SURE WHAT THE OTHER DEFAULTS SHOULD BE
+                    } catch (InvalidInfoException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 8; j++) {
+                    this.roomList[i][j] = roomList.get((i * 8) + j);
+                    System.out.print(this.roomList[i][j].getRoomFloor() + "-" + this.roomList[i][j].getRoomNo() + " "); //FOR IO TESTING
+                }
+                System.out.println(""); //FOR IO TESTING
+            }
+        }
     }
     
 
@@ -133,8 +147,16 @@ public class RoomMgr {
     }
     
     
-    public void saveToFile(String roomFileName) {
-    	 	
+    public ArrayList<Room> saveToFile() {
+
+        ArrayList<Room> roomList = new ArrayList<>();
+        for (int i=0 ; i<6 ; i++) {
+            for (int j=0 ; j<8 ; j++) {
+                roomList.add(this.roomList[i][j]);
+            }
+        }
+        return roomList;
+        /*
     	try {
 			FileOutputStream foStream = new FileOutputStream(roomFileName);
 			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
@@ -151,6 +173,7 @@ public class RoomMgr {
 		catch (IOException e){
 			System.out.println("[Room] File IO Error!" + e.getMessage());
 		}
+		*/
     }
     
     private boolean validRoom(int floor, int room) {

@@ -14,10 +14,12 @@ public class RoomService implements Serializable{
     {
         this.menus = menus;
         if (menus == null){
-            this.menus = new ArrayList<Menu>();
+            this.menus = new ArrayList<>();
             initialize();
+            System.out.println("Room Service Menu initialized!");
         }
-
+        else
+            System.out.println("Room Service Menu loaded!");
     }
 
     public void viewMenu()
@@ -226,7 +228,9 @@ public class RoomService implements Serializable{
         } while (choice != 5);
     }
 
-    public void saveToFile(String menuFileName){
+    public ArrayList<Menu> saveToFile(){
+        return menus;
+        /*
         try {
             FileOutputStream foStream = new FileOutputStream(menuFileName);
             BufferedOutputStream boStream = new BufferedOutputStream(foStream);
@@ -240,6 +244,7 @@ public class RoomService implements Serializable{
         catch (IOException e){
             System.out.println("[Menu] File IO Error!" + e.getMessage());
         }
+        */
     }
 
 

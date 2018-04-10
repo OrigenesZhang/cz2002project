@@ -26,7 +26,7 @@ public class GuestMgr {
 //    2. Given a guestID, read/write his/her information from file;
 //    3. ASK to create a new guest if not found or required
 
-	static ArrayList<Guest> guestList;
+	static ArrayList<Guest> guestList = null;
 	int numOfGuest =0;
 		
     class GuestBrief {
@@ -46,9 +46,15 @@ public class GuestMgr {
         }
     }
     
-    public GuestMgr(ArrayList<Guest> guestList) { //Initialize
-        this.guestList = new ArrayList<>(guestList);
-        numOfGuest = this.guestList.size();
+    public GuestMgr(ArrayList<Guest> guestList) {
+        if (guestList == null) {//Initialize
+            this.guestList = new ArrayList<>();
+            numOfGuest = 0;
+        }
+        else{
+            this.guestList = new ArrayList<>(guestList);
+            numOfGuest = this.guestList.size();
+        }
         System.out.println(numOfGuest + " Guests loaded!");
     }
 
@@ -155,11 +161,13 @@ public class GuestMgr {
     }
     
     private boolean checkGap() { //Checks if any gap due to previously deleted guest
-    	return !(guestList.get(guestList.size()-1).getGuestID() == numOfGuest);
+        if (numOfGuest == 0)
+            return false;
+        else
+    	    return !(guestList.get(guestList.size()-1).getGuestID() == numOfGuest);
     }
 
-    public Guest addNewGuest(int guestID,
-                            String firstName,
+    public Guest addNewGuest( String firstName,
                             String lastName,
                             char gender,
                             String creditCardNo,
@@ -184,6 +192,7 @@ public class GuestMgr {
 
             Guest newGuest = new Guest(newGuestID, firstName, lastName, gender,
                     creditCardNo, address, idType, idNumber);
+            //NEED TO CHECK IF GUEST ALREADY EXIST?
             guestList.add(newGuest);
             numOfGuest++;
             System.out.println("Total number of guests: " + numOfGuest);
@@ -209,8 +218,9 @@ public class GuestMgr {
     }
 
     
-    public void saveToFile(String guestFileName) { 
-    	//numOfGuest = guestList.size();
+    public ArrayList<Guest> saveToFile() {
+        return guestList;
+        /*
     	if (numOfGuest == 0) { //Nothing to save
     		System.out.println("No guests to save to file!");
     	}
@@ -230,5 +240,6 @@ public class GuestMgr {
 				System.out.println("[Guest] File IO Error!" + e.getMessage());
 			}
     	}
+    	*/
     }
-}//Need to WRITE TO A NEW FILE!!!
+}

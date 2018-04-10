@@ -15,12 +15,18 @@ public class BillMgr {
 //    1. Given a Guest ID, read/write his/her current bills from file
 //    2. If new Guest(While Check In), create a new file for him (And add the room bill)
 	
-	static ArrayList<Bill> billList;
+	static ArrayList<Bill> billList = null;
 	int numOfBill =0;
 	
-    public BillMgr(ArrayList<Bill> billList) { //Initialize
-        this.billList = new ArrayList<>(billList);
-        numOfBill = billList.size();
+    public BillMgr(ArrayList<Bill> billList) {
+    	if (billList == null) {//Initialize
+			this.billList = new ArrayList<>();
+			numOfBill = 0;
+		}
+		else{
+			this.billList = new ArrayList<>(billList);
+			numOfBill = billList.size();
+		}
         System.out.println(numOfBill + " Bills loaded!");
     }
 	
@@ -80,8 +86,9 @@ public class BillMgr {
     	System.out.println("Bill number does not exist!");
     }
 	
-	public void saveToFile(String billFileName) { 
-		//numOfBill = billList.size();
+	public ArrayList<Bill> saveToFile() {
+		return billList;
+		/*
 		if (numOfBill == 0) { //Nothing to save
     		System.out.println("No bills to save to file!");
     	}
@@ -101,9 +108,13 @@ public class BillMgr {
 				System.out.println("[Bill] File IO Error!" + e.getMessage());
 			}
     	}
+    	*/
     }
 	
     private boolean checkGap() { //Checks if any gap due to previously deleted bills
-    	return !(billList.get(billList.size()-1).getBillNo() == numOfBill);
+    	if (numOfBill==0)
+    		return false;
+    	else
+    		return !(billList.get(billList.size()-1).getBillNo() == numOfBill);
     }
 }

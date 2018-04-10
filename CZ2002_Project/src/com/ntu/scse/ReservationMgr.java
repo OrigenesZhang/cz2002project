@@ -13,13 +13,19 @@ import static com.ntu.scse.RoomStatus.*;
 
 public class ReservationMgr {
 
-    static ArrayList<Reservation> reservationList;
+    static ArrayList<Reservation> reservationList = null;
     int numOfReservation =0;
 
-    public ReservationMgr(ArrayList<Reservation> reservationList) { //Initialize
-        this.reservationList = new ArrayList<>(reservationList);
-        numOfReservation = this.reservationList.size();
-        System.out.println(numOfReservation + " Reservations loaded!");
+    public ReservationMgr(ArrayList<Reservation> reservationList) {
+    	if (reservationList == null){ //Initialize
+			this.reservationList = new ArrayList<>();
+    		numOfReservation = 0;
+		}
+		else{
+			this.reservationList = new ArrayList<>(reservationList);
+			numOfReservation = this.reservationList.size();
+		}
+		System.out.println(numOfReservation + " Reservations loaded!");
     }
 
     public Reservation addReservation (
@@ -85,9 +91,9 @@ public class ReservationMgr {
     	System.out.println("Reservation number does not exist!");
     }
 
-    public void saveToFile(String reservationFileName) {
-    	//numOfReservation = reservationList.size();
-    	
+    public ArrayList<Reservation> saveToFile() {
+    	return reservationList;
+    	/*
     	if (numOfReservation == 0) { //Nothing to save
     		System.out.println("No reservations to save to file!");
     	}
@@ -107,10 +113,13 @@ public class ReservationMgr {
     			System.out.println("[Reservation] File IO Error!" + e.getMessage());
     		}
     	}
-    	
+    	*/
     }
     
     private boolean checkGap() { //Checks if any gap due to previously deleted resv
-    	return !(reservationList.get(reservationList.size()-1).getResvNo() == numOfReservation);
+    	if (numOfReservation == 0)
+    		return false;
+    	else
+    		return !(reservationList.get(reservationList.size()-1).getResvNo() == numOfReservation);
     }
 }
