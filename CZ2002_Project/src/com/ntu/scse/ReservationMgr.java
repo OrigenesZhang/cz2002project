@@ -12,27 +12,14 @@ import static com.ntu.scse.roomUpdateChoice.*;
 import static com.ntu.scse.RoomStatus.*;
 
 public class ReservationMgr {
-//    private Reservation[] reservations;
-
-//    private Reservation[] readResv() {
-//        int n = 20;//TEST
-//        Find how many records in the file
-//        Reservation[] reservations = new Reservation[n];
-//        Read in the files to the reservations;
-//        return reservations;
-//    }//NEED READ IN FILES!
-
-//    public ReservationMgr() {
-//        reservations = readResv();
-//    }
 
     static ArrayList<Reservation> reservationList;
-    int numOfReservation;
+    int numOfReservation =0;
 
     public ReservationMgr(ArrayList<Reservation> reservationList) { //Initialize
         this.reservationList = new ArrayList<>(reservationList);
         numOfReservation = this.reservationList.size();
-        System.out.println("Number of reservations: " + numOfReservation); //FOR IO TESTING
+        System.out.println(numOfReservation + " Reservations loaded!");
     }
 
     public Reservation addReservation (
@@ -44,32 +31,86 @@ public class ReservationMgr {
             int kidNo,
             RoomMgr roomMgr
             ) throws InvalidInfoException {
-
-        Reservation newResv = new Reservation(++numOfReservation, roomFloor, roomNo, guestID, dateCheckIn, adultNo, kidNo);
+    	int newResvNo =0;
+    	
+    	if (checkGap() == false) { //no gap, add resv at back
+    		newResvNo = numOfReservation + 1;
+    	}
+    	else { //add resv in between
+    		for (int i = 0; i < reservationList.size(); i++) {
+    			if (reservationList.get(i).getResvNo() != (i+1)) {
+    				newResvNo = i+1;
+    				break;
+    			}
+    		}
+    	}
+    	try {
+        Reservation newResv = new Reservation(newResvNo, roomFloor, roomNo, guestID, dateCheckIn, adultNo, kidNo);
         reservationList.add(newResv);
+        numOfReservation++;
         roomMgr.updateRoom(roomFloor, roomNo, ROOMSTATUS, RESERVED);
+        System.out.println("Total number of reservations: " + numOfReservation);
         return newResv;
+    	}
+    	catch (InvalidInfoException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
+    	
+        
+    }
+    
+    public Reservation searchReservation(int resvNo) {
+    	Reservation resv = null;
+    	for (int i = 0; i < reservationList.size(); i++) {
+			if (reservationList.get(i).getResvNo() == resvNo) {
+				resv = reservationList.get(i);
+				return resv;
+			}
+		}
+    	System.out.println("Reservation number does not exist!");
+    	return resv;
     }
 
-    public void deleteReservation (){}
+    public void deleteReservation (int resvNo){
+    	for (int i = 0; i < reservationList.size(); i++) {
+			if (reservationList.get(i).getResvNo() == resvNo) {
+				reservationList.remove(i);
+				numOfReservation--;
+				System.out.println("Total number of reservations: " + numOfReservation);
+				return;
+			}
+		}
+    	System.out.println("Reservation number does not exist!");
+    }
 
     public void saveToFile(String reservationFileName) {
-    	reservationList.add(new Reservation(1)); //FOR IO TESTING
-    	reservationList.add(new Reservation(2)); //FOR IO TESTING
-    	numOfReservation = reservationList.size();
+    	//numOfReservation = reservationList.size();
+    	
+    	if (numOfReservation == 0) { //Nothing to save
+    		System.out.println("No reservations to save to file!");
+    	}
+    	else {
+    		try {
+    			FileOutputStream foStream = new FileOutputStream(reservationFileName);
+    			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+    			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
 
-    	try {
-			FileOutputStream foStream = new FileOutputStream(reservationFileName);
-			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
-			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
-
-			for (int i = 0 ; i < numOfReservation ; i++) {
-				doStream.writeObject(reservationList.get(i)); //Write reservation list into file
-			}
-			doStream.close();
-		}
-		catch (IOException e){
-			System.out.println("[Reservation] File IO Error!" + e.getMessage());
-		}
+    			for (int i = 0 ; i < numOfReservation ; i++) {
+    				doStream.writeObject(reservationList.get(i)); //Write reservation list into file
+    			}
+    			System.out.println(numOfReservation + " Reservations saved to " + reservationFileName);
+    			doStream.close();
+    		}
+    		catch (IOException e){
+    			System.out.println("[Reservation] File IO Error!" + e.getMessage());
+    		}
+    	}
+    	
+    }
+    
+    private boolean checkGap() { //Checks if any gap due to previously deleted resv
+    	return !(reservationList.get(reservationList.size()-1).getResvNo() == numOfReservation);
     }
 }

@@ -3,15 +3,17 @@ package com.ntu.scse;
 import java.io.Serializable;
 
 public class Bill implements Serializable {
+	private int billNo;
     private double price, quantity, discount, taxRate, total;
     private Menu item;
 
-    public Bill(Menu item,
+    public Bill (Menu item,
+    			int billNo,
                 double quantity,
                 double discount,
                 double taxRate
-                ) {
-
+                ) throws InvalidInfoException {
+    	this.billNo = billNo;
         this.item = item;
         this.quantity = quantity;
         this.discount = discount;
@@ -21,11 +23,11 @@ public class Bill implements Serializable {
 //        this.total = this.price * this.quantity * this.discount * (1+this.taxRate);  // YET TO IMPLEMENT MENU
 
     }
-    
-    public Bill (double price) { //TESTING CONSTRUCTOR FOR IO TESTING
-    	this.price = price;
-    }
 
+    public int getBillNo() {
+    	return billNo;
+    }
+    
     public double getPrice() {
         return price;
     }

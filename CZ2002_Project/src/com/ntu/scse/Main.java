@@ -101,7 +101,6 @@ public class Main {
     	ArrayList<Guest> guestList = new ArrayList<>();
     	ArrayList<Bill> billList = new ArrayList<>();
     	ArrayList<Reservation> reservationList = new ArrayList<>();
-
     	Object obj;
     	
         System.out.println("__        __   _");
@@ -245,11 +244,9 @@ public class Main {
 
 //		======================================
         System.out.println("Initializing the Room Service (Menu) information...");
-//        Initialize the Room Service Info
+//      Initialize the Room Service Info
         roomServiceMgr = new RoomServiceMgr();
-
-
-//      ======================================
+      
         System.out.println("Successfully initialized the system!");
     }
 

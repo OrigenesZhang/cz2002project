@@ -27,7 +27,7 @@ public class GuestMgr {
 //    3. ASK to create a new guest if not found or required
 
 	static ArrayList<Guest> guestList;
-	int numOfGuest;
+	int numOfGuest =0;
 		
     class GuestBrief {
         private int guestID;
@@ -45,79 +45,66 @@ public class GuestMgr {
             this.firstName = firstName;
         }
     }
-/*
-    public GuestMgr() {//Initialize
-        int n;
-//        **Get the Total File Number
-        n = 20;//TEST
-
-        GuestBrief[] GuestList = new GuestBrief[n];
-
-        for (int i = 0; i < n; i++) {
-//            **Scan all files (Loop)
-//            **Get guestID, last name and first name
-            int guestID;
-            String lastName, firstName;
-            guestID = 1001;//TEST
-            lastName = "John";//TEST
-            firstName = "Doe";//TEST
-
-            GuestList[i] = new GuestBrief(guestID, lastName, firstName);
-
-//            **Write the list back to file
-
-        }
-    }
-*/
     
     public GuestMgr(ArrayList<Guest> guestList) { //Initialize
         this.guestList = new ArrayList<>(guestList);
         numOfGuest = this.guestList.size();
-        System.out.println("Number of guests: " + numOfGuest); //FOR IO TESTING
+        System.out.println(numOfGuest + " Guests loaded!");
     }
 
     public Guest readGuestInfo(int guestID) {
         Guest theGuest = null;
-//        Open the file with the name guestID;
-//        If UNSUCCESSFUL return exception.
+        for (int i = 0; i < guestList.size(); i++) {
+			if (guestList.get(i).getGuestID() == guestID) {
+				theGuest = guestList.get(i);
+				return theGuest;
+			}
+		}
+    	System.out.println("Guest ID does not exist!");
         return theGuest;
     }
 
     public Guest readGuestInfo(String lastName, String firstName) {
         GuestBrief guestBrief = searchGuest(lastName, firstName);
-        int guestID = guestBrief.guestID;
+        if (guestBrief == null) {
+        	System.out.println("Guest does not exist!");
+        	return null;
+        }
+        else {
+        	int guestID = guestBrief.guestID;
 
-        Guest theGuest = readGuestInfo(guestID);
-        return theGuest;
+            Guest theGuest = readGuestInfo(guestID);
+            return theGuest;
+        }
     }
 
     public void writeGuestInfo(int guestID, String value, int choice)
             throws InvalidInfoException {
         Guest theGuest = readGuestInfo(guestID);
-        switch (choice) {
-            case FIRSTNAME:
-                theGuest.setFirstName(value);
-                break;
-            case LASTNAME:
-                theGuest.setLastName(value);
-                break;
-            case CREDITCARDNO:
-                theGuest.setCreditCardNo(value);
-                break;
-            case ADDRESS:
-                theGuest.setAddress(value);
-                break;
-            case IDNUMBER:
-                theGuest.setIdNumber(value);
-                break;
-            default:
-                throw new InvalidInfoException("Write Guest Info of String");
+        if (theGuest != null)
+        {
+	        switch (choice) {
+	            case FIRSTNAME:
+	                theGuest.setFirstName(value);
+	                break;
+	            case LASTNAME:
+	                theGuest.setLastName(value);
+	                break;
+	            case CREDITCARDNO:
+	                theGuest.setCreditCardNo(value);
+	                break;
+	            case ADDRESS:
+	                theGuest.setAddress(value);
+	                break;
+	            case IDNUMBER:
+	                theGuest.setIdNumber(value);
+	                break;
+	            default:
+	                throw new InvalidInfoException("Write Guest Info of String");
+	        }
         }
 
-//        Write Back to the file!!
-
     } // firstName, lastName, creditCardNo, Addr, idNo;
-//    NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, char value, int choice)
             throws InvalidInfoException {
@@ -125,11 +112,10 @@ public class GuestMgr {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
-            theGuest.setGender(value);
-//            NEED WRITE BACK TO THE FILE!
+            if (theGuest != null)
+            	theGuest.setGender(value);
         }
     } // gender;
-//        NEED WRITE BACK TO THE FILE!
 
     public void writeGuestInfo(int guestID, int value, int choice)
             throws InvalidInfoException {
@@ -137,11 +123,10 @@ public class GuestMgr {
             throw new InvalidInfoException("Updating Gender");
         } else {
             Guest theGuest = readGuestInfo(guestID);
-            theGuest.setIdType(value);
-//            NEED WRITE BACK TO THE FILE!
+            if (theGuest != null)
+            	theGuest.setIdType(value);
         }
     } // idType;
-//        NEED WRITE BACK TO THE FILE!
 
     public GuestBrief searchGuest(String lastName, String firstName) {
         GuestBrief[] guestList = readGuestList();
@@ -154,36 +139,26 @@ public class GuestMgr {
         return null;
     }
 
-//    public GuestBrief searchGuest(int guestID) {
-//        GuestBrief[] guestList = readGuestList();
-//        for (GuestBrief guestBrief : guestList) {
-//            if (guestBrief.guestID == guestID) {
-//                return guestBrief;
-//            }
-//        }
-//        return null;
-//    }
-
     private GuestBrief[] readGuestList() {
-        int n;
-        n = 20; //TEST
+        int n = this.guestList.size();
 
         GuestBrief[] GuestList = new GuestBrief[n];
         for (int i = 0; i < n; i++) {
-//            **Scan all files (Loop)
-//            **Get guestID, last name and first name
             int guestID;
             String lastName, firstName;
-            guestID = 1001;//TEST
-            lastName = "John";//TEST
-            firstName = "Doe";//TEST
-
+            guestID = guestList.get(i).getGuestID();
+            lastName = guestList.get(i).getLastName();
+            firstName = guestList.get(i).getFirstName();
             GuestList[i] = new GuestBrief(guestID, lastName, firstName);
         }
         return GuestList;
     }
+    
+    private boolean checkGap() { //Checks if any gap due to previously deleted guest
+    	return !(guestList.get(guestList.size()-1).getGuestID() == numOfGuest);
+    }
 
-    public void addNewGuest(int guestID,
+    public Guest addNewGuest(int guestID,
                             String firstName,
                             String lastName,
                             char gender,
@@ -191,35 +166,69 @@ public class GuestMgr {
                             String address,
                             int idType,
                             String idNumber) {
-        try {
+    	int newGuestID =0;
+        
+    	if (checkGap() == false) { //no gap, add guest at back
+    		newGuestID = numOfGuest + 1;
+    	}
+    	else { //add guest in between
+    		for (int i = 0; i < guestList.size(); i++) {
+    			if (guestList.get(i).getGuestID() != (i+1)) {
+    				newGuestID = i+1;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	try {
 
-            Guest newGuest = new Guest(guestID, firstName, lastName, gender,
+            Guest newGuest = new Guest(newGuestID, firstName, lastName, gender,
                     creditCardNo, address, idType, idNumber);
-
+            guestList.add(newGuest);
+            numOfGuest++;
+            System.out.println("Total number of guests: " + numOfGuest);
+            return newGuest;
         } catch (InvalidInfoException e) {
             e.printStackTrace();
         }
-
-//        Write this guest info to a new file
-//        Update the GuestBrief List File
+        
+        return null;
     }
 
-    public void saveToFile(String guestFileName) { 
-    	guestList.add(new Guest(1)); //FOR IO TESTING
-    	numOfGuest = guestList.size();
-    	
-    	try {
-			FileOutputStream foStream = new FileOutputStream(guestFileName);
-			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
-			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
-			
-			for (int i = 0 ; i < numOfGuest ; i++) {
-				doStream.writeObject(guestList.get(i)); //Write guest list into file
+    
+    public void deleteGuest (int guestID){
+    	for (int i = 0; i < guestList.size(); i++) {
+			if (guestList.get(i).getGuestID() == guestID) {
+				guestList.remove(i);
+				numOfGuest--;
+				System.out.println("Total number of guests: " + numOfGuest);
+				return;
 			}
-			doStream.close();
 		}
-		catch (IOException e){
-			System.out.println("[Guest] File IO Error!" + e.getMessage());
-		}
+    	System.out.println("Guest ID does not exist!");
+    }
+
+    
+    public void saveToFile(String guestFileName) { 
+    	//numOfGuest = guestList.size();
+    	if (numOfGuest == 0) { //Nothing to save
+    		System.out.println("No guests to save to file!");
+    	}
+    	else {
+	    	try {
+				FileOutputStream foStream = new FileOutputStream(guestFileName);
+				BufferedOutputStream boStream = new BufferedOutputStream(foStream);
+				ObjectOutputStream doStream = new ObjectOutputStream(boStream);
+				
+				for (int i = 0 ; i < numOfGuest ; i++) {
+					doStream.writeObject(guestList.get(i)); //Write guest list into file
+				}
+				System.out.println(numOfGuest + " Guests saved to " + guestFileName);
+				doStream.close();
+			}
+			catch (IOException e){
+				System.out.println("[Guest] File IO Error!" + e.getMessage());
+			}
+    	}
     }
 }//Need to WRITE TO A NEW FILE!!!

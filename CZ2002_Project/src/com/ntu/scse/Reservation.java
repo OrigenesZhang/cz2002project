@@ -33,10 +33,6 @@ public class Reservation implements Serializable{
         this.dateCheckIn = dateCheckIn;
     }
     
-    public Reservation (int resvNo) { //TESTING CONSTRUCTOR FOR IO TESTING
-    	this.resvNo = resvNo;
-    }
-
     public int getResvNo() {
         return resvNo;
     }

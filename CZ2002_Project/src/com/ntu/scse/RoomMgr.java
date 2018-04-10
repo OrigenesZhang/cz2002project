@@ -1,8 +1,5 @@
 package com.ntu.scse;
 
-//int roomType, double roomRate, int roomFloor, int roomNo, int bedType, int roomFacing,
-//        int roomStatus, boolean enabledWifi, boolean isSmoking
-
 import static com.ntu.scse.roomUpdateChoice.*;
 import java.io.*;
 
@@ -79,49 +76,53 @@ public class RoomMgr {
     
 
     public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
-    	//roomList = readRoomList();
-        try {
-            switch (choice) {
-                case ROOMTYPE:
-                    roomList[floor - 2][rm - 1].setType((int) value);
-
-                case ROOMRATE:
-                    roomList[floor - 2][rm - 1].setRate(value);
-
-                case BEDTYPE:
-                    roomList[floor - 2][rm - 1].setBedtype((int) value);
-
-                case ROOMFACING:
-                    roomList[floor - 2][rm - 1].setFacing((int) value);
-
-                case ROOMSTATUS:
-                    roomList[floor - 2][rm - 1].setStatus((int) value);
-
-                case ROOMWIFI:
-                    roomList[floor - 2][rm - 1].setWifi(!((int) value == 0));
-
-                case ROOMSMOKING:
-                    roomList[floor - 2][rm - 1].setSmoking(!((int) value == 0));
-
-                default:
-                    throw new InvalidInfoException("Update Room");
-            }
-            //writeRoomList();
-        } catch (Exception NullPointerException) {
-
-        }
+    	if (validRoom(floor, rm)) {
+	        try {
+	            switch (choice) {
+	                case ROOMTYPE:
+	                    roomList[floor - 2][rm - 1].setType((int) value);
+	
+	                case ROOMRATE:
+	                    roomList[floor - 2][rm - 1].setRate(value);
+	
+	                case BEDTYPE:
+	                    roomList[floor - 2][rm - 1].setBedtype((int) value);
+	
+	                case ROOMFACING:
+	                    roomList[floor - 2][rm - 1].setFacing((int) value);
+	
+	                case ROOMSTATUS:
+	                    roomList[floor - 2][rm - 1].setStatus((int) value);
+	
+	                case ROOMWIFI:
+	                    roomList[floor - 2][rm - 1].setWifi(!((int) value == 0));
+	
+	                case ROOMSMOKING:
+	                    roomList[floor - 2][rm - 1].setSmoking(!((int) value == 0));
+	
+	                default:
+	                    throw new InvalidInfoException("Update Room");
+	            }
+	        } catch (Exception NullPointerException) {
+	        	
+	        }
+    	}
     }
 
 
     public roomStatusRecord checkStatus(int floor, int rm) { // RETURN the Status index
-        //roomList = readRoomList();
+        if (validRoom(floor, rm)) {
         roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
                 roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
         return rmRecord;
+        }
+        else {
+        	System.out.println("Invalid room number!");
+        	return null;
+        }
     }
 
     public roomStatusRecord[][] reportStatus() throws InvalidInfoException {
-        //roomList = readRoomList();
         roomStatusRecord[][] roomReport = new roomStatusRecord[6][8];
         for (int i = 0; i < 6; i++){
             for (int j = 0; j < 8; j++){
@@ -133,13 +134,7 @@ public class RoomMgr {
     
     
     public void saveToFile(String roomFileName) {
-    	
-    	try { //SIMULATE A CHANGE IN ROOM ATTRIBUTE BEFORE SAVING TO FILE, TEMPORARY ONLY
-			roomList[0][0] = new Room(3,3);
-		} catch (InvalidInfoException e) {
-			e.printStackTrace();
-		}
-    	
+    	 	
     	try {
 			FileOutputStream foStream = new FileOutputStream(roomFileName);
 			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
@@ -150,10 +145,15 @@ public class RoomMgr {
         			doStream.writeObject(roomList[i][j]);
         		}
     		}
+			System.out.println("48 Rooms saved to " + roomFileName);
 			doStream.close();
 		}
 		catch (IOException e){
 			System.out.println("[Room] File IO Error!" + e.getMessage());
 		}
+    }
+    
+    private boolean validRoom(int floor, int room) {
+    	return (floor >= 2 && floor <= 7 && room >= 1 && room <= 8);
     }
 }

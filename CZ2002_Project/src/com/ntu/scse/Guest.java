@@ -30,11 +30,6 @@ public class Guest implements Serializable{
         this.idNumber = idNumber;
     }
 
-    public Guest (int guestID) { //TESTING CONSTRUCTOR FOR IO TESTING
-    	this.guestID = guestID;
-    }
-
-
     //GETTER
     public int getGuestID() {
         return guestID;
