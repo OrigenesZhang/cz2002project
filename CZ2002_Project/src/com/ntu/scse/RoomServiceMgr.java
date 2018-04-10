@@ -1,5 +1,6 @@
 package com.ntu.scse;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -17,11 +18,16 @@ public class RoomServiceMgr {
         list = new ArrayList();
         rsM = new RoomService();
 
-        //this.initialize(rsM, list, sdb);
+        //!!!!!!!!!!
+        try {
+            list = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
+            for (int i = 0; i < list.size(); i++) {
+                rsM = (RoomService) list.get(i);
+            }
 
-        list = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
-        for (int i = 0; i < list.size(); i++) {
-            rsM = (RoomService) list.get(i);
+        }catch (Exception e) { //File does not exist, no data to load
+            System.out.println("IOError: Menu file not found! Using default settings...");
+            this.initialize(rsM, list, sdb);
         }
 
     }
@@ -116,14 +122,13 @@ public class RoomServiceMgr {
     }
 
 
-
     //To set menu for the very first time or return to default
     //initialize(rsM, list, sdb);
     //once menu has been set, meaning program has run once,
     //initialize() must be comment out
     //then uncomment the section below (must), to read menu of all existing changes made
 
-    public void initialize(RoomService rs, ArrayList al, SerializeDB sdb) {
+    private void initialize(RoomService rs, ArrayList al, SerializeDB sdb) {
         rs.addMenu(new Menu(1, "Chicken Chop", "Plain-grilled chicken with black pepper", 6));
         rs.addMenu(new Menu(2, "Fish & Chip", "Fried battered fish with french fries", 6));
         rs.addMenu(new Menu(3, "Aglio E Olio", "Freshly grounded garlic with chili flakes", 7));
