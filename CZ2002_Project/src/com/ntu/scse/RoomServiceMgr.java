@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import static com.ntu.scse.Main.*;
+
 
 public class RoomServiceMgr {
     private SerializeDB sdb;
@@ -17,7 +19,7 @@ public class RoomServiceMgr {
 
         //this.initialize(rsM, list, sdb);
 
-        list = (ArrayList) sdb.readSerializedObject("data.dat");
+        list = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
         for (int i = 0; i < list.size(); i++) {
             rsM = (RoomService) list.get(i);
         }
@@ -79,7 +81,7 @@ public class RoomServiceMgr {
                     System.out.println("");
 
                     list.add(rsM);
-                    sdb.writeSerializedObject("data.dat", list);
+                    sdb.writeSerializedObject(roomServiceFileName, list);
                     break;
 
                 case 3:
@@ -89,7 +91,7 @@ public class RoomServiceMgr {
                     input.nextLine();
 
                     list.remove(rsM.removeItem(index));
-                    sdb.writeSerializedObject("data.dat", list);
+                    sdb.writeSerializedObject(roomServiceFileName, list);
                     break;
 
                 case 4:
@@ -99,7 +101,7 @@ public class RoomServiceMgr {
                     input.nextLine();
 
                     list.add(rsM.updateItem(index1));
-                    sdb.writeSerializedObject("data.dat", list);
+                    sdb.writeSerializedObject(roomServiceFileName, list);
                     break;
 
                 case 5:
@@ -127,7 +129,7 @@ public class RoomServiceMgr {
         rs.addMenu(new Menu(3, "Aglio E Olio", "Freshly grounded garlic with chili flakes", 7));
         al.add(rs);
 
-        sdb.writeSerializedObject("data.dat", al);
+        sdb.writeSerializedObject(roomServiceFileName, al);
     }
 }
 

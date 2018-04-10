@@ -11,6 +11,7 @@ public class Main {
 	static final String guestFileName = "guestData.dat";
 	static final String billFileName = "billData.dat";
 	static final String reservationFileName = "reservationData.dat";
+	static final String roomServiceFileName = "data.dat";
 	static RoomMgr roomMgr;
 	static GuestMgr guestMgr;
 	static BillMgr billMgr;
