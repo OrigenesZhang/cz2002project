@@ -48,5 +48,4 @@ public class Menu implements Serializable{
         this.price = price;
     }
 
-
 }
