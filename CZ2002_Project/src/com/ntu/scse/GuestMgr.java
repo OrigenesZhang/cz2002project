@@ -30,8 +30,8 @@ public class GuestMgr {
 	int numOfGuest =0;
 		
     class GuestBrief {
-        private int guestID;
-        private String lastName, firstName;
+        int guestID;
+        String lastName, firstName;
 
         public GuestBrief() {
             this.guestID = -1;
@@ -60,22 +60,23 @@ public class GuestMgr {
 				return theGuest;
 			}
 		}
-
     	System.out.println("Guest ID does not exist!");
         return null;
     }
 
-    public Guest readGuestInfo(String lastName, String firstName) {
-        GuestBrief guestBrief = searchGuest(lastName, firstName);
-        if (guestBrief == null) {
+    public Guest[] readGuestInfo(String lastName, String firstName) { // May have SAME NAME!!!
+        ArrayList<GuestBrief> guestBriefList = searchGuest(lastName, firstName);
+        if (guestBriefList.size()==0) {
         	System.out.println("Guest does not exist!");
         	return null;
         }
         else {
-        	int guestID = guestBrief.guestID;
-
-            Guest theGuest = readGuestInfo(guestID);
-            return theGuest;
+            Guest[] guestResultList = new Guest[guestBriefList.size()];
+            for (int i = 0; i < guestBriefList.size(); i++){
+                int guestID = guestBriefList.get(i).guestID;
+                guestResultList[i] = readGuestInfo(guestID);
+            }
+            return guestResultList;
         }
     }
 
@@ -129,15 +130,17 @@ public class GuestMgr {
         }
     } // idType;
 
-    public GuestBrief searchGuest(String lastName, String firstName) {
+    public ArrayList<GuestBrief> searchGuest(String lastName, String firstName) {
         GuestBrief[] guestList = readGuestList();
+        ArrayList <GuestBrief> resultList = null;
+
         for (GuestBrief guestBrief : guestList) {
             if (lastName.toUpperCase().equals(guestBrief.lastName.toUpperCase()) &&
                     firstName.toUpperCase().equals(guestBrief.lastName.toUpperCase())) {
-                return guestBrief;
+                resultList.add(guestBrief);
             }
         }
-        return null;
+        return resultList;
     }
 
     private GuestBrief[] readGuestList() {

@@ -3,8 +3,8 @@ package com.ntu.scse;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
-
 import com.ntu.scse.InvalidInfoException.*;
+import static com.ntu.scse.guestUpdateChoice.*;
 
 public class Main {
 
@@ -13,13 +13,14 @@ public class Main {
     static final String billFileName = "billData.dat";
     static final String reservationFileName = "reservationData.dat";
     static final String roomServiceFileName = "data.dat";
+    static final String[] idTypeName = {"DRIVING LICENSE", "PASSPORT"};
     static RoomMgr roomMgr;
     static GuestMgr guestMgr;
     static BillMgr billMgr;
     static ReservationMgr reservationMgr;
     static RoomServiceMgr roomServiceMgr;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidInfoException {
 
         int choice;
 
@@ -91,7 +92,6 @@ public class Main {
                     System.out.println("    Program terminating ....");
             }
         } while (choice < 11 && choice > 0);
-        sc.close();
     }
 
     private static void Initialize() {
@@ -256,96 +256,240 @@ public class Main {
         System.out.println("Saved to file!");
     }
 
-    private static void mainGuestView() {
+    private static void mainGuestView() throws InvalidInfoException {
         int choice;
-        String dummy;
+        do {
+            String dummy;
+            Scanner sc = new Scanner(System.in);
+            System.out.println("");
+            System.out.println("=>Please select from the following:");
+            System.out.println("(1) Create New GUEST detail");
+            System.out.println("(2) Update GUEST detail");
+            System.out.println("(3) Search GUEST detail");
+            System.out.println("(4) Return to the previous menu");
+            System.out.print("        Enter the number of your choice: ");
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1: /* (1) Create GUEST detail */
+                    createNewGuest();
+                    break;
+
+                case 2: /* (2) Update GUEST detail */
+                    int ch;
+
+                    do {
+                        System.out.println("\n==>Please select from the following:");
+                        System.out.println("(1) Update via GuestID");
+                        System.out.println("(2) Update via Guest's name");
+                        System.out.println("(3) Return to the previous menu");
+                        System.out.print("        Enter the number of your choice: ");
+                        ch = sc.nextInt();
+                        sc.nextLine();
+
+                        switch (ch) {
+                            case 1:
+                                System.out.printf("Please key in the GuestID: ");
+                                int guestID = sc.nextInt();
+                                sc.nextLine();
+
+                                updateGuestByID(guestID);
+
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                System.out.println("    Returning to the previous menu.");
+                                break;
+                            default:
+                                System.out.println("    Invalid input! Returning to the previous menu.");
+                                break;
+
+
+                        }
+                    } while (ch> 0 && ch < 3);
+                    break;
+
+                case 3: /* (3) Search ROOM details */
+                    break;
+
+                case 4: /* (4) Return to the previous menu */
+                    System.out.println("    Returning to the main menu.");
+                    break;
+
+                default:
+                    System.out.println("    Invalid input! Returning to the main menu.");
+                    break;
+            }
+
+        } while (choice < 4 && choice > 0);
+    }
+
+    private static void updateGuestByID(int guestID) throws InvalidInfoException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("");
-        System.out.println("=>Please select from the following:");
-        System.out.println("(1) Create New GUEST detail");
-        System.out.println("(2) Update GUEST detail");
-        System.out.println("(3) Search GUEST detail");
-        System.out.println("(4) Return to the previous menu");
+        int ch;
+        Guest theGuest = guestMgr.readGuestInfo(guestID);
+        System.out.printf("\nYou are updating [" + theGuest.getFirstName() + " " +
+                theGuest.getLastName() + "]'s personal information.\n");
+
+        do {
+        System.out.printf("\n===>Please select from the following:\n");
+        System.out.println("(1) Update First Name");
+        System.out.println("(2) Update Last Name");
+        System.out.println("(3) Update Gender");
+        System.out.println("(4) Update Credit Card Number");
+        System.out.println("(5) Update Billing Address");
+        System.out.println("(6) Update ID Type");
+        System.out.println("(7) Update ID Number");
+        System.out.println("(8) Return to the previous menu");
         System.out.print("        Enter the number of your choice: ");
-        choice = sc.nextInt();
+        ch = sc.nextInt();
         sc.nextLine();
 
-        switch (choice) {
-            case 1: /* (1) Create GUEST detail */
-                String firstName;
-                String lastName;
-                char gender;
-                String creditCardNo;
-                String address;
-                int idType;
-                String idNumber;
 
-//                if (sc.hasNext()) dummy = sc.next();
-                System.out.println("");
-                System.out.println("==> Please provide the following information:");
-                System.out.print("(1) First Name (Given Name): ");
-                firstName = sc.nextLine();
-                System.out.print("* Your First Name is: " + firstName + "\n");
+            switch (ch) {
+                case FIRSTNAME:
+                    System.out.printf("Please enter the First Name, or press Enter to exit: ");
+                    String firstName = sc.nextLine();
+                    if (!firstName.equals("")) {
+                        guestMgr.writeGuestInfo(guestID, firstName, FIRSTNAME);
+                        System.out.printf("* Successfully Updated the First Name to " + firstName + "\n");
+                    }
+                    break;
+                case LASTNAME:
+                    System.out.printf("Please enter the Last Name, or press Enter to exit: ");
+                    String lastName = sc.nextLine();
+                    if (!lastName.equals("")) {
+                        guestMgr.writeGuestInfo(guestID, lastName, LASTNAME);
+                        System.out.printf("* Successfully Updated the Last Name to " + lastName + "\n");
+                    }
+                    break;
+                case GENDER:
+                    System.out.printf("Please enter the Gender, or press Enter to exit: ");
+                    String dummy = sc.nextLine();
+                    if (!dummy.equals("")) {
+                        if (dummy.length()>1){
+                            guestMgr.writeGuestInfo(guestID, 'M', GENDER);
+                            System.out.println("##Invalid Gender Input! Gender set to 'M'.");
+                            System.out.println("##Please modify it afterwards if needed.");
+                        } else try {
+                            char gender = dummy.charAt(0);
+                            guestMgr.writeGuestInfo(guestID, gender, GENDER);
+                            System.out.printf("* Successfully Updated the Gender to \'" + gender + "\'\n");
+                        } catch (InvalidInfoException e){
+                            guestMgr.writeGuestInfo(guestID, 'M', GENDER);
+                            System.out.println("##Invalid Gender Input! Gender set to 'M'.");
+                            System.out.println("##Please modify it afterwards if needed.");
+                        }
+                    }
+                    break;
+                case CREDITCARDNO:
+                    System.out.printf("Please enter the Credit Card Number, or press Enter to exit: ");
+                    String creditNo = sc.nextLine();
+                    if (!creditNo.equals("")) {
+                        guestMgr.writeGuestInfo(guestID, creditNo, CREDITCARDNO);
+                        System.out.printf("* Successfully Updated the Credit Card Number to "
+                                + creditNo + "\n");
+                    }
+                    break;
+                case ADDRESS:
+                    System.out.printf("Please enter the Address, or press Enter to exit: ");
+                    String address = sc.nextLine();
+                    if (!address.equals("")) {
+                        guestMgr.writeGuestInfo(guestID, address, ADDRESS);
+                        System.out.printf("* Successfully Updated the Address to " + address + "\n");
+                    }
+                    break;
+                case IDTYPE:
+                    System.out.printf("Please enter the Address, or press Enter to exit: ");
+                    int idType = sc.nextInt();
+                    sc.nextLine();
+                    if (idType == 1 || idType == 2) {
+                        guestMgr.writeGuestInfo(guestID, idType, IDTYPE);
+                        System.out.printf("* Successfully Updated the ID Type to " + idType + "\n");
+                    } else {
+                        guestMgr.writeGuestInfo(guestID, 1, IDTYPE);
+                        System.out.print("##Invalid idType Input! idType set to 'DRIVING LICENSE'.\n");
+                        System.out.print("##Please modify it afterwards if needed.\n");
+                    }
+                    break;
+                case IDNUMBER:
+                    System.out.printf("Please enter the ID Number, or press Enter to exit: ");
+                    String idNum = sc.nextLine();
+                    if (!idNum.equals("")) {
+                        guestMgr.writeGuestInfo(guestID, idNum, IDNUMBER);
+                    }
+                    break;
+                case 8:
+                    System.out.println("    Returning to the previous menu.");
+                    break;
 
-                System.out.print("(2) Last Name (Family Name): ");
-                lastName = sc.nextLine();
-                System.out.print("* Your Last Name is: " + lastName + "\n");
+                default:
+                    System.out.println("    Invalid input! Returning to the previous menu.");
+                    break;
+            }
 
-                System.out.print("(3) Gender (M/F): ");
-                dummy = sc.nextLine();
-                gender = Character.toUpperCase(dummy.charAt(0));
-                if ((gender != 'M' && gender != 'F') || dummy.length()>1){
-                    gender = 'M';
-                    System.out.println("##Invalid Gender Input! Gender set to 'M'.");
-                    System.out.println("##Please modify it afterwards if needed.");
-                }
-                System.out.print("* Your Gender is: " + gender + "\n");
+        }while (ch > 0 && ch < 8) ;
+    }
 
-//                if (sc.hasNext()) dummy = sc.next();
-                System.out.print("(4) Credit Card Number: ");
-                creditCardNo = sc.nextLine();
-                System.out.print("* Your Credit Card Number is: " + creditCardNo + "\n");
+    private static void createNewGuest() {
+        Scanner sc = new Scanner(System.in);
+        String dummy;
+        String firstName;
+        String lastName;
+        char gender;
+        String creditCardNo;
+        String address;
+        int idType;
+        String idNumber;
 
-                System.out.print("(5) Billing Address: ");
-                address = sc.nextLine();
-                System.out.print("* Your Billing Address is: " + address + "\n");
+        System.out.println("");
+        System.out.println("==> Please provide the following information:");
+        System.out.print("(1) First Name (Given Name): ");
+        firstName = sc.nextLine();
+        System.out.print("* Your First Name is: " + firstName + "\n");
 
-                System.out.print("(6) ID Type ([1]: DRIVINGLICENSE; [2]: PASSPORT): ");
-                idType = sc.nextInt();
-                sc.nextLine();
-                if (idType != 1 && idType != 2) {
-                    idType = 1;
-                    System.out.print("##Invalid idType Input! idType set to 'DRIVING LICENSE'.");
-                    System.out.print("##Please modify it afterwards if needed.");
-                }
-                System.out.print("* Your IdType is: " + idType + "\n");
+        System.out.print("(2) Last Name (Family Name): ");
+        lastName = sc.nextLine();
+        System.out.print("* Your Last Name is: " + lastName + "\n");
 
-//                if (sc.hasNext()) dummy = sc.next();
-                System.out.print("(7) ID Number: ");
-                idNumber = sc.nextLine();
-                System.out.print("* Your idNumber is: " + idNumber + "\n");
-
-                System.out.println("    Saving your particular to the system...");
-                guestMgr.addNewGuest(firstName, lastName, gender, creditCardNo, address, idType, idNumber);
-                System.out.print("    The information of " + firstName + " " + lastName + " have successfully saved.\n");
-                System.out.println("    Please press the RETURN button to return the main menu.");
-                sc.nextLine();
-                break;
-
-            case 2: /* (1) Update GUEST detail */
-                break;
-
-            case 3: /* (3) Search ROOM details */
-                break;
-
-            case 4: /* (4) Return to the previous menu */
-                System.out.println("    Returning to the main menu.");
-                break;
-
-            default:
-                System.out.println("    Invalid input! Returning to the main menu.");
+        System.out.print("(3) Gender (M/F): ");
+        dummy = sc.nextLine();
+        gender = Character.toUpperCase(dummy.charAt(0));
+        if ((gender != 'M' && gender != 'F') || dummy.length() > 1) {
+            gender = 'M';
+            System.out.println("##Invalid Gender Input! Gender set to 'M'.");
+            System.out.println("##Please modify it afterwards if needed.");
         }
+        System.out.print("* Your Gender is: " + gender + "\n");
 
+        System.out.print("(4) Credit Card Number: ");
+        creditCardNo = sc.nextLine();
+        System.out.print("* Your Credit Card Number is: " + creditCardNo + "\n");
+
+        System.out.print("(5) Billing Address: ");
+        address = sc.nextLine();
+        System.out.print("* Your Billing Address is: " + address + "\n");
+
+        System.out.print("(6) ID Type ([1]: DRIVINGLICENSE; [2]: PASSPORT): ");
+        idType = sc.nextInt();
+        sc.nextLine();
+        if (idType != 1 && idType != 2) {
+            idType = 1;
+            System.out.print("##Invalid idType Input! idType set to 'DRIVING LICENSE'.\n");
+            System.out.print("##Please modify it afterwards if needed.\n");
+        }
+        System.out.print("* Your IdType is: " + idTypeName[idType-1] + "\n");
+
+        System.out.print("(7) ID Number: ");
+        idNumber = sc.nextLine();
+        System.out.print("* Your idNumber is: " + idNumber + "\n");
+
+        System.out.println("    Saving your particular to the system...");
+        guestMgr.addNewGuest(firstName, lastName, gender, creditCardNo, address, idType, idNumber);
+        System.out.print("    The information of " + firstName + " " + lastName + " have successfully saved.\n");
+        System.out.println("");
+        System.out.println("    Please press the RETURN button to return the main menu.");
+        sc.nextLine();
     }
 }
 
