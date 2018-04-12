@@ -1,28 +1,36 @@
 package com.ntu.scse;
 
+import java.util.InputMismatchException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 import java.io.*;
 import com.ntu.scse.InvalidInfoException.*;
 import static com.ntu.scse.guestUpdateChoice.*;
 
 public class Main {
+    
+    static Scanner sc = new Scanner(System.in);
 
     static final String roomFileName = "roomData.dat";
     static final String guestFileName = "guestData.dat";
     static final String billFileName = "billData.dat";
     static final String reservationFileName = "reservationData.dat";
-    static final String roomServiceFileName = "data.dat";
+    static final String roomServiceFileName = "roomServiceData.dat";
     static final String[] idTypeName = {"DRIVING LICENSE", "PASSPORT"};
-    static RoomMgr roomMgr;
     static GuestMgr guestMgr;
     static BillMgr billMgr;
     static ReservationMgr reservationMgr;
-    static RoomServiceMgr roomServiceMgr;
+    static RoomServiceMgr roomServiceMgr = new RoomServiceMgr();
+    static RoomMgr roomMgr = new RoomMgr();
+    static SerializeDB sdb = new SerializeDB();
 
     public static void main(String[] args) throws InvalidInfoException {
 
         int choice;
+        
+        List rslist = new ArrayList();
+		List rmlist = new ArrayList();
 
 
         Scanner sc = new Scanner(System.in);
@@ -57,32 +65,32 @@ public class Main {
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */
                     break;
 
-                case 3: /* (3) Update ROOM details */
+                case 3: /* (3) Check/Update ROOM details */
+                    roomManager (roomMgr, roomFileName, rmlist, sdb);
                     break;
 
                 case 4: /* (4) Create ROOM SERVICE orders */
+                    roomServiceOrder(roomServiceMgr, roomMgr, roomServiceFileName, rslist, sdb);
                     break;
 
                 case 5: /* (5) Create/Update/Remove ROOM SERVICE MENU items */
+                    roomServiceMenu(roomServiceMgr, roomServiceFileName, rslist, sdb);
                     break;
 
-                case 6: /* (6) Check ROOM Availability */
+                case 6: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
                     break;
 
-                case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
+                case 7: /* (8) Room CHECK-OUT and print BILL invoice */
                     break;
 
-                case 8: /* (8) Room CHECK-OUT and print BILL invoice */
+                case 8: /* (9) Print ROOM STATUS statistic report */
                     break;
 
-                case 9: /* (9) Print ROOM STATUS statistic report */
-                    break;
-
-                case 10: /* (10) Save to file */
+                case 9: /* (10) Save to file */
                     saveToFile();
                     break;
 
-                case 11: /* (11) Exit */
+                case 10: /* (11) Exit */
                     saveToFile();
                     System.out.println("    Program terminating ....");
                     break;
@@ -100,7 +108,6 @@ public class Main {
         BufferedInputStream biStream;
         ObjectInputStream diStream;
 
-        Room[][] roomList = new Room[6][8];
         ArrayList<Guest> guestList = new ArrayList<>();
         ArrayList<Bill> billList = new ArrayList<>();
         ArrayList<Reservation> reservationList = new ArrayList<>();
@@ -115,46 +122,7 @@ public class Main {
         System.out.println("");
         System.out.println("Welcome to HRPS for SCSE Hotel!");
         System.out.println("");
-
-//      ======================================
-        System.out.println("Initializing the room information...");
-//                Initialize the room information;
-//				  Set all rooms to default
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 8; j++) {
-                try {
-                    roomList[i][j] = new Room(i + 2, j + 1); //USING TEMP CONSTRUCTOR, NOT SURE WHAT THE OTHER DEFAULTS SHOULD BE
-                } catch (InvalidInfoException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-//			Try reading from file, if file doesn't exist or if exception, use defaults
-        try {
-            fiStream = new FileInputStream(roomFileName);
-            biStream = new BufferedInputStream(fiStream);
-            diStream = new ObjectInputStream(biStream);
-
-            for (int i = 2; i < 8; i++) { //Reads in 48 Rooms by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-                for (int j = 1; j < 9; j++) { //Reads in 48 Rooms by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-                    obj = diStream.readObject();
-                    roomList[i - 2][j - 1] = (Room) obj;
-                }
-            }
-            diStream.close();
-            System.out.println("Loaded from " + roomFileName);
-        } catch (FileNotFoundException e) { //File does not exist, no data to load
-            System.out.println("IOError: Room file not found! Using default settings...");
-        } catch (IOException e) { //Other IO Exception
-            System.out.println("[Room] File IO Error!" + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            System.out.println("[Room] Class not found!" + e.getMessage());
-            e.printStackTrace();
-        }
-        roomMgr = new RoomMgr(roomList); //Instantiate RoomMgr object and pass room array to it
-
+        
 
 //		======================================
         System.out.println("Initializing the guest information...");
@@ -233,19 +201,12 @@ public class Main {
         }
         billMgr = new BillMgr(billList); //Instantiate BillMgr object and pass bill list to it
 
-
-//		======================================
-        System.out.println("Initializing the Room Service (Menu) information...");
-//      Initialize the Room Service Info
-        roomServiceMgr = new RoomServiceMgr();
-
+        
         System.out.println("Successfully initialized the system!");
     }
 
 
     private static void saveToFile() {
-        //Save room info
-        roomMgr.saveToFile(roomFileName);
         //Save guest info
         guestMgr.saveToFile(guestFileName);
         //Save bill info
@@ -491,6 +452,305 @@ public class Main {
         System.out.println("    Please press the RETURN button to return the main menu.");
         sc.nextLine();
     }
+    
+    //--------------------------------------------------------------------------------------------------------------------------------//
+    
+    private void initialize2(List rslist, List rmList)
+    {
+        File rsfile = new File (roomServiceFileName);
+		if(!rsfile.exists())
+		{
+			rslist.add(roomServiceMgr);
+			sdb.writeSerializedObject(roomServiceFileName, rslist);
+		} else {
+			rslist = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
+			for (int i = 0; i < rslist.size(); i++) {
+				roomServiceMgr = (RoomServiceMgr) rslist.get(i);
+			}
+		}
+        
+        
+        File rfile = new File (roomFileName);
+		if(!rfile.exists())
+        {
+			rmList.add(roomMgr);
+			sdb.writeSerializedObject(roomFileName, rmList);
+		} else {
+			rmList = (ArrayList) sdb.readSerializedObject(roomFileName);
+			for (int i = 0; i < rmList.size(); i++) {
+				roomMgr = (RoomMgr) rmList.get(i);
+			}
+		}
+    }
+    
+     private static void roomServiceMenu(RoomServiceMgr rs, String fileName, List list, SerializeDB sdb)
+	{
+		int choice = 0;
+         
+		do {
+			System.out.println("Room Service Menu: ");
+			System.out.println("1. Read Menu");
+			System.out.println("2. Add item to menu");
+			System.out.println("3. Remove item from menu");
+			System.out.println("4. Update menu item");
+			System.out.println("5. Return main screen");
+			choice = errorCheckingInt ("Select an option: ");
+
+			switch (choice) {
+			case 1:
+				rs.viewMenu();
+				break;
+
+			case 2:
+				rs.addMenu();
+				System.out.println("");
+
+				list.add(rs);
+				sdb.writeSerializedObject(fileName, list);
+				break;
+
+			case 3:
+				rs.viewMenu();
+				list.remove(rs.removeMenuItem());
+				list.add(rs);
+				sdb.writeSerializedObject(fileName, list);
+				break;
+
+			case 4:
+				rs.viewMenu();
+				rs.updateMenuItem();
+				list.add(rs);
+				sdb.writeSerializedObject(fileName, list);
+				break;
+
+			case 5:
+				System.out.println("Returning to main.....\n");
+				break;
+
+			default:
+				System.out.println("Error sc\n");
+				break;
+			}
+		} while (choice != 5);
+	}
+
+	private static void roomServiceOrder(RoomServiceMgr rs, RoomMgr rm, String fileName, List list, SerializeDB sdb)
+	{
+		int choice;
+		String roomNo;
+        
+		do
+		{
+
+			System.out.println("Room Service Order: ");
+			System.out.println("1. View order"); 			//option to view all orders or view search orders by roomID
+			System.out.println("2. Add order");
+			System.out.println("3. Remove order");
+			System.out.println("4. Update order");
+			System.out.println("5. Return");
+			choice = errorCheckingInt ("Select an option: ");
+
+			switch (choice) {
+			case 1: 
+				System.out.println("(1) view all orders");
+				System.out.println("(2) view order by room no.");
+				choice = errorCheckingInt("Select an option: ", 2);
+				if(choice == 1)
+					rs.viewAllOrder();
+				else 
+				{
+					System.out.print("Enter room no: ");
+					roomNo = sc.nextLine();
+					rs.viewOrderByRoomID(roomNo);
+				}
+				break;
+
+			case 2: 
+
+				System.out.println("Enter Room no. : ");
+				roomNo = sc.nextLine();
+				if (rm.checkValidRoomForOrder(roomNo))
+				{
+					rs.viewMenu();
+					rs.addOrderItem(roomNo);
+					rs.finalizeOrder(roomNo);
+
+					list.add(rs);
+					sdb.writeSerializedObject(fileName, list);
+				} else
+				{
+					System.out.println("Invalid Room no.\n");
+				}
+
+				break;
+
+			case 3:
+				System.out.println("Enter Room no. : ");
+				roomNo = sc.nextLine();
+				if (rm.checkValidRoomForOrder(roomNo))
+				{
+					rs.viewOrderByRoomID(roomNo);
+
+					list.remove(rs.removeOrderItem(roomNo));
+					list.add(rs);
+					sdb.writeSerializedObject(fileName, list);
+				} else
+				{
+					System.out.println("Invalid Room no. \n");
+				}
+				break;
+
+			case 4: 
+				//reuse case 3 variables
+				System.out.println("Enter Room no. : ");
+				roomNo = sc.nextLine();
+				if (rm.checkValidRoomForOrder(roomNo))
+				{
+					rs.viewOrderByRoomID(roomNo);
+
+					list.add(rs.updateOrderItem(roomNo));
+					sdb.writeSerializedObject(fileName, list);
+				} else
+				{
+					System.out.println("Invalid Room no. \n");
+				}
+				break;
+
+			case 5:
+				System.out.println("Returning to main.....\n");
+				break;
+
+			default:
+				System.out.println("Error sc \n");
+				break;	
+			}
+
+		}while (choice != 5);
+	}
+
+	private static void roomManager(RoomMgr rm, String fileName, List list, SerializeDB sdb)
+	{
+		int choice;
+		String name, roomNo;
+
+		do {
+			System.out.println("Room option: ");
+			System.out.println("(1) View All Room");
+			System.out.println("(2) View selected room details");
+			System.out.println("(3) Update Room Details");
+			System.out.println("(4) View Room Statistic Report");
+			System.out.println("(5) Return to main");
+			choice = errorCheckingInt("Select an option: ");
+
+			switch (choice) {
+			case 1:
+				rm.viewAllRoom();
+				break;
+
+			case 2:
+				System.out.println("\nView selected room option:");
+				System.out.println("(1) Enter room no");
+				System.out.print("(2) Enter Guest");
+				choice = errorCheckingInt("Select an option: ", 2);
+
+				if(choice == 1)
+				{
+					System.out.print("\nEnter Room no. : ");
+					roomNo = sc.nextLine();
+
+					rm.viewSelectedRoom(choice, roomNo);
+				}
+				else if(choice == 2)
+				{
+					System.out.print("\nEnter first name: ");
+					name = sc.nextLine();
+					System.out.print("Enter last name: ");
+					name = name +" " + sc.nextLine();
+					rm.viewSelectedRoom(choice, name);
+				}
+
+				break;
+
+			case 3:
+				rm.updateRoom();
+				list.add(rm);
+				sdb.writeSerializedObject(fileName, list);
+				break;
+
+			case 4:
+				System.out.println("\nRoom Status Statistic Option: ");
+				System.out.println("(1) Room type occupancy rate");
+				System.out.println("(2) Room Status");
+				System.out.print("Select an option: ");
+				choice = sc.nextInt();
+				rm.RoomStatusStatic(choice);
+				break;
+
+			case 5:
+				System.out.println("\nReturning to main.....\n");
+				break;
+
+			default:
+				System.out.println("\nError sc \n");
+				break;
+
+			}
+
+		}while (choice != 5);
+
+	}
+
+
+	//-------------------------------------------------Other Methods-------------------------------------------------------//
+	private static int errorCheckingInt (String display)
+	{
+		int tempChoice;
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				tempChoice = sc.nextInt();
+				if (tempChoice < 1)
+					throw new IllegalArgumentException ("Error sc\n");
+				break;
+			} catch (InputMismatchException e)
+			{
+				System.out.println("Error sc \n");
+				sc.next();
+			}  catch (IllegalArgumentException e )
+			{
+				System.out.println(e);
+			}
+		}
+
+		sc.nextLine();
+
+		return tempChoice;
+	}
+
+	private static int errorCheckingInt(String display, int lastItem)
+	{
+		int index;
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				index = sc.nextInt();
+				if (index < 1 || index > lastItem)
+					throw new IllegalArgumentException ("Error sc\n");
+				break;
+			} catch (InputMismatchException e)
+			{
+				System.out.println("Error sc\n");
+				sc.next();
+			}  catch (IllegalArgumentException e )
+			{
+				System.out.println(e);
+			}
+		}
+
+		sc.nextLine();
+
+		return index;
+	}
 }
 
 
