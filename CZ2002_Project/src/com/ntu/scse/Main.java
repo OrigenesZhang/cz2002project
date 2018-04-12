@@ -30,11 +30,9 @@ public class Main {
         int choice;
         
         List rslist = new ArrayList();
-		List rmlist = new ArrayList();
-
-
-        Scanner sc = new Scanner(System.in);
-
+	List rmlist = new ArrayList();
+	
+	initialize2(rslist, rmlist);
         Initialize();
 
         do {
@@ -455,17 +453,17 @@ public class Main {
     
     //--------------------------------------------------------------------------------------------------------------------------------//
     
-    private void initialize2(List rslist, List rmList)
+    private static void initialize2(List rsList, List rmList)
     {
         File rsfile = new File (roomServiceFileName);
 		if(!rsfile.exists())
 		{
-			rslist.add(roomServiceMgr);
-			sdb.writeSerializedObject(roomServiceFileName, rslist);
+			rsList.add(roomServiceMgr);
+			sdb.writeSerializedObject(roomServiceFileName, rsList);
 		} else {
-			rslist = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
-			for (int i = 0; i < rslist.size(); i++) {
-				roomServiceMgr = (RoomServiceMgr) rslist.get(i);
+			rsList = (ArrayList) sdb.readSerializedObject(roomServiceFileName);
+			for (int i = 0; i < rsList.size(); i++) {
+				roomServiceMgr = (RoomServiceMgr) rsList.get(i);
 			}
 		}
         
