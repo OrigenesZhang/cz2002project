@@ -53,15 +53,16 @@ public class GuestMgr {
     }
 
     public Guest readGuestInfo(int guestID) {
-        Guest theGuest = null;
+        Guest theGuest;
         for (int i = 0; i < guestList.size(); i++) {
 			if (guestList.get(i).getGuestID() == guestID) {
 				theGuest = guestList.get(i);
 				return theGuest;
 			}
 		}
+
     	System.out.println("Guest ID does not exist!");
-        return theGuest;
+        return null;
     }
 
     public Guest readGuestInfo(String lastName, String firstName) {
@@ -155,10 +156,11 @@ public class GuestMgr {
     }
     
     private boolean checkGap() { //Checks if any gap due to previously deleted guest
-    	return !(guestList.get(guestList.size()-1).getGuestID() == numOfGuest);
+        if (guestList.size() == 0) return false;
+    	else return !(guestList.get(guestList.size()-1).getGuestID() == numOfGuest);
     }
 
-    public Guest addNewGuest(int guestID,
+    public Guest addNewGuest(
                             String firstName,
                             String lastName,
                             char gender,

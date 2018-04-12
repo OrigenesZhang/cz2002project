@@ -7,6 +7,7 @@ class IDType{
             DRIVINGLICENSE = 1,
             PASSPORT = 2;
 }
+
 public class Guest implements Serializable{
     private int guestID, idType;
     private char gender;

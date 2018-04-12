@@ -1,4 +1,4 @@
-package DateTime;
+package com.ntu.scse;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
