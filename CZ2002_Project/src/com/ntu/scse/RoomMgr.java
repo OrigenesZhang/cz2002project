@@ -1,182 +1,602 @@
 package com.ntu.scse;
 
-import static com.ntu.scse.roomUpdateChoice.*;
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
-class roomUpdateChoice {
-    public static final int
-            ROOMTYPE = 1,
-            ROOMRATE = 2,
-            BEDTYPE = 3,
-            ROOMFACING = 4,
-            ROOMSTATUS = 5,
-            ROOMWIFI = 6,
-            ROOMSMOKING = 7;
-}
+public class RoomMgr implements Serializable {
 
-class roomStatusRecord {
-    private int roomFloor;
-    private int roomNo;
-    private int roomType;
-    private int roomStatus;
+	private List<Room> room;
+	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suit" };
+	private String[] bedType = { "Single", "Double" };
+	private String[] facing = { "North", "South", "East", "West" };
+	private String[] status = { "Vacant", "Occupied", "Reserved", "Under Maintenace" };
+	private boolean[] trueFalse = { true, false };
 
-    public roomStatusRecord(int roomFloor, int roomNo, int roomType, int roomStatus) {
-        this.roomFloor = roomFloor;
-        this.roomNo = roomNo;
-        this.roomType = roomType;
-        this.roomStatus = roomStatus;
-    }
-
-    public int getRoomFloor() {
-        return roomFloor;
-    }
-
-    public void setRoomFloor(int roomFloor) {
-        this.roomFloor = roomFloor;
-    }
-
-    public int getRoomNo() {
-        return roomNo;
-    }
-
-    public void setRoomNo(int roomNo) {
-        this.roomNo = roomNo;
-    }
-
-    public int getRoomType() {
-        return roomType;
-    }
-
-    public void setRoomType(int roomType) {
-        this.roomType = roomType;
-    }
-
-    public int getRoomStatus() {
-        return roomStatus;
-    }
-
-    public void setRoomStatus(int roomStatus) {
-        this.roomStatus = roomStatus;
-    }
-}
-
-public class RoomMgr {
-
-    private static Room[][] roomList = new Room[6][8];
-    
-    public RoomMgr (ArrayList<Room> roomList) { //Initialize with room array from main
-    	if (roomList == null){ //Initialize
-            for (int i=0 ; i<6 ; i++) {
-                for (int j=0 ; j<8 ; j++) {
-                    try {
-                        this.roomList[i][j] = new Room(i+2,j+1); //USING TEMP CONSTRUCTOR, NOT SURE WHAT THE OTHER DEFAULTS SHOULD BE
-                    } catch (InvalidInfoException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 8; j++) {
-                    this.roomList[i][j] = roomList.get((i * 8) + j);
-                    System.out.print(this.roomList[i][j].getRoomFloor() + "-" + this.roomList[i][j].getRoomNo() + " "); //FOR IO TESTING
-                }
-                System.out.println(""); //FOR IO TESTING
-            }
-        }
-    }
-    
-
-    public void updateRoom(int floor, int rm, int choice, double value) throws InvalidInfoException {
-    	if (validRoom(floor, rm)) {
-	        try {
-	            switch (choice) {
-	                case ROOMTYPE:
-	                    roomList[floor - 2][rm - 1].setType((int) value);
-	
-	                case ROOMRATE:
-	                    roomList[floor - 2][rm - 1].setRate(value);
-	
-	                case BEDTYPE:
-	                    roomList[floor - 2][rm - 1].setBedtype((int) value);
-	
-	                case ROOMFACING:
-	                    roomList[floor - 2][rm - 1].setFacing((int) value);
-	
-	                case ROOMSTATUS:
-	                    roomList[floor - 2][rm - 1].setStatus((int) value);
-	
-	                case ROOMWIFI:
-	                    roomList[floor - 2][rm - 1].setWifi(!((int) value == 0));
-	
-	                case ROOMSMOKING:
-	                    roomList[floor - 2][rm - 1].setSmoking(!((int) value == 0));
-	
-	                default:
-	                    throw new InvalidInfoException("Update Room");
-	            }
-	        } catch (Exception NullPointerException) {
-	        	
-	        }
-    	}
-    }
-
-
-    public roomStatusRecord checkStatus(int floor, int rm) { // RETURN the Status index
-        if (validRoom(floor, rm)) {
-        roomStatusRecord rmRecord = new roomStatusRecord(floor, rm,
-                roomList[floor-2][rm-1].getRoomType(), roomList[floor-2][rm-1].getRoomStatus());
-        return rmRecord;
-        }
-        else {
-        	System.out.println("Invalid room number!");
-        	return null;
-        }
-    }
-
-    public roomStatusRecord[][] reportStatus() throws InvalidInfoException {
-        roomStatusRecord[][] roomReport = new roomStatusRecord[6][8];
-        for (int i = 0; i < 6; i++){
-            for (int j = 0; j < 8; j++){
-                checkStatus(i+2, j+1);
-            }
-        }
-        return roomReport;
-    }
-    
-    
-    public ArrayList<Room> saveToFile() {
-
-        ArrayList<Room> roomList = new ArrayList<>();
-        for (int i=0 ; i<6 ; i++) {
-            for (int j=0 ; j<8 ; j++) {
-                roomList.add(this.roomList[i][j]);
-            }
-        }
-        return roomList;
-        /*
-    	try {
-			FileOutputStream foStream = new FileOutputStream(roomFileName);
-			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
-			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
-			
-			for (int i=0 ; i<6 ; i++) { //Writes out 48 Room Objects by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-    			for (int j=0 ; j<8 ; j++) { //Writes out 48 Room Objects by level: 02-01, 02-02, 02-03, ... , 07-07, 07-08
-        			doStream.writeObject(roomList[i][j]);
-        		}
-    		}
-			System.out.println("48 Rooms saved to " + roomFileName);
-			doStream.close();
+	public RoomMgr(ArrayList al) {
+		if (al == null) {
+			this.room = new ArrayList<>();
+			initializeRoom();
+			System.out.println("Room Service Menu initialized!");
+		} else {
+			this.room = al;
+			System.out.println("Room Service Menu loaded!");
 		}
-		catch (IOException e){
-			System.out.println("[Room] File IO Error!" + e.getMessage());
+	}
+
+	public void ShowRoomMgrMenuOption() {
+		int choice;
+		String name, roomNo;
+
+		Scanner input = new Scanner(System.in);
+
+		do {
+			System.out.println("\nRoom option: ");
+			System.out.println("(1) View Room");
+			System.out.println("(2) Update Room Details");
+			System.out.println("(3) View Room Statistic Report");
+			System.out.println("(4) Return to main");
+			choice = errorCheckingInt("Select an option: ", 4);
+
+			switch (choice) {
+			case 1:
+				System.out.println("\nView Room Option: ");
+				System.out.println("(1) View All Room");
+				System.out.println("(2) View selected room details");
+				System.out.println("(3) View all room by status");
+				System.out.println("(4) Return to room option");
+				choice = errorCheckingInt("Select an option: ", 4);
+
+				switch (choice) {
+				case 1:
+					viewAllRoom();
+					break;
+				case 2:
+					viewSelectedRoom();
+					break;
+				case 3:
+					viewAllRoomByStatus();
+					break;
+				case 4:
+					break;
+				default:
+					System.out.println("Error input");
+					break;
+				}
+
+				break; // case 1 break
+
+			case 2:
+				updateRoom();
+				break;
+
+			case 3:
+				RoomStatusStatic();
+				break;
+
+			case 4:
+				System.out.println("\nReturning to main.....\n");
+				break;
+
+			default:
+				System.out.println("\nError input \n");
+				break;
+
+			}
+
+		} while (choice != 4);
+
+	}
+
+	// ---------------------------------------------------------------------------------------------------------------------------//
+
+	public void viewAllRoom() {
+
+		System.out.println("\nViewing all Room: \n");
+		System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
+				"Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+		for (Room r : room) {
+
+			System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(), r.getRoomType(),
+					r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(), r.getRoomStatus(), r.getRoomRate(),
+					r.getGuest());
 		}
-		*/
-    }
-    
-    private boolean validRoom(int floor, int room) {
-    	return (floor >= 2 && floor <= 7 && room >= 1 && room <= 8);
-    }
+
+		System.out.println("");
+	}
+
+	public void viewSelectedRoom() {
+
+		boolean flag = false;
+		boolean displayOnce = false;
+		String roomNo = null, name = null;
+		int choice;
+
+		Scanner input = new Scanner(System.in);
+
+		System.out.println("\nView selected room option:");
+		System.out.println("(1) Enter room no");
+		System.out.println("(2) Enter Guest");
+		System.out.print("(3) Exit");
+		choice = errorCheckingInt("Select an option: ", 3);
+
+		if (choice == 1) {
+			System.out.print("\nEnter Room no. : ");
+			roomNo = input.nextLine();
+		} else if (choice == 2) {
+			System.out.print("\nEnter first name: ");
+			name = input.nextLine();
+			System.out.print("Enter last name: ");
+			name = name + " " + input.nextLine();
+		} else if (choice != 3) {
+			for (Room r : room) {
+				if (r.getRoomNO().equals(roomNo) || r.getGuest().equals(name)) {
+
+					if (!displayOnce) {
+						System.out.println("\nViewing Selected Room");
+						System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15s\n", "Room no.", "Room Type",
+								"Bed Type", "Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+						displayOnce = true;
+					}
+					System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-15s%-15.2f%-15s\n", r.getRoomNO(),
+							r.getRoomType(), r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(),
+							r.getRoomStatus(), r.getRoomRate(), r.getGuest());
+
+					System.out.println("");
+					flag = true;
+					break;
+				}
+			}
+			if (!flag)
+				System.out.println("\nInvalid input - result not found\n");
+		}
+
+	}
+
+	public void updateRoom() {
+		int choice = 0;
+		double roomRate = 0;
+		String roomNo = null;
+		boolean flag;
+		
+		Scanner input = new Scanner(System.in);
+
+		System.out.println("\nUpdate Menu");
+		System.out.println("(1) Room Type");
+		System.out.println("(2) Room Rate");
+		System.out.println("(3) Status");
+		System.out.println("(4) Smoking/WIFI");
+		System.out.println("(5) Return to main");
+		System.out.print("Select option: ");
+		choice = input.nextInt();
+		input.nextLine();
+
+		switch (choice) {
+		case 1:
+			flag = false;
+			while (!flag) {
+				System.out.print("\nEnter room no: ");
+				roomNo = input.nextLine();
+
+				for (Room r : room) {
+					if (r.getRoomNO().equals(roomNo)) {
+						System.out.println("\nAvailable Room Type");
+						System.out.println("(1) " + roomType[0]);
+						System.out.println("(2) " + roomType[1]);
+						System.out.println("(3) " + roomType[2]);
+						System.out.println("(4) " + roomType[3]);
+						System.out.print("Select option: ");
+						choice = input.nextInt();
+						r.setRoomType(roomType[choice - 1]);
+						flag = true;
+						break;
+					}
+				}
+
+				if (!flag)
+					System.out.println("Invalid room no\n");
+			}
+			break;
+
+		case 2:
+			System.out.println("\nRoom rate type ");
+			System.out.println("(1) " + roomType[0]);
+			System.out.println("(2) " + roomType[1]);
+			System.out.println("(3) " + roomType[2]);
+			System.out.println("(4) " + roomType[3]);
+			System.out.print("Select option to edit: ");
+			choice = input.nextInt();
+			input.nextLine();
+			String rType = roomType[choice - 1];
+
+			System.out.print("Enter new room rate: ");
+			roomRate = input.nextDouble();
+
+			for (Room r : room) {
+				if (r.getRoomType().equals(rType)) {
+					r.setRoomRate(roomRate);
+				}
+			}
+			break;
+
+		case 3:
+			flag = false;
+			while (!flag) {
+				System.out.print("\nEnter room no: ");
+				roomNo = input.nextLine();
+
+				for (Room r : room) {
+					if (r.getRoomNO().equals(roomNo)) {
+						if (r.getRoomStatus().equals(status[0]) || r.getRoomStatus().equals(status[3])) {
+							System.out.println("\nStatus Menu");
+							System.out.println("(1) " + status[0]);
+							System.out.println("(2) " + status[1]);
+							System.out.println("(3) " + status[2]);
+							System.out.println("(4) " + status[3]);
+							System.out.print("Select option: ");
+							choice = input.nextInt();
+							r.setRoomStatus(status[choice - 1]);
+							flag = true;
+						}
+					}
+				}
+
+				if (!flag)
+					System.out.println("Invalid room no");
+			}
+			System.out.println("");
+			break;
+
+		case 4:
+			flag = false;
+			while (!flag) {
+				System.out.print("\nEnter room no: ");
+				roomNo = input.nextLine();
+
+				for (Room r : room) {
+					if (r.getRoomNO().equals(roomNo)) {
+						if (r.getRoomStatus().equals(status[0]) || r.getRoomStatus().equals(status[3])) {
+							System.out.println("\nEnabled WIFI?");
+							System.out.println("(1) true");
+							System.out.println("(2) false");
+
+							while (true) {
+								try {
+									System.out.print("Select option: ");
+									choice = input.nextInt();
+									if (choice < 1 || choice > 2)
+										throw new IllegalArgumentException("Error input\n");
+									else {
+										r.setWIFI(trueFalse[choice - 1]);
+										System.out.println("\nAllow smoking?");
+										System.out.println("(1) true");
+										System.out.println("(2) false");
+
+										while (true) {
+											try {
+												System.out.print("Select option: ");
+												choice = input.nextInt();
+												if (choice < 1 || choice > 2)
+													throw new IllegalArgumentException("Error input\n");
+												else
+													r.setWIFI(trueFalse[choice - 1]);
+												break;
+
+											} catch (InputMismatchException e) {
+												System.out.println("Error input \n");
+												input.next();
+											} catch (IllegalArgumentException e) {
+												System.out.println(e);
+											}
+										}
+
+										break;
+									}
+								} catch (InputMismatchException e) {
+									System.out.println("Error input \n");
+									input.next();
+								} catch (IllegalArgumentException e) {
+									System.out.println(e);
+								}
+							}
+							flag = true;
+						}
+					}
+				}
+
+				if (!flag)
+					System.out.println("Invalid room no");
+			}
+
+			break;
+
+		case 5:
+			System.out.println("\nReturning to main....\n");
+			break;
+
+		default:
+			System.out.println("Error input\n");
+			break;
+		}
+	}
+
+	public void RoomStatusStatic() {
+
+		int lastIndex = 0;
+		int choice = 0;
+		Scanner input = new Scanner (System.in);
+		
+		System.out.println("\nRoom Status Statistic Option: ");
+		System.out.println("(1) Room type occupancy rate");
+		System.out.println("(2) Room Status");
+		System.out.print("Select an option: ");
+		choice = input.nextInt();
+
+		if (choice == 1) {
+
+			int[] numRoom = new int[4];
+			int[] numVacantRoom = new int[4];
+
+			for (int i = 0; i < 4; i++) {
+				numRoom[i] = getNumTypeRoom(roomType[i]);
+				numVacantRoom[i] = getNumStatusByRoomType(roomType[i], status[0]);
+			}
+
+			for (int i = 0; i < 4; i++) {
+				lastIndex = numVacantRoom[i];
+				System.out.println("\n" + roomType[i] + ": Number: " + numVacantRoom[i] + " out of " + numRoom[i]);
+				System.out.print("Rooms: ");
+
+				if (lastIndex > 1) {
+					for (Room r : room) {
+
+						if (r.getRoomType().equals(roomType[i]) && r.getRoomStatus().equals(status[0])) {
+							if (lastIndex > 1)
+								System.out.print(r.getRoomNO() + ", ");
+							else
+								System.out.print(r.getRoomNO() + "\n");
+
+							lastIndex -= 1;
+						}
+
+					}
+				} else
+					System.out.print(" - \n");
+
+			}
+
+		} else {
+			int[] numStatusRoom = new int[4];
+
+			for (int i = 0; i < 4; i++) {
+				numStatusRoom[i] = getNumStatusRoom(status[i]);
+			}
+
+			for (int i = 0; i < 4; i++) {
+				lastIndex = numStatusRoom[i];
+				System.out.println("\n" + status[i] + " :");
+				System.out.print("Rooms: ");
+
+				if (lastIndex > 1) {
+					for (Room r : room) {
+
+						for (int j = 0; j < 4; j++) {
+							if (r.getRoomType().equals(roomType[j]) && r.getRoomStatus().equals(status[i])) {
+								if (lastIndex > 1)
+									System.out.print(r.getRoomNO() + ", ");
+								else
+									System.out.print(r.getRoomNO() + "\n");
+
+								lastIndex -= 1;
+							}
+						}
+
+					}
+				}
+
+				else
+					System.out.println(" - \n");
+			}
+		}
+
+		System.out.println("");
+	}
+	
+	public void viewAllRoomByStatus()
+	{
+		int choice;
+		System.out.println("\nView all Room by status option:");
+		System.out.println("(1) Vacant");
+		System.out.println("(2) Occupied");
+		System.out.println("(3) Reserved");
+		System.out.println("(4) UnderMaintance");
+		System.out.println("(5) Exit");
+		choice = errorCheckingInt("Select an option: ", 5);
+		
+		if(choice != 5) {
+			System.out.println("\nViewing " + status[choice-1] + " Room: \n");
+			System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
+					"Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+			for (Room r : room) {
+				if(r.getRoomStatus().equals(status[choice-1])) {
+					System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(), r.getRoomType(),
+							r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(), r.getRoomStatus(), r.getRoomRate(),
+							r.getGuest());
+				}
+			}
+		}
+		
+		System.out.println("");
+		
+	}
+
+	public boolean checkValidRoomForOrder(String roomNo) {
+		boolean result = false;
+
+		for (Room r : room) {
+			if (r.getRoomNO().equals(roomNo)) {
+				if (r.getRoomStatus().equals(status[1])) // if room is occupied then can order
+					result = true;
+			}
+		}
+
+		return result;
+	}
+
+	private int getNumTypeRoom(String roomType) {
+		int numRoom = 0;
+		for (Room r : room) {
+			if (r.getRoomType().equals(roomType)) {
+				numRoom += 1;
+			}
+		}
+
+		return numRoom;
+	}
+
+	private int getNumStatusByRoomType(String roomType, String roomStatus) {
+		int numRoom = 0;
+		for (Room r : room) {
+			if (r.getRoomType().equals(roomType) && r.getRoomStatus().equals(roomStatus)) {
+				numRoom += 1;
+			}
+		}
+
+		return numRoom;
+	}
+
+	private int getNumStatusRoom(String roomStatus) {
+		int numRoom = 0;
+		for (Room r : room) {
+			if (r.getRoomStatus().equals(roomStatus)) {
+				numRoom += 1;
+			}
+		}
+
+		return numRoom;
+	}
+
+	private void initializeRoom() {
+
+		int tempBed, tempStatus;
+		boolean isSmoking, isWIFI;
+		String tempRoomType = null, tempRoomNo = null;
+
+		for (int i = 2; i < 8; i++) {
+			for (int j = 1; j < 9; j++) {
+				tempRoomNo = "0" + i + "0" + j;
+				tempRoomType = roomType[randomNumber(4)];
+				isSmoking = trueFalse[randomNumber(2)];
+				isWIFI = trueFalse[randomNumber(2)];
+
+				if (tempRoomType.equals("Single"))
+					tempBed = 0;
+				else if (tempRoomType.equals("Deluxe") || tempRoomType.equals("VIP Suit")) {
+					tempBed = 1;
+					isSmoking = true;
+					isWIFI = true;
+				} else
+					tempBed = 1;
+
+				tempStatus = randomNumber(4);
+				if (tempStatus != 3)
+					tempStatus = 0;
+				else
+					tempStatus = 3;
+				room.add(new Room(tempRoomNo, tempRoomType, bedType[tempBed], facing[randomNumber(4)],
+						status[tempStatus], isWIFI, isSmoking));
+			}
+		}
+	}
+	
+	// ----------------------Other Section -----------------------//
+
+	private int randomNumber(int max) {
+		Random rand = new Random();
+		int n = rand.nextInt(max);
+		return n;
+	}
+
+	public List<Room> saveToFile() {
+		return room;
+	}
+
+	private int errorCheckingInt(String display) {
+
+		int tempChoice;
+		Scanner input = new Scanner(System.in);
+
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				tempChoice = input.nextInt();
+				if (tempChoice < 1)
+					throw new IllegalArgumentException("Error input\n");
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Error input \n");
+				input.next();
+			} catch (IllegalArgumentException e) {
+				System.out.println(e);
+			}
+		}
+
+		input.nextLine();
+
+		return tempChoice;
+	}
+
+	private int errorCheckingInt(String display, int lastItem) {
+		int index;
+		Scanner input = new Scanner(System.in);
+
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				index = input.nextInt();
+				if (index < 1 || index > lastItem)
+					throw new IllegalArgumentException("Error input\n");
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Error input\n");
+				input.next();
+			} catch (IllegalArgumentException e) {
+				System.out.println(e);
+			}
+		}
+
+		input.nextLine();
+
+		return index;
+	}
+
+	private float errorCheckingFloat(String display) {
+		float price;
+		Scanner input = new Scanner(System.in);
+
+		while (true) {
+			System.out.print(display);
+			try {
+				price = input.nextFloat();
+				if (price <= 0f)
+					throw new IllegalArgumentException("Error input\n");
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Error input \n");
+				input.next();
+			} catch (IllegalArgumentException e) {
+				System.out.println(e);
+			}
+		}
+
+		input.nextLine();
+
+		return price;
+	}
+
 }
