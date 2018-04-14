@@ -93,27 +93,6 @@ public class ReservationMgr {
 
     public ArrayList<Reservation> saveToFile() {
     	return reservationList;
-    	/*
-    	if (numOfReservation == 0) { //Nothing to save
-    		System.out.println("No reservations to save to file!");
-    	}
-    	else {
-    		try {
-    			FileOutputStream foStream = new FileOutputStream(reservationFileName);
-    			BufferedOutputStream boStream = new BufferedOutputStream(foStream);
-    			ObjectOutputStream doStream = new ObjectOutputStream(boStream);
-
-    			for (int i = 0 ; i < numOfReservation ; i++) {
-    				doStream.writeObject(reservationList.get(i)); //Write reservation list into file
-    			}
-    			System.out.println(numOfReservation + " Reservations saved to " + reservationFileName);
-    			doStream.close();
-    		}
-    		catch (IOException e){
-    			System.out.println("[Reservation] File IO Error!" + e.getMessage());
-    		}
-    	}
-    	*/
     }
     
     private boolean checkGap() { //Checks if any gap due to previously deleted resv

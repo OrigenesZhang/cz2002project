@@ -134,119 +134,6 @@ public class Main {
     		System.out.println("Class not found!" + e.getMessage());
 			e.printStackTrace();
 		}
-
-/*
-//		======================================
-        System.out.println("Initializing the guest information...");
-//                Initialize the guest information;
-        try {
-        	fiStream = new FileInputStream(guestFileName);
-    		biStream = new BufferedInputStream(fiStream);
-    		diStream = new ObjectInputStream(biStream);
-        	
-    		while (true){
-    			obj = diStream.readObject();
-    			guestList.add((Guest) obj);
-    		}
-        }
-    	catch (FileNotFoundException e) { //File does not exist, no data to load
-    		System.out.println("IOError: guest file not found! No existing guests...");
-    	}
-        catch (EOFException e) {
-        	System.out.println("Loaded from " + guestFileName);
-        }
-    	catch (IOException e) { //Other IO Exception
-    		System.out.println("[Guest] File IO Error!" + e.getMessage());
-    	} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-    		System.out.println("[Guest] Class not found!" + e.getMessage());
-			e.printStackTrace();
-		}
-        guestMgr = new GuestMgr(guestList); //Instantiate GuestMgr object and pass guest list to it
-        
-
-//		======================================
-        System.out.println("Initializing the reservation information...");
-//                Initialize the reservation information;
-        try {
-        	fiStream = new FileInputStream(reservationFileName);
-    		biStream = new BufferedInputStream(fiStream);
-    		diStream = new ObjectInputStream(biStream);
-        	
-    		while (true){
-    			obj = diStream.readObject();
-    			reservationList.add((Reservation) obj);
-    		}
-        }
-    	catch (FileNotFoundException e) { //File does not exist, no data to load
-    		System.out.println("IOError: reservation file not found! No existing reservations...");
-    	}
-        catch (EOFException e) {
-        	System.out.println("Loaded from " + reservationFileName);
-        }
-    	catch (IOException e) { //Other IO Exception
-    		System.out.println("[Reservation] File IO Error!" + e.getMessage());
-    	} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-    		System.out.println("[Reservation] Class not found!" + e.getMessage());
-			e.printStackTrace();
-		}
-        reservationMgr = new ReservationMgr(reservationList); //Instantiate ReservationMgr object and pass reservation list to it
-        
-
-//		======================================
-        System.out.println("Initializing the billing information...");
-//                Initialize the billing information;
-        try {
-        	fiStream = new FileInputStream(billFileName);
-    		biStream = new BufferedInputStream(fiStream);
-    		diStream = new ObjectInputStream(biStream);
-        	
-    		while (true){
-    			obj = diStream.readObject();
-    			billList.add((Bill) obj);
-    		}
-        }
-    	catch (FileNotFoundException e) { //File does not exist, no data to load
-    		System.out.println("IOError: bill file not found! No existing bills...");
-    	}
-        catch (EOFException e) {
-        	System.out.println("Loaded from " + billFileName);
-        }
-    	catch (IOException e) { //Other IO Exception
-    		System.out.println("[Bill] File IO Error!" + e.getMessage());
-    	} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-    		System.out.println("[Bill] Class not found!" + e.getMessage());
-			e.printStackTrace();
-		}
-        billMgr = new BillMgr(billList); //Instantiate BillMgr object and pass bill list to it
-
-
-//		======================================
-        System.out.println("Initializing the Room Service Menu information...");
-//      Initialize the Room Service Menu Info
-        try {
-            fiStream = new FileInputStream(menuFileName);
-            biStream = new BufferedInputStream(fiStream);
-            diStream = new ObjectInputStream(biStream);
-            obj = diStream.readObject();
-        }
-        catch (FileNotFoundException e) { //File does not exist, no data to load
-            System.out.println("IOError: menu file not found! No existing menu...");
-        }
-        catch (EOFException e) {
-            System.out.println("Loaded from " + menuFileName);
-        }
-        catch (IOException e) { //Other IO Exception
-            System.out.println("[Menu] File IO Error!" + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            System.out.println("[Menu] Class not found!" + e.getMessage());
-            e.printStackTrace();
-        }
-        roomService = new RoomService((ArrayList<Menu>)obj);
-        */
         System.out.println("Successfully initialized the system!");
     }
 
@@ -269,18 +156,6 @@ public class Main {
         catch (IOException e){
             System.out.println("File IO Error! " + e.getMessage());
         }
-        /*
-		//Save room info
-		roomMgr.saveToFile(roomFileName);
-		//Save guest info
-		guestMgr.saveToFile(guestFileName);
-		//Save bill info
-		billMgr.saveToFile(billFileName);
-		//Save reservation info
-		reservationMgr.saveToFile(reservationFileName);
-		//Save room service menu info
-		roomService.saveToFile(menuFileName);
-		*/
 		System.out.println("Saved to file!");
 	}
 }
