@@ -1,169 +1,129 @@
 package com.ntu.scse;
 
-import static com.ntu.scse.RoomStatus.*;
-import com.ntu.scse.InvalidInfoException.*;
 import java.io.Serializable;
-
-class BedType {
-    public static final int SINGLE = 1, DOUBLE = 2, MASTER = 3;
-}
-
-class Facing {
-    public static final int NORTH = 1, SOUTH = 2, EAST = 3, WEST = 4;
-}
-
-class RoomStatus {
-    public static final int VACANT = 1;
-    public static final int OCCUPIED = 2;
-    public static final int RESERVED = 3;
-    public static final int UNDER_MAINTENANCE = 4;
-}
+import java.util.ArrayList;
 
 public class Room implements Serializable {
-    private int roomType, roomFloor, roomNo, bedType, roomFacing, roomStatus;
-    private double roomRate;
-    private boolean enabledWifi, isSmoking;
-    private final int roomTypeNum = 4; // Room Type: 1.Single, 2.Double, 3.Deluxe, 4.VIP Suite
-    public final int maxFloor = 7, minFloor = 2; // Floor 2-7
-    public final int maxNo = 8; // Room No 1-8
-    public final int bedTypeNum = 3; // Bed Type: 1.single/ 2.double/ 3.master
-    public final int facingNum = 4; // Facing: 1.North, 2.South, 3.East, 4.West
-    public final int statusNum = 4; // RoomStatus: 1.Vacant, 2.Occupied, 3.Reserved, 4.Under Maintenance
 
-    public Room(int roomFloor,
-                int roomNo,
-                int roomType,
-                double roomRate,
-                int bedType,
-                int roomFacing,
-                int roomStatus,
-                boolean enabledWifi,
-                boolean isSmoking)
-            throws InvalidInfoException {
+	// list to do :
+	// room rate also changes during weekend or public holiday
 
-        this.setType(roomType);
-        this.setRate(roomRate);
-        this.setFloor(roomFloor);
-        this.setNumber(roomNo);
-        this.setBedtype(bedType);
-        this.setFacing(roomFacing);
-        this.setStatus(roomStatus);
-        this.setWifi(enabledWifi);
-        this.setSmoking(isSmoking);
-    }
-    
-    public Room (int roomFloor, int roomNo) throws InvalidInfoException  { //TEMP CONSTRUCTOR TO TEST FILE IO
-    	this.setFloor(roomFloor);
-        this.setNumber(roomNo);
-    }
+	private String roomNO, roomType, bedType, facing, roomStatus, guest;
+	private double roomRate;
+	private boolean isWIFI, isSmoking;
 
-//    public void avaiRoom() throws Main.InvalidInfoException {
-//        this.setStatus(VACANT);
-//    }
-//
-//    public void maintainRoom() throws Main.InvalidInfoException {
-//        this.setStatus(UNDER_MAINTENANCE);
-//    }
+	public Room(String rNo, String rType, String bType, String f, String rStatus,  boolean wifi, boolean smoke) {
+		roomNO = rNo;
+		roomType = rType;
+		bedType = bType;
+		facing = f;
+		roomStatus = rStatus;
+		isWIFI = wifi;
+		isSmoking = smoke;
+		roomRate = defaultRoomRate(roomType);
+		guest = "-";
 
-    //************SETTER*************
-    public void setType(int type) throws InvalidInfoException {
-        if (type < 1 || type > roomTypeNum) {
-            throw new InvalidInfoException("Room Type");
-        } else {
-            this.roomType = type;
-        }
-    }
+	}
 
-    public void setRate(double rate) {
-        this.roomRate = rate;
-    }
+	private double defaultRoomRate(String roomType) {
+		if (roomType.equals("Single"))
+			return plusWIFISmokingRate (100);
+		else if (roomType.equals("Double"))
+			return plusWIFISmokingRate(250);
+		else if (roomType.equals("Deluxe"))
+			return plusWIFISmokingRate(480);
+		else
+			return plusWIFISmokingRate(830);
+	}
+	
+	private double plusWIFISmokingRate (double roomRate)
+	{
+		double percentage = 5;
+		double upPrice;
+		double finalPrice;
+		
+		if (this.isSmoking && this.isWIFI)
+		{
+			upPrice = (roomRate/100)*(percentage + percentage);
+			finalPrice = roomRate + upPrice;
+		} else if (this.isSmoking || this.isWIFI)
+		{
+			upPrice = (roomRate/100)*(percentage);
+			finalPrice = roomRate + upPrice;
+		} else
+		{
+			finalPrice = roomRate;
+		}
+		
+		return finalPrice;
+	}
 
-    public void setFloor(int floor) throws InvalidInfoException {
-        if (floor < minFloor || floor > maxFloor) {
-            throw new InvalidInfoException("Floor");
-        } else {
-            this.roomFloor = floor;
-        }
-    }
+	public String getRoomNO() {
+		return roomNO;
+	}
 
-    public void setNumber(int number) throws InvalidInfoException {
-        if (number < 1 || number > maxNo) {
-            throw new InvalidInfoException("Room No");
-        } else {
-            this.roomNo = number;
-        }
-    }
+	public String getRoomType() {
+		return roomType;
+	}
 
-    public void setBedtype(int bedtype) throws InvalidInfoException {
-        if (bedtype < 1 || bedtype > bedTypeNum) {
-            throw new InvalidInfoException("Bed Type");
-        } else {
-            this.bedType = bedtype;
-        }
-    }
+	public String getBedType() {
+		return bedType;
+	}
 
-    public void setFacing(int facing) throws InvalidInfoException {
-        if (facing < 1 || facing > facingNum) {
-            throw new InvalidInfoException("Facing");
-        } else {
-            this.roomFacing = facing;
-        }
-    }
+	public String getFacing() {
+		return facing;
+	}
 
-    public void setStatus(int status) throws InvalidInfoException {
-        if (status < 1 || status > statusNum) {
-            throw new InvalidInfoException("Facing");
-        } else {
-            this.roomStatus = status;
-        }
-    }
+	public String getRoomStatus() {
+		return roomStatus;
+	}
 
+	public double getRoomRate() {
+		return roomRate;
+	}
 
-    public void setWifi(boolean wifi) {
-        this.enabledWifi = wifi;
-    }
+	public boolean isWIFI() {
+		return isWIFI;
+	}
 
-    public void setSmoking(boolean smoking) {
-        this.isSmoking = smoking;
-    }
+	public boolean isSmoking() {
+		return isSmoking;
+	}
 
-    public int getRoomType() {
-        return roomType;
-    }
+	public String getGuest() {
+		return guest;
+	}
 
-    public int getRoomFloor() {
-        return roomFloor;
-    }
+	public void setGuest(String guest) {
+		this.guest = guest;
+	}
 
-    public int getRoomNo() {
-        return roomNo;
-    }
+	public void setRoomStatus(String roomStatus) {
+		this.roomStatus = roomStatus;
+	}
 
-    public int getBedType() {
-        return bedType;
-    }
+	public void setRoomType(String roomType) {
+		this.roomType = roomType;
 
-    public int getRoomFacing() {
-        return roomFacing;
-    }
+		if (this.roomType.equals("Single"))
+			this.bedType = "Single";
+		else
+			this.bedType = "Double";
+		
+		setRoomRate(defaultRoomRate(this.roomType));	//set appropriate room rate
+				
+	}
 
-    public int getRoomStatus() {
-        return roomStatus;
-    }
+	public void setRoomRate(double roomRate) {
+		this.roomRate = plusWIFISmokingRate(roomRate);
+	}
 
-    public double getRoomRate() {
-        return roomRate;
-    }
+	public void setWIFI(boolean isWIFI) {
+		this.isWIFI = isWIFI;
+	}
 
-    public boolean isEnabledWifi() {
-        return enabledWifi;
-    }
+	public void setSmoking(boolean isSmoking) {
+		this.isSmoking = isSmoking;
+	}
 
-    public boolean isSmoking() {
-        return isSmoking;
-    }
-
-    public int getRoomTypeNum() {
-        return roomTypeNum;
-    }
 }
