@@ -1,6 +1,7 @@
 package com.ntu.scse;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.*;
 import com.ntu.scse.InvalidInfoException.*;
@@ -17,8 +18,6 @@ public class Main {
     public static void main(String[] args) {
 
         int choice;
-        
-        
         Scanner sc = new Scanner(System.in);
 
         Initialize();
@@ -31,7 +30,8 @@ public class Main {
 
             System.out.println("(1) Create/Update/Search GUEST detail;");
             System.out.println("(2) Create/Update/Remove/Print RESERVATION;");
-            System.out.println("(3) Update ROOM details;");
+            //System.out.println("(3) Update ROOM details;");
+            System.out.println("(3) Print/Check/Update ROOM details");
             System.out.println("(4) Create ROOM SERVICE orders;");
             System.out.println("(5) Create/Update/Remove ROOM SERVICE MENU items;");
             System.out.println("(6) Check ROOM Availability;");
@@ -51,17 +51,21 @@ public class Main {
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */
                     break;
 
-                case 3: /* (3) Update ROOM details */
+                case 3: /* (3) Print/Check/Update ROOM details */
+                	roomMgr.ShowRoomMgrMenuOption();
                     break;
 
-                case 4: /* (4) Create ROOM SERVICE orders */
+                case 4: /* (4) Print/Create/Update/Remove ROOM SERVICE orders */
+                	roomService.ShowRoomServiceOrderOption(roomMgr);
+                	saveToFile();
                     break;
 
-                case 5: /* (5) Create/Update/Remove ROOM SERVICE MENU items */
-                    roomService.ShowRoomServiceOption();
+                case 5: /* (5) Print/Create/Update/Remove ROOM SERVICE MENU items */
+                    roomService.ShowRoomServiceMenuOption();
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
+                	
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
@@ -71,20 +75,15 @@ public class Main {
                     break;
 
                 case 9: /* (9) Print ROOM STATUS statistic report */
-                    break;
-
-                case 10: /* (10) Save to file */
-                	saveToFile();
-                    break;  
+                    break; 
                     
                 case 11: /* (11) Exit */
                     break;
 
                 default:
                     System.out.println("    Program terminating ....");
-
-
             }
+            saveToFile();
         } while (choice < 11 && choice > 0);
         sc.close();
     }
@@ -109,6 +108,7 @@ public class Main {
         System.out.println("Initializing data from file...");
 //			Try reading from file, if file doesn't exist or if exception, use defaults
         try {
+        	
         	fiStream = new FileInputStream(dataFileName);
     		biStream = new BufferedInputStream(fiStream);
     		diStream = new ObjectInputStream(biStream);
@@ -117,7 +117,8 @@ public class Main {
             guestMgr = new GuestMgr((ArrayList)diStream.readObject()); //Instantiate GuestMgr object and pass guest list to it
             reservationMgr = new ReservationMgr((ArrayList)diStream.readObject()); //Instantiate ReservationMgr object and pass reservation list to it
             billMgr = new BillMgr((ArrayList)diStream.readObject()); //Instantiate BillMgr object and pass bill list to it
-            roomService = new RoomService((ArrayList)diStream.readObject());
+            roomService = new RoomService((ArrayList)diStream.readObject(), (ArrayList)diStream.readObject());
+            diStream.close();
         }
     	catch (FileNotFoundException e) { //File does not exist, no data to load
     		System.out.println("No data file found! Initializing using default settings...");
@@ -126,7 +127,8 @@ public class Main {
             guestMgr = new GuestMgr(null); //Instantiate default GuestMgr
             reservationMgr = new ReservationMgr(null); //Instantiate default ReservationMgr
             billMgr = new BillMgr(null); //Instantiate default BillMgr
-            roomService = new RoomService(null); //Instantiate default Menu
+            roomService = new RoomService(null, null); //Instantiate default Menu
+            
     	}
     	catch (IOException e) { //Other IO Exception
     		System.out.println("File IO Error!" + e.getMessage());
@@ -134,7 +136,6 @@ public class Main {
     		System.out.println("Class not found!" + e.getMessage());
 			e.printStackTrace();
 		}
-        System.out.println("Successfully initialized the system!");
     }
 
 
@@ -149,13 +150,27 @@ public class Main {
             doStream.writeObject(guestMgr.saveToFile());
             doStream.writeObject(reservationMgr.saveToFile());
             doStream.writeObject(billMgr.saveToFile());
-            doStream.writeObject(roomService.saveToFile());
+            doStream.writeObject(roomService.saveMenuToFile());				//for menu
+            doStream.writeObject(roomService.saveOrderToFile());			//for order
 
             doStream.close();
+            foStream.close();
         }
         catch (IOException e){
             System.out.println("File IO Error! " + e.getMessage());
         }
+        /*
+		//Save room info
+		roomMgr.saveToFile(roomFileName);
+		//Save guest info
+		guestMgr.saveToFile(guestFileName);
+		//Save bill info
+		billMgr.saveToFile(billFileName);
+		//Save reservation info
+		reservationMgr.saveToFile(reservationFileName);
+		//Save room service menu info
+		roomService.saveToFile(menuFileName);
+		*/
 		System.out.println("Saved to file!");
 	}
 }
