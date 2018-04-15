@@ -82,7 +82,7 @@ public class Main {
                     System.out.println("    Program terminating ....");
             }
             saveToFile();
-        } while (choice < 11 && choice > 0);
+        } while (choice < 10 && choice > 0);
         sc.close();
     }
 
