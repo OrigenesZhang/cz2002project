@@ -163,13 +163,20 @@ public class RoomService implements Serializable, Comparable {
 	}
 
 	public void viewMenu() {
-		System.out.println("\nMenu list");
-		System.out.format("%-10s%-40s%-100s%s\n", "Item No.", "Food Name", "Description", "Price (S$)");
+		
+		if(menus.size() < 1)
+		{
+			System.out.println("No menu to display\n");
+		} else 
+		{
+			System.out.println("\nMenu list");
+			System.out.format("%-10s%-40s%-100s%s\n", "Item No.", "Food Name", "Description", "Price (S$)");
 
-		for (Menu mm : menus) {
-			System.out.format("%s%-9d%-40s%-100s%.2f\n", " ", mm.getID(), mm.getFood(), mm.getDesc(), mm.getPrice());
+			for (Menu mm : menus) {
+				System.out.format("%s%-9d%-40s%-100s%.2f\n", " ", mm.getID(), mm.getFood(), mm.getDesc(), mm.getPrice());
+			}
+			System.out.println("");
 		}
-		System.out.println("");
 	}
 
 	public void addMenu() {
@@ -196,7 +203,7 @@ public class RoomService implements Serializable, Comparable {
 		}
 	}
 
-	public Object removeMenuItem() {
+	public void removeMenuItem() {
 
 		boolean flag = false;
 		int id = errorCheckingInt("Select the index to remove item from menu: ", getLastItemID());
@@ -213,8 +220,6 @@ public class RoomService implements Serializable, Comparable {
 				str.setId(str.getID() - 1);
 			}
 		}
-
-		return this;
 	}
 
 	public void updateMenuItem() {
@@ -291,26 +296,32 @@ public class RoomService implements Serializable, Comparable {
 	// ----------------------Order Section -----------------------//
 
 	public void viewAllOrder() {
+		
+		if(orders.size() < 1)
+		{
+			System.out.println("No orders to display\n");
+		} else 
+		{
+			Collections.sort(orders, new Comparator<Order>() {
+				@Override
+				public int compare(Order o1, Order o2) {
+					String oo1 = o1.getRoomNo();
+					String oo2 = o2.getRoomNo();
+					return oo1.compareTo(oo2);
+				}
+			});
 
-		Collections.sort(orders, new Comparator<Order>() {
-			@Override
-			public int compare(Order o1, Order o2) {
-				String oo1 = o1.getRoomNo();
-				String oo2 = o2.getRoomNo();
-				return oo1.compareTo(oo2);
+			System.out.println("\nViewing all Order");
+			System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Item No.", "Food Name",
+					"Price (S$)", "Quantity", "Remarks", "Status", "Date/Time");
+			for (Order oo : orders) {
+
+				System.out.format("%-15s%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getRoomNo(), oo.getItemID(),
+						oo.getOrdFName(), oo.getPrice(), oo.getQuan(), oo.getOrdRemarks(), oo.getStatus(),
+						oo.getDateTime());
 			}
-		});
-
-		System.out.println("\nViewing all Order");
-		System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Item No.", "Food Name",
-				"Price (S$)", "Quantity", "Remarks", "Status", "Date/Time");
-		for (Order oo : orders) {
-
-			System.out.format("%-15s%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getRoomNo(), oo.getItemID(),
-					oo.getOrdFName(), oo.getPrice(), oo.getQuan(), oo.getOrdRemarks(), oo.getStatus(),
-					oo.getDateTime());
+			System.out.println("");
 		}
-		System.out.println("");
 	}
 
 	public void viewOrderByRoomID(String roomID) {
@@ -390,7 +401,7 @@ public class RoomService implements Serializable, Comparable {
 		}
 	}
 
-	public Object removeOrderItem(String roomNo) {
+	public void removeOrderItem(String roomNo) {
 
 		boolean flag = false;
 		int index = errorCheckingInt("Enter index to remove item from order: ", getLastItemID(roomNo));
@@ -414,7 +425,6 @@ public class RoomService implements Serializable, Comparable {
 			}
 		}
 
-		return this;
 	}
 
 	public void finalizeOrder(String roomNo) {
@@ -435,7 +445,7 @@ public class RoomService implements Serializable, Comparable {
 		}
 	}
 
-	public Object updateOrderItem(String roomNo) {
+	public void updateOrderItem(String roomNo) {
 
 		Scanner input = new Scanner(System.in);
 
@@ -506,8 +516,6 @@ public class RoomService implements Serializable, Comparable {
 			}
 
 		}
-
-		return this;
 	}
 
 	// ----------------------Other Section -----------------------//
@@ -525,7 +533,6 @@ public class RoomService implements Serializable, Comparable {
 			if (oo.getRoomNo().equals(roomNo))
 				i += 1;
 		}
-
 		return i;
 	}
 
