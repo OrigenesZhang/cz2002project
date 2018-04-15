@@ -242,7 +242,6 @@ public class Main {
         System.out.println("Successfully initialized the system!");
     }
 
-
     private static void saveToFile() {
         //Save room info
         roomMgr.saveToFile(roomFileName);
