@@ -151,9 +151,9 @@ public class GuestMgr {
 	
 	public void mainGuestView(RoomMgr rm){
 		int choice;
+		Scanner sc = new Scanner(System.in);
+
 		do {
-			String dummy;
-			Scanner sc = new Scanner(System.in);
 			System.out.println("");
 			System.out.println("=>Please select from the following:");
 			System.out.println("(1) Create New GUEST detail");
