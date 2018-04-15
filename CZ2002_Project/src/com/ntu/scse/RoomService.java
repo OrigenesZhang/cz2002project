@@ -1,6 +1,6 @@
 package com.ntu.scse;
 
-import java.io.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
