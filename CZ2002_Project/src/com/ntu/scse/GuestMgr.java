@@ -1,13 +1,8 @@
 package com.ntu.scse;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 
 public class GuestMgr {
@@ -96,11 +91,11 @@ public class GuestMgr {
 		} else 
 		{
 			System.out.println("\nDisplay Guest List: \n");
-			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", "Guest ID", "First Name", "Last Name",
+			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Guest ID", "First Name", "Last Name",
 					"Gender", "Credit Card No.", "Address", "Country", "ID Type", "ID Number");
 
 			for (Guest g : guestList) {
-				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", g.getGuestID(), g.getFirstName(),
+				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", g.getGuestID(), g.getFirstName(),
 						g.getLastName(), g.getGender(), g.getCreditCardNo(), g.getAddress(), g.getCountry(), g.getIdType(),
 						g.getIdNumber());
 			}
