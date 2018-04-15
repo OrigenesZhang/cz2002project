@@ -402,11 +402,10 @@ public class GuestMgr {
 		System.out.print("* Your idNumber is: " + idNumber + "\n");
 
 		System.out.println("    Saving your particular to the system...");
-		addNewGuest(firstName, lastName, gender, creditCardNo, address, country, idTypeName[idType], idNumber);
+		addNewGuest(firstName, lastName, gender, creditCardNo, address, country, idTypeName[idType-1], idNumber);
 		System.out.print("    The information of " + firstName + " " + lastName + " have successfully saved.\n");
 		System.out.println("");
 		System.out.println("    Please press the RETURN button to return the main menu.");
 		sc.nextLine();
 	}
-
 }
