@@ -114,12 +114,6 @@ public class GuestMgr {
 				new Guest(getNewGuestID(), firstName, lastName, gender, creditCardNo, address, country, idType, idNumber));
 	}
 	
-	private int randomNumber(int max) {
-		Random rand = new Random();
-		int n = rand.nextInt(max);
-		return n;
-	}
-	
 	public int getNewGuestID() {
 
 		int id = 1000;
