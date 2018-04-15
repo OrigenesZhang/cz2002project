@@ -101,7 +101,7 @@ public class GuestMgr {
 
 			for (Guest g : guestList) {
 				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", g.getGuestID(), g.getFirstName(),
-						g.getLastName(), g.getGender(), g.getCreditCardNo(), g.getAddress(), g.getCountry(), g.getGuestID(),
+						g.getLastName(), g.getGender(), g.getCreditCardNo(), g.getAddress(), g.getCountry(), g.getIdType(),
 						g.getIdNumber());
 			}
 		} 
@@ -112,7 +112,7 @@ public class GuestMgr {
 
 		guestList.add(
 				new Guest(getNewGuestID(), firstName, lastName, gender, creditCardNo, address, country, idType, idNumber));
-	}
+	} 
 	
 	public int getNewGuestID() {
 
@@ -403,6 +403,7 @@ public class GuestMgr {
 
 		System.out.println("    Saving your particular to the system...");
 		addNewGuest(firstName, lastName, gender, creditCardNo, address, country, idTypeName[idType-1], idNumber);
+		System.out.println("idTypeName: " + idTypeName[idType-1] );
 		System.out.print("    The information of " + firstName + " " + lastName + " have successfully saved.\n");
 		System.out.println("");
 		System.out.println("    Please press the RETURN button to return the main menu.");
