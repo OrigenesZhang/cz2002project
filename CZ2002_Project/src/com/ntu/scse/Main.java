@@ -30,7 +30,6 @@ public class Main {
 
             System.out.println("(1) Create/Update/Search GUEST detail;");
             System.out.println("(2) Create/Update/Remove/Print RESERVATION;");
-            //System.out.println("(3) Update ROOM details;");
             System.out.println("(3) Print/Check/Update ROOM details");
             System.out.println("(4) Create ROOM SERVICE orders;");
             System.out.println("(5) Create/Update/Remove ROOM SERVICE MENU items;");
@@ -38,14 +37,13 @@ public class Main {
             System.out.println("(7) Room CHECK-IN (for WALK-IN or RESERVATION)");
             System.out.println("(8) Room CHECK-OUT and print BILL invoice");
             System.out.println("(9) Print ROOM STATUS statistic report");
-            System.out.println("(10) Save to file");
-            System.out.println("(11) Exit");
+            System.out.println("(10) Exit");
             System.out.println("");
-            System.out.print("        Enter the number of your choice: ");
+            System.out.print("Enter the number of your choice: ");
             choice = sc.nextInt();
             switch (choice) {
                 case 1: /* (1) Create/Update/Search GUEST detail */
-                    guestMgr.addNewGuest("Christopher", "Lim", 'M',"12345","54321",1,"24680");//TEMPORARY
+                	guestMgr.mainGuestView(roomMgr);
                     break;
 
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */
@@ -77,7 +75,7 @@ public class Main {
                 case 9: /* (9) Print ROOM STATUS statistic report */
                     break; 
                     
-                case 11: /* (11) Exit */
+                case 10: /* (11) Exit */
                     break;
 
                 default:
@@ -159,19 +157,8 @@ public class Main {
         catch (IOException e){
             System.out.println("File IO Error! " + e.getMessage());
         }
-        /*
-		//Save room info
-		roomMgr.saveToFile(roomFileName);
-		//Save guest info
-		guestMgr.saveToFile(guestFileName);
-		//Save bill info
-		billMgr.saveToFile(billFileName);
-		//Save reservation info
-		reservationMgr.saveToFile(reservationFileName);
-		//Save room service menu info
-		roomService.saveToFile(menuFileName);
-		*/
-		System.out.println("Saved to file!");
+        //for checking
+		//System.out.println("Saved to file!");
 	}
 }
 
