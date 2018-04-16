@@ -47,6 +47,7 @@ public class Main {
                     break;
 
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */
+                	reservationMgr.resvOptions(guestMgr, roomMgr);
                     break;
 
                 case 3: /* (3) Print/Check/Update ROOM details */
