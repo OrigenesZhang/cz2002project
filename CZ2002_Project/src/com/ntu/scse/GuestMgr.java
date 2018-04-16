@@ -38,11 +38,18 @@ public class GuestMgr {
 	public int getIDfromName(String lastName, String firstName) {
 		for (Guest g : guestList) {
 			if (g.getLastName().equals(lastName) && g.getFirstName().equals(firstName)) {
-				System.out.println("Last Name: " + g.getLastName() + " First name: " + g.getFirstName());
 				return g.getGuestID();
 			}
 		}
 		return -1;
+	}
+	public String getNamefromID(int id) {
+		for (Guest g : guestList) {
+			if (g.getGuestID()== id) {
+				return g.getFirstName() + " " + g.getLastName();
+			}
+		}
+		return "";
 	}
 
 	public void searchGuest(String lastName, String firstName) {
@@ -114,12 +121,6 @@ public class GuestMgr {
 		}
 
 		return null;
-	}
-	private boolean checkGap() { //Checks if any gap due to previously deleted guest
-		if (guestList.size() == 0)
-			return false;
-		else
-			return !(guestList.get(guestList.size()-1).getGuestID() == guestList.size());
 	}
 
 	public boolean checkGuestExist(int guestID){
@@ -422,5 +423,14 @@ public class GuestMgr {
 		System.out.println("    Please press the RETURN key to return to the previous menu.");
 		sc.nextLine();
 		return newGuest;
+	}
+	public int getNumGuest(){
+		return guestList.size();
+	}
+	private boolean checkGap() { //Checks if any gap due to previously deleted guest
+		if (guestList.size() == 0)
+			return false;
+		else
+			return !(guestList.get(guestList.size()-1).getGuestID() == guestList.size());
 	}
 }

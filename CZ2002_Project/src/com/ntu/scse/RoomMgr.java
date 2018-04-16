@@ -58,7 +58,16 @@ public class RoomMgr implements Serializable {
 					viewSelectedRoom();
 					break;
 				case 3:
-					viewAllRoomByStatus();
+					System.out.println("\nView all Room by status option:");
+					System.out.println("(1) Vacant");
+					System.out.println("(2) Occupied");
+					System.out.println("(3) Reserved");
+					System.out.println("(4) Under Maintenance");
+					System.out.println("(5) Exit");
+					choice = errorCheckingInt("Select an option: ", 5);
+
+					if(choice != 5)
+						viewAllRoomByStatus(choice);
 					break;
 				case 4:
 					break;
@@ -348,8 +357,8 @@ public class RoomMgr implements Serializable {
 
 			for (int i = 0; i < 4; i++) {
 				lastIndex = numVacantRoom[i];
-				System.out.println("\n" + roomType[i] + ": Number: " + numVacantRoom[i] + " out of " + numRoom[i]);
-				System.out.print("Rooms: ");
+				System.out.println("\n" + roomType[i] + ": " + numVacantRoom[i] + " Vacant rooms out of " + numRoom[i]);
+				System.out.print("Vacant Rooms: ");
 
 				if (lastIndex > 1) {
 					for (Room r : room) {
@@ -369,7 +378,7 @@ public class RoomMgr implements Serializable {
 
 			}
 
-		} else {
+		} else if (choice == 2){
 			int[] numStatusRoom = new int[4];
 
 			for (int i = 0; i < 4; i++) {
@@ -401,48 +410,48 @@ public class RoomMgr implements Serializable {
 				else
 					System.out.println(" - \n");
 			}
-		}
+		} else
+			System.out.println("Invalid Choice!");
 
-		System.out.println("");
+		System.out.println();
 	}
 	
-	public void viewAllRoomByStatus()
+	public int viewAllRoomByStatus(int choice)
 	{
-		int choice;
-		System.out.println("\nView all Room by status option:");
-		System.out.println("(1) Vacant");
-		System.out.println("(2) Occupied");
-		System.out.println("(3) Reserved");
-		System.out.println("(4) Under Maintenance");
-		System.out.println("(5) Exit");
-		choice = errorCheckingInt("Select an option: ", 5);
-		
-		if(choice != 5) {
-			System.out.println("\nViewing " + status[choice-1] + " Room: \n");
+		int count = 0;
+		for (Room r : room)
+			if(r.getRoomStatus().equals(status[choice-1]))
+				count++;
+
+		if(count != 0) {
+			System.out.println("\nViewing " + status[choice - 1] + " Room: \n");
 			System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
 					"Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
 			for (Room r : room) {
-				if(r.getRoomStatus().equals(status[choice-1])) {
+				if (r.getRoomStatus().equals(status[choice - 1])) {
 					System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(), r.getRoomType(),
 							r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(), r.getRoomStatus(), r.getRoomRate(),
 							r.getGuest());
 				}
 			}
 		}
+		else
+			System.out.println("No " + status[choice-1] + " Rooms");
+		return count;
 	}
 
     public void viewAllVacantRoom() {
-        System.out.println("\nViewing " + status[0] + " Rooms: \n");
-        System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
-                "Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
-        for (Room r : room) {
-            if (r.getRoomStatus().equals(status[0])) {
-                System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(), r.getRoomType(),
-                        r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(), r.getRoomStatus(), r.getRoomRate(),
-                        r.getGuest());
-            }
-        }
-    }
+		int numVacant = 0;
+		for (Room r : room) {
+			if (r.getRoomStatus().equals(status[0]))
+				numVacant++;
+		}
+		if (numVacant == 0)
+			System.out.println("Hotel fully occupied!");
+		else {
+			viewAllRoomByStatus(1);
+		}
+	}
 	public boolean checkValidRoomForOrder(String roomNo) {
 		boolean result = false;
 
@@ -474,7 +483,7 @@ public class RoomMgr implements Serializable {
 		//"Vacant", "Occupied", "Reserved", "Under Maintenance"
 		for (Room r : room) {
 			if (r.getRoomNO().equals(roomNo)) {
-				if (r.getRoomStatus() == this.status[status]) {
+				if (r.getRoomStatus().equals(this.status[status])) {
 					System.out.println("Room is already " + this.status[status]);
 					return;
 				}
@@ -488,6 +497,70 @@ public class RoomMgr implements Serializable {
 		System.out.println("Room does not exist!");
 	}
 
+	public void checkIn(ReservationMgr resvMgr, GuestMgr guestMgr){
+		Scanner sc = new Scanner(System.in);
+		Reservation resv;
+		int choice, resvNo, numResv;
+		do {
+			System.out.println("(1) Walk-in");
+			System.out.println("(2) Reservation");
+			System.out.println("(3) Back");
+			choice = sc.nextInt();
+
+			if (choice == 1) { //WALK IN
+				resv = resvMgr.createNewResv(guestMgr, this);
+				if (resv == null){ //failed
+					System.out.println("Operation aborted!");
+				}else{ //succeed
+					resv.setResvStatus("CHECKED-IN");
+					assignRoom(resv.getRoomNo(),1); //change room to occupied
+					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked into room " + resv.getRoomNo());
+				}
+
+			} else if (choice == 2){ //RESERVATION
+				numResv = resvMgr.readReservationListByStatus(1); //show all confirmed resv
+				if (numResv != 0) {
+					System.out.println("Enter reservation no. to check in:");
+					resvNo = sc.nextInt();
+					resv = resvMgr.searchReservation(resvNo);
+					if (resv != null) {
+						if (resv.getResvStatus().equals("CONFIRMED")) {
+							assignRoom(resv.getRoomNo(),1); //change room to occupied
+							resv.setResvStatus("CHECKED-IN");
+							System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked into room " + resv.getRoomNo());
+						}
+						else
+							System.out.println("Please enter a valid confirmed reservation no.!");
+					}
+				}
+			}else if (choice == 3) //BACK
+				break;
+			else
+				System.out.println("Invalid Input!");
+		} while (choice != 3);
+	}
+
+	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr){
+		int resvNo, numResv;
+		Scanner sc = new Scanner(System.in);
+		Reservation resv;
+		numResv = resvMgr.readReservationListByStatus(3); //show all checked-in resv
+		if (numResv != 0){
+			System.out.println("Enter reservation no. to check out:");
+			resvNo = sc.nextInt();
+			resv = resvMgr.searchReservation(resvNo);
+
+			if (resv != null) {
+				if (resv.getResvStatus().equals("CHECKED-IN")) {
+					assignRoom(resv.getRoomNo(), 0); //set room to vacant
+					resv.setResvStatus("CHECKED-OUT");
+					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room " + resv.getRoomNo());
+				}
+				else
+					System.out.println("Please enter a valid checked-in reservation no.!");
+			}
+		}
+	}
 
 	private int getNumTypeRoom(String roomType) {
 		int numRoom = 0;

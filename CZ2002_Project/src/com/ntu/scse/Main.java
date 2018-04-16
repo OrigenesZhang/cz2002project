@@ -65,12 +65,15 @@ public class Main {
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
+                    roomMgr.checkIn(reservationMgr,guestMgr);
                     break;
 
                 case 8: /* (8) Room CHECK-OUT and print BILL invoice */
+                    roomMgr.checkOut(reservationMgr,guestMgr);
                     break;
 
                 case 9: /* (9) Print ROOM STATUS statistic report */
+                    roomMgr.RoomStatusStatic();
                     break; 
                     
                 case 10: /* (10) Exit */
