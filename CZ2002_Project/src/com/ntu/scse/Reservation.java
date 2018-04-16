@@ -1,103 +1,131 @@
 package com.ntu.scse;
 
 import java.io.Serializable;
-import java.util.Date;
 
-class ResvStatus {
-    public static int
-            VACANT = 1,
-            OCCUPIED = 2,
-            RESERVED = 3,
-            UNDER_MT = 4;
-}
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-public class Reservation implements Serializable{
-    private int resvNo, resvStatus, adultNo, kidNo, roomFloor, roomNo, guestID;
-    private Date dateCheckIn, dateCheckOut;
+public class Reservation implements Serializable, Comparable<Reservation>{
+    private int resvNo, adultNo, kidNo, guestID;
+	String roomNo, resvStatus;
+    private LocalDate dateCheckIn, dateCheckOut;
+    private LocalTime resvTime;
 
 
     public Reservation(int resvNo,
-                       int roomFloor,
-                       int roomNo,
+    				   String roomNo,
                        int guestID,
-                       Date dateCheckIn,
                        int adultNo,
-                       int kidNo
+                       int kidNo,
+                       LocalDate dateCheckIn,
+                       LocalDate dateCheckOut,
+                       String resvStatus,
+                       LocalTime resvTime
                        ) {
         this.resvNo = resvNo;
+        this.guestID = guestID;
         this.adultNo = adultNo;
         this.kidNo = kidNo;
-        this.roomFloor = roomFloor;
         this.roomNo = roomNo;
-        this.guestID = guestID;
         this.dateCheckIn = dateCheckIn;
-    }
-    
-    public int getResvNo() {
-        return resvNo;
-    }
-
-    public int getResvStatus() {
-        return resvStatus;
-    }
-
-    public void setResvStatus(int resvStatus) {
-        this.resvStatus = resvStatus;
-    }
-
-    public int getAdultNo() {
-        return adultNo;
-    }
-
-    public void setAdultNo(int adultNo) {
-        this.adultNo = adultNo;
-    }
-
-    public int getKidNo() {
-        return kidNo;
-    }
-
-    public void setKidNo(int kidNo) {
-        this.kidNo = kidNo;
-    }
-
-    public int getRoomFloor() {
-        return roomFloor;
-    }
-
-    public void setRoomFloor(int roomFloor) {
-        this.roomFloor = roomFloor;
-    }
-
-    public int getRoomNo() {
-        return roomNo;
-    }
-
-    public void setRoomNo(int roomNo) {
-        this.roomNo = roomNo;
-    }
-
-    public int getGuestID() {
-        return guestID;
-    }
-
-    public void setGuestID(int guestID) {
-        this.guestID = guestID;
-    }
-
-    public Date getDateCheckIn() {
-        return dateCheckIn;
-    }
-
-    public void setDateCheckIn(Date dateCheckIn) {
-        this.dateCheckIn = dateCheckIn;
-    }
-
-    public Date getDateCheckOut() {
-        return dateCheckOut;
-    }
-
-    public void setDateCheckOut(Date dateCheckOut) {
         this.dateCheckOut = dateCheckOut;
+        this.resvStatus = resvStatus;
+        this.resvTime = resvTime;
     }
+
+
+	public int getResvNo() {
+		return resvNo;
+	}
+
+
+	public int getAdultNo() {
+		return adultNo;
+	}
+
+
+	public int getKidNo() {
+		return kidNo;
+	}
+
+
+	public int getGuestID() {
+		return guestID;
+	}
+
+
+	public String getRoomNo() {
+		return roomNo;
+	}
+
+
+	public String getResvStatus() {
+		return resvStatus;
+	}
+
+
+	public LocalDate getDateCheckIn() {
+		return dateCheckIn;
+	}
+
+
+	public LocalDate getDateCheckOut() {
+		return dateCheckOut;
+	}
+
+
+	public LocalTime getResvTime() {
+		return resvTime;
+	}
+
+
+	public void setResvNo(int resvNo) {
+		this.resvNo = resvNo;
+	}
+
+
+	public void setAdultNo(int adultNo) {
+		this.adultNo = adultNo;
+	}
+
+
+	public void setKidNo(int kidNo) {
+		this.kidNo = kidNo;
+	}
+
+
+	public void setGuestID(int guestID) {
+		this.guestID = guestID;
+	}
+
+
+	public void setRoomNo(String roomNo) {
+		this.roomNo = roomNo;
+	}
+
+
+	public void setResvStatus(String resvStatus) {
+		this.resvStatus = resvStatus;
+	}
+
+
+	public void setDateCheckIn(LocalDate dateCheckIn) {
+		this.dateCheckIn = dateCheckIn;
+	}
+
+
+	public void setDateCheckOut(LocalDate dateCheckOut) {
+		this.dateCheckOut = dateCheckOut;
+	}
+
+
+	public void setResvTime(LocalTime resvTime) {
+		this.resvTime = resvTime;
+	}
+
+	@Override
+	public int compareTo(Reservation comparesTo) {
+		int compareID=(comparesTo).getResvNo();
+		return this.resvNo-compareID;
+	}
 }

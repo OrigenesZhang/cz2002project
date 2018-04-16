@@ -2,7 +2,7 @@ package com.ntu.scse;
 
 import java.io.Serializable;
 
-public class Menu implements Serializable{
+public class Menu implements Serializable, Comparable<Menu>{
 
     private String fName, desc;
     private float price;
@@ -33,7 +33,6 @@ public class Menu implements Serializable{
 
     public void setId(int i) {
         this.id = i;
-
     }
 
     public void setfName(String fName) {
@@ -48,5 +47,10 @@ public class Menu implements Serializable{
         this.price = price;
     }
 
+    @Override
+    public int compareTo(Menu comparesTo) {
+        int compareID=(comparesTo).getID();
+        return this.id-compareID;
+    }
 
 }

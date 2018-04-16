@@ -2,16 +2,11 @@ package com.ntu.scse;
 
 import java.io.Serializable;
 
-class IDType{
-    public static final int
-            DRIVINGLICENSE = 1,
-            PASSPORT = 2;
-}
 
-public class Guest implements Serializable{
-    private int guestID, idType;
+public class Guest implements Serializable, Comparable<Guest>{
+    private int guestID;
     private char gender;
-    private String firstName, lastName, creditCardNo, address, country, idNumber;
+    private String firstName, lastName, creditCardNo, address, country, idNumber, idType;
 
     public Guest(int guestID,
                  String firstName,
@@ -19,8 +14,9 @@ public class Guest implements Serializable{
                  char gender,
                  String creditCardNo,
                  String address,
-                 int idType,
-                 String idNumber) throws InvalidInfoException {
+                 String country,
+                 String idType,
+                 String idNumber){
         this.guestID = guestID;
         this.gender = gender;
         this.idType = idType;
@@ -28,6 +24,7 @@ public class Guest implements Serializable{
         this.lastName = lastName;
         this.creditCardNo = creditCardNo;
         this.address = address;
+        this.country = country;
         this.idNumber = idNumber;
     }
 
@@ -36,7 +33,7 @@ public class Guest implements Serializable{
         return guestID;
     }
 
-    public int getIdType() {
+    public String getIdType() {
         return idType;
     }
 
@@ -59,25 +56,23 @@ public class Guest implements Serializable{
     public String getAddress() {
         return address;
     }
+    
+    public String getCountry() {
+		return country;
+	}
 
-
-    public String getIdNumber() {
+	public String getIdNumber() {
         return idNumber;
     }
 
     //SETTER
 
-    public void setIdType(int idType) {
+    public void setIdType(String idType) {
         this.idType = idType;
     }
 
-    public void setGender(char gender) throws InvalidInfoException {
-        if (Character.toUpperCase(gender) == 'M' ||
-                Character.toUpperCase(gender) == 'F') {
-            this.gender = gender;
-        } else {
-            throw new InvalidInfoException("Setting Gender");
-        }
+    public void setGender(char gender)  {
+       this.gender = gender;
     }
 
     public void setFirstName(String firstName) {
@@ -95,8 +90,18 @@ public class Guest implements Serializable{
     public void setAddress(String address) {
         this.address = address;
     }
+    
+    public void setCountry(String country) {
+		this.country = country;
+	}
 
-    public void setIdNumber(String idNumber) {
+	public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
+    }
+
+    @Override
+    public int compareTo(Guest comparesTo) {
+        int compareID=(comparesTo).getGuestID();
+        return this.guestID-compareID;
     }
 }

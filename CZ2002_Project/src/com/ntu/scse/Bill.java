@@ -2,7 +2,7 @@ package com.ntu.scse;
 
 import java.io.Serializable;
 
-public class Bill implements Serializable {
+public class Bill implements Comparable<Bill> {
 	private int billNo;
     private double price, quantity, discount, taxRate, total;
     private Menu item;
@@ -12,7 +12,7 @@ public class Bill implements Serializable {
                 double quantity,
                 double discount,
                 double taxRate
-                ) throws InvalidInfoException {
+                ) {
     	this.billNo = billNo;
         this.item = item;
         this.quantity = quantity;
@@ -66,5 +66,11 @@ public class Bill implements Serializable {
 
     public void setItem(Menu item) {
         this.item = item;
+    }
+
+    @Override
+    public int compareTo(Bill comparesTo) {
+        int compareID=(comparesTo).getBillNo();
+        return this.billNo-compareID;
     }
 }
