@@ -15,50 +15,34 @@ public class GuestMgr {
 
 	private List<Guest> guestList;
 	private final String[] idTypeName = { "DRIVING LICENSE", "PASSPORT" };
-	private int guestID; 
 
 	public GuestMgr(ArrayList guest) {
-		if (guest == null) {
+		if (guest == null)
 			this.guestList = new ArrayList<>();
-			guestID = 1000;
-			System.out.println("Guest initialized!");
-		} else {
+		else
 			this.guestList = guest;
-			System.out.println("Room Service Menu loaded!");
-		}
+		System.out.println(this.guestList.size() + " Guests loaded!");
 	}	
 
-	public Object readGuestInfo(int guestID) {
-		boolean read = false;
-
+	public Guest readGuestInfo(int guestID) {
 		for (Guest g : guestList) {
-			if (g.getGuestID() == guestID && !read) {
+			if (g.getGuestID() == guestID) {
 				System.out.println("Last Name: " + g.getLastName() + " First name: " + g.getFirstName());
-				read = true;
-				break;
+				return g;
 			}
 		}
-
-		if (!read)
-			System.out.println("Guest ID does not exist!");
-
-		return this;
+		System.out.println("Guest does not exist!");
+		return null;
 	}
 
-	public void readGuestInfo(String lastName, String firstName) {
-		boolean read = false;
-
+	public int getIDfromName(String lastName, String firstName) {
 		for (Guest g : guestList) {
-			if (g.getLastName().equals(lastName) && g.getFirstName().equals(firstName) && !read) {
+			if (g.getLastName().equals(lastName) && g.getFirstName().equals(firstName)) {
 				System.out.println("Last Name: " + g.getLastName() + " First name: " + g.getFirstName());
-				read = true;
-				break;
+				return g.getGuestID();
 			}
 		}
-
-		if (!read)
-			System.out.println("Guest ID does not exist!");
-
+		return -1;
 	}
 
 	public void searchGuest(String lastName, String firstName) {
@@ -87,7 +71,7 @@ public class GuestMgr {
 	public void readGuestList() {
 		
 		if (guestList.size() < 1) {
-			System.out.println("No GUEST details available: " + guestList.size());
+			System.out.println("No guests registered!");
 		} else 
 		{
 			System.out.println("\nDisplay Guest List: \n");
@@ -102,27 +86,48 @@ public class GuestMgr {
 		} 
 	}
 
-	public void addNewGuest(String firstName, String lastName, char gender, String creditCardNo, String address,
+	public Guest addNewGuest(String firstName, String lastName, char gender, String creditCardNo, String address,
 			String country, String idType, String idNumber) {
 
-		guestList.add(
-				new Guest(getNewGuestID(), firstName, lastName, gender, creditCardNo, address, country, idType, idNumber));
-	} 
-	
-	public int getNewGuestID() {
+		int newGuestID = 0;
 
-		int id = 1000;
-
-		try {
-			Guest gg = guestList.get(guestList.size() - 1);
-			if (guestList.size() < 1)
-				throw new IndexOutOfBoundsException();
-			
-			return gg.getGuestID()+1;
-		} catch (IndexOutOfBoundsException e)
-		{
-			return id;
+		if (checkGap() == false) { //no gap, add guest at back
+			newGuestID = guestList.size() + 1;
+		} else { //add guest in between
+			for (int i = 0; i < guestList.size(); i++) {
+				if (guestList.get(i).getGuestID() != (i + 1)) {
+					newGuestID = i + 1;
+					break;
+				}
+			}
 		}
+		try {
+
+			Guest newGuest = new Guest(newGuestID, firstName, lastName, gender,
+					creditCardNo, address, country, idType, idNumber);
+			//NEED TO CHECK IF GUEST ALREADY EXIST?
+			guestList.add(newGuest);
+			System.out.println("Total number of guests: " + guestList.size());
+			return newGuest;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	private boolean checkGap() { //Checks if any gap due to previously deleted guest
+		if (guestList.size() == 0)
+			return false;
+		else
+			return !(guestList.get(guestList.size()-1).getGuestID() == guestList.size());
+	}
+
+	public boolean checkGuestExist(int guestID){
+		for (Guest g : guestList){
+			if (g.getGuestID() == guestID)
+				return true;
+		}
+		return false;
 	}
 
 	public void removeGuest(int guestID) {
@@ -134,6 +139,7 @@ public class GuestMgr {
 
 			if (str.getGuestID() == guestID && !flag) {
 				iter.remove();
+				System.out.println("Guest ID " + guestID + " removed!");
 				flag = true;
 			}
 		}
@@ -150,7 +156,7 @@ public class GuestMgr {
 	//-----------------------------------------------------------------//
 	
 	public void mainGuestView(RoomMgr rm){
-		int choice;
+		int choice, guestID;
 		Scanner sc = new Scanner(System.in);
 
 		do {
@@ -183,11 +189,22 @@ public class GuestMgr {
 					switch (ch) {
 					case 1:
 						System.out.printf("Please key in the GuestID: ");
-						int guestID = sc.nextInt();
-						sc.nextLine();
-						updateGuestByID(guestID);
+						guestID = sc.nextInt();
+						if (checkGuestExist(guestID))
+							updateGuestByID(guestID);
+						else
+							System.out.printf("Guest does not exist!");
 						break;
 					case 2:
+						System.out.printf("Please key in the Guest's first name: ");
+						String fName = sc.nextLine();
+						System.out.printf("Please key in the Guest's last name: ");
+						String lName = sc.nextLine();
+						guestID = getIDfromName(lName,fName);
+						if (checkGuestExist(guestID))
+							updateGuestByID(guestID);
+						else
+							System.out.printf("Guest does not exist!");
 						break;
 					case 3:
 						System.out.println("Returning to the previous menu.");
@@ -203,11 +220,11 @@ public class GuestMgr {
 				rm.viewSelectedRoom();
 				break;
 				
-			case 4: /* (4) Return to the previous menu */
+			case 4: /* (4) View all GUEST detail */
 				readGuestList();
 				break;
 
-			case 5: /* (4) Return to the previous menu */
+			case 5: /* (5) Return to the previous menu */
 				System.out.println("Returning to the main menu.");
 				break;
 
@@ -344,9 +361,10 @@ public class GuestMgr {
 
 	}
 
-	public void createNewGuest() {
+	public Guest createNewGuest() {
 		Scanner sc = new Scanner(System.in);
 		String dummy, firstName, lastName, creditCardNo, address, country, idNumber;
+		Guest newGuest;
 		char gender;
 		int idType;
 
@@ -396,12 +414,13 @@ public class GuestMgr {
 		idNumber = sc.nextLine();
 		System.out.print("* Your idNumber is: " + idNumber + "\n");
 
-		System.out.println("    Saving your particular to the system...");
-		addNewGuest(firstName, lastName, gender, creditCardNo, address, country, idTypeName[idType-1], idNumber);
-		System.out.println("idTypeName: " + idTypeName[idType-1] );
-		System.out.print("    The information of " + firstName + " " + lastName + " have successfully saved.\n");
+		System.out.println("    Saving your particulars to the system...");
+		newGuest = addNewGuest(firstName, lastName, gender, creditCardNo, address, country, idTypeName[idType-1], idNumber);
+
+		System.out.println("    The information of " + firstName + " " + lastName + " is successfully saved.");
 		System.out.println("");
-		System.out.println("    Please press the RETURN button to return the main menu.");
+		System.out.println("    Please press the RETURN key to return to the previous menu.");
 		sc.nextLine();
+		return newGuest;
 	}
 }

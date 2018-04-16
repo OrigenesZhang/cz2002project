@@ -1,15 +1,6 @@
 package com.ntu.scse;
 
-import static com.ntu.scse.RoomStatus.RESERVED;
-import static com.ntu.scse.roomUpdateChoice.ROOMSTATUS;
-
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
-
 public class BillMgr {
 //    Functional Requirement:
 //    1. Given a Guest ID, read/write his/her current bills from file
@@ -56,7 +47,7 @@ public class BillMgr {
 	        System.out.println("Total number of bills: " + numOfBill);
 	        return newBill;
     	}
-    	catch (InvalidInfoException e) {
+    	catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -88,27 +79,6 @@ public class BillMgr {
 	
 	public ArrayList<Bill> saveToFile() {
 		return billList;
-		/*
-		if (numOfBill == 0) { //Nothing to save
-    		System.out.println("No bills to save to file!");
-    	}
-    	else {
-	    	try {
-				FileOutputStream foStream = new FileOutputStream(billFileName);
-				BufferedOutputStream boStream = new BufferedOutputStream(foStream);
-				ObjectOutputStream doStream = new ObjectOutputStream(boStream);
-				
-				for (int i = 0 ; i < numOfBill ; i++) {
-					doStream.writeObject(billList.get(i)); //Write guest list into file
-				}
-				System.out.println(numOfBill + " Bills saved to " + billFileName);
-				doStream.close();
-			}
-			catch (IOException e){
-				System.out.println("[Bill] File IO Error!" + e.getMessage());
-			}
-    	}
-    	*/
     }
 	
     private boolean checkGap() { //Checks if any gap due to previously deleted bills

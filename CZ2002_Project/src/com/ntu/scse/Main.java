@@ -1,10 +1,8 @@
 package com.ntu.scse;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.io.*;
-import com.ntu.scse.InvalidInfoException.*;
 
 public class Main {
 
@@ -21,19 +19,19 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         Initialize();
-
+        saveToFile();
         do {
             System.out.println("");
             System.out.println("============================================");
             System.out.println("======Please Select from the Following:=====");
             System.out.println("============================================");
 
-            System.out.println("(1) Create/Update/Search GUEST detail;");
-            System.out.println("(2) Create/Update/Remove/Print RESERVATION;");
+            System.out.println("(1) Create/Update/Search GUEST detail");
+            System.out.println("(2) Create/Update/Remove/Print RESERVATION");
             System.out.println("(3) Print/Check/Update ROOM details");
-            System.out.println("(4) Create ROOM SERVICE orders;");
-            System.out.println("(5) Create/Update/Remove ROOM SERVICE MENU items;");
-            System.out.println("(6) Check ROOM Availability;");
+            System.out.println("(4) Create ROOM SERVICE orders");
+            System.out.println("(5) Create/Update/Remove ROOM SERVICE MENU items");
+            System.out.println("(6) Check ROOM Availability");
             System.out.println("(7) Room CHECK-IN (for WALK-IN or RESERVATION)");
             System.out.println("(8) Room CHECK-OUT and print BILL invoice");
             System.out.println("(9) Print ROOM STATUS statistic report");
@@ -56,7 +54,6 @@ public class Main {
 
                 case 4: /* (4) Print/Create/Update/Remove ROOM SERVICE orders */
                 	roomService.ShowRoomServiceOrderOption(roomMgr);
-                	saveToFile();
                     break;
 
                 case 5: /* (5) Print/Create/Update/Remove ROOM SERVICE MENU items */
@@ -64,7 +61,7 @@ public class Main {
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
-                	
+                	roomMgr.viewAllVacantRoom();
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
@@ -76,7 +73,7 @@ public class Main {
                 case 9: /* (9) Print ROOM STATUS statistic report */
                     break; 
                     
-                case 10: /* (11) Exit */
+                case 10: /* (10) Exit */
                     break;
 
                 default:
@@ -158,8 +155,6 @@ public class Main {
         catch (IOException e){
             System.out.println("File IO Error! " + e.getMessage());
         }
-        //for checking
-		//System.out.println("Saved to file!");
 	}
 }
 

@@ -16,20 +16,19 @@ public class RoomService implements Serializable, Comparable {
 
 	public RoomService(ArrayList<Menu> m, ArrayList<Order> o) {
 		if (m == null) {// Initialize
-			this.menus = new ArrayList<Menu>();
+			this.menus = new ArrayList<>();
 			initializeMenu();
 			System.out.println("Room Service Menu initialized!");
-		} else {
+		}
+		 else {
 			this.menus = m;
-			System.out.println("Room Service Menu loaded!");
+			System.out.println(this.menus.size() + " Room Service Menu Items loaded!");
 		}
-
-		if (o == null) {// Initialize
-			this.orders = new ArrayList<Order>();
-		} else {
+		if (o == null) // Initialize
+			this.orders = new ArrayList<>();
+		else
 			this.orders = o;
-			System.out.println("Room Service Order loaded!");
-		}
+			System.out.println(this.orders.size() + " Room Service Orders loaded!");
 	}
 
 	public void ShowRoomServiceMenuOption() {

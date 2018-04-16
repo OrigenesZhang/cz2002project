@@ -44,35 +44,103 @@ public class ReservationMgr {
 			choice = sc.nextInt();
 
 			switch (choice) {
-			case 1:
-				createNewResv(gm, rm);
-				break;
+				case 1: //(1) Create New RESERVATION
+					createNewResv(gm, rm);
+					break;
 
+				case 2:	//(2) Update RESERVATION detail
+					break;
+
+				case 3: //(3) Search RESERVATION detail
+					System.out.println("Enter Reservation No.: ");
+					int resvNo = sc.nextInt();
+					readReservation(searchReservation(resvNo));
+					break;
+
+				case 4: //(4) Remove RESERVATION detail
+					removeReservation();
+					break;
+
+				case 5: //(5) View all RESERVATION detail
+					readReservationList();
+					break;
+
+				case 6: //(6) Return to the previous menu
+					break;
+
+				default:
+					System.out.println("Invalid Input!");
+					break;
 			}
 
-		} while (choice != 5);
+		} while (choice != 6);
 	}
 
 	public void createNewResv(GuestMgr gm, RoomMgr rm) {
-		int adultNo, kidNo, dayNo;
+		int adultNo, kidNo, dayNo, ch;
+		boolean valid = false;
 		String roomNo, dateIn, dateOut;
-		LocalDate localDateIn, localDateOut;
+		LocalDate localDateIn, localDateOut, localDateNow;
 		LocalTime resvTime;
+		Guest guest = null;
 
 		Scanner sc = new Scanner(System.in);
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-
-		gm.createNewGuest();
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		localDateNow = LocalDate.now();
+		do {
+			System.out.println("(1) NEW Guest");
+			System.out.println("(2) EXISTING Guest");
+			System.out.println("(3) Back");
+			ch = sc.nextInt();
+			if (ch == 1) {
+				guest = gm.createNewGuest();
+				if (guest != null)
+					valid = true;
+			}
+			else if (ch == 2) {
+				System.out.println("(1) Guest ID");
+				System.out.println("(2) Guest Name");
+				ch = sc.nextInt();
+				if (ch == 1){
+					System.out.println("Enter guest ID: ");
+					ch = sc.nextInt();
+					if (gm.checkGuestExist(ch)) {
+						guest = gm.readGuestInfo(ch);
+						valid = true;
+					}
+				}
+				else if (ch == 2){
+						System.out.println("Enter guest first name: ");
+						String fName = sc.nextLine();
+						System.out.println("Enter guest last name: ");
+						String lName = sc.nextLine();
+						ch = gm.getIDfromName(lName,fName);
+						if (gm.checkGuestExist(ch)) {
+							guest = gm.readGuestInfo(ch);
+							valid = true;
+						}
+						else
+							System.out.println("Guest does not exist!");
+				}
+				else{
+					System.out.println("Invalid Input!");
+					continue;
+				}
+			} else if (ch == 3)
+				return;
+			else
+				System.out.println("Invalid Input!");
+		} while (!valid);
 		System.out.print("Enter number of adult: ");
 		adultNo = sc.nextInt();
 		System.out.print("Enter number of kids: ");
 		kidNo = sc.nextInt();
 		sc.nextLine();
-		rm.viewResvVacantRoom(kidNo + adultNo);
+		rm.viewAllVacantRoom();
 		while (true) {
 			System.out.print("Enter Room No to book: ");
 			roomNo = sc.nextLine();
-			if (rm.checkRoomExists(roomNo)) {
+			if (rm.checkRoomEmpty(roomNo)) {
 				break;
 			} else {
 				System.out.println("Error input!\n");
@@ -85,6 +153,10 @@ public class ReservationMgr {
 
 			try {
 				localDateIn = LocalDate.parse(dateIn, format);
+				if (localDateIn.isBefore(localDateNow)) {
+					System.out.println("Error input. Check in date must be after today!");
+					continue;
+				}
 				System.out.println(format.format(localDateIn));
 				break;
 			} catch (DateTimeParseException e) {
@@ -97,8 +169,11 @@ public class ReservationMgr {
 			dateOut = sc.nextLine();
 
 			try {
-
 				localDateOut = LocalDate.parse(dateOut, format);
+				if (localDateOut.isBefore(localDateIn)) {
+					System.out.println("Error input. Check out date must be after check in date!");
+					continue;
+				}
 				System.out.println(format.format(localDateOut));
 				break;
 			} catch (DateTimeParseException e) {
@@ -107,15 +182,71 @@ public class ReservationMgr {
 		}
 
 		resvTime = LocalTime.now();
-		addResv(setNewResvNo(), roomNo, gm.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
+		addResv(roomNo, guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
 				resvTime);
-
+		rm.assignRoom(roomNo,2);
 	}
 
-	public void addResv(int rNo, String roomNo, int gID, int aNo, int kNo, LocalDate dIn, LocalDate dOut,
+	public void addResv(String roomNo, int gID, int aNo, int kNo, LocalDate dIn, LocalDate dOut,
 			String rStatus, LocalTime time) {
 
-		rList.add(new Reservation(rNo, roomNo, gID, aNo, kNo, dIn, dOut, rStatus, time));
+		int newResvNo =0;
+
+		if (checkGap() == false) { //no gap, add resv at back
+			newResvNo = numOfReservation + 1;
+		}
+		else { //add resv in between
+			for (int i = 0; i < rList.size(); i++) {
+				if (rList.get(i).getResvNo() != (i+1)) {
+					newResvNo = i+1;
+					break;
+				}
+			}
+		}
+		try {
+			rList.add(new Reservation(newResvNo, roomNo, gID, aNo, kNo, dIn, dOut, rStatus, time));
+			numOfReservation++;
+			System.out.println("Total number of reservations: " + numOfReservation);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean checkGap() { //Checks if any gap due to previously deleted resv
+		if (numOfReservation == 0)
+			return false;
+		else
+			return !(rList.get(rList.size()-1).getResvNo() == numOfReservation);
+	}
+
+	public void readReservationList() {
+
+		if (rList.size() < 1) {
+			System.out.println("No reservations available!");
+		} else{
+			System.out.println("\nDisplaying Reservation List: \n");
+			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Reservation No.", "Guest ID", "Num Adult",
+					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
+
+			for (Reservation r : rList) {
+				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
+						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
+						r.getResvTime());
+			}
+		}
+	}
+	public void readReservation(Reservation r) {
+
+		if (r != null){
+			System.out.println("\nDisplaying Reservation No. " + r.getResvNo() + ": \n");
+			System.out.format("%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Guest ID", "Num Adult",
+					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
+
+				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getGuestID(),
+						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
+						r.getResvTime());
+		}
 	}
 
 	public void updateResv(RoomMgr rm) {
@@ -154,11 +285,11 @@ public class ReservationMgr {
 
 		switch (choice) {
 		case 1:
-			rm.viewResvVacantRoom(r.getAdultNo() + r.getKidNo());
+			rm.viewAllVacantRoom();
 			while (true) {
 				System.out.print("Enter Room No to book: ");
 				String roomNo = sc.nextLine();
-				if (rm.checkRoomExists(roomNo)) {
+				if (rm.checkRoomEmpty(roomNo)) {
 					r.setRoomNo(roomNo);
 					break;
 				} else {
@@ -260,7 +391,7 @@ public class ReservationMgr {
 		Iterator<Reservation> iter = rList.iterator();
 
 		if (rList.size() < 1) {
-			System.out.println("No Reservation\n");
+			System.out.println("No Reservations to remove\n");
 		} else {
 			System.out.println("Enter the reservation no: ");
 			rNo = input.nextInt();
@@ -270,6 +401,7 @@ public class ReservationMgr {
 
 				if (str.getResvNo() == rNo && !flag) {
 					iter.remove();
+					System.out.println("Reservation number " + rNo + " removed!");
 					flag = true;
 				}
 			}
@@ -283,18 +415,4 @@ public class ReservationMgr {
 		return rList;
 	}
 
-	private int setNewResvNo() {
-
-		int id = 10000;
-
-		try {
-			Reservation r = rList.get(rList.size() - 1);
-			if (rList.size() < 1)
-				throw new IndexOutOfBoundsException();
-
-			return r.getGuestID() + 1;
-		} catch (IndexOutOfBoundsException e) {
-			return id;
-		}
-	}
 }

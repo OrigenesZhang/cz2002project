@@ -2,8 +2,6 @@ package com.ntu.scse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
@@ -12,20 +10,20 @@ import java.util.Scanner;
 public class RoomMgr implements Serializable {
 
 	private List<Room> room;
-	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suit" };
+	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suite" };
 	private String[] bedType = { "Single", "Double" };
 	private String[] facing = { "North", "South", "East", "West" };
-	private String[] status = { "Vacant", "Occupied", "Reserved", "Under Maintenace" };
+	private String[] status = { "Vacant", "Occupied", "Reserved", "Under Maintenance" };
 	private boolean[] trueFalse = { true, false };
 
 	public RoomMgr(ArrayList al) {
 		if (al == null) {
 			this.room = new ArrayList<>();
 			initializeRoom();
-			System.out.println("Room Service Menu initialized!");
+			System.out.println("Room data initialized!");
 		} else {
 			this.room = al;
-			System.out.println("Room Service Menu loaded!");
+			System.out.println("Room data loaded!");
 		}
 	}
 
@@ -133,7 +131,8 @@ public class RoomMgr implements Serializable {
 			name = input.nextLine();
 			System.out.print("Enter last name: ");
 			name = name + " " + input.nextLine();
-		} else if (choice != 3) {
+		}
+		if (choice != 3) {
 			for (Room r : room) {
 				if (r.getRoomNO().equals(roomNo) || r.getGuest().equals(name)) {
 
@@ -414,7 +413,7 @@ public class RoomMgr implements Serializable {
 		System.out.println("(1) Vacant");
 		System.out.println("(2) Occupied");
 		System.out.println("(3) Reserved");
-		System.out.println("(4) UnderMaintance");
+		System.out.println("(4) Under Maintenance");
 		System.out.println("(5) Exit");
 		choice = errorCheckingInt("Select an option: ", 5);
 		
@@ -430,11 +429,20 @@ public class RoomMgr implements Serializable {
 				}
 			}
 		}
-		
-		System.out.println("");
-		
 	}
 
+    public void viewAllVacantRoom() {
+        System.out.println("\nViewing " + status[0] + " Rooms: \n");
+        System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
+                "Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+        for (Room r : room) {
+            if (r.getRoomStatus().equals(status[0])) {
+                System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(), r.getRoomType(),
+                        r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(), r.getRoomStatus(), r.getRoomRate(),
+                        r.getGuest());
+            }
+        }
+    }
 	public boolean checkValidRoomForOrder(String roomNo) {
 		boolean result = false;
 
@@ -447,6 +455,39 @@ public class RoomMgr implements Serializable {
 
 		return result;
 	}
+    public boolean checkRoomEmpty(String roomNo) {
+        boolean result = false;
+
+        for (Room r : room) {
+            if (r.getRoomNO().equals(roomNo)) {
+                if (r.getRoomStatus().equals(status[0])) // if room is vacant
+                    return true;
+                else
+                    return false;
+            }
+        }
+        System.out.println("Room Number does not exist!");
+        return false;
+    }
+
+    public void assignRoom(String roomNo, int status){
+		//"Vacant", "Occupied", "Reserved", "Under Maintenance"
+		for (Room r : room) {
+			if (r.getRoomNO().equals(roomNo)) {
+				if (r.getRoomStatus() == this.status[status]) {
+					System.out.println("Room is already " + this.status[status]);
+					return;
+				}
+				else {
+					r.setRoomStatus(this.status[status]);
+					System.out.println("Room " + roomNo + " has been set to " + this.status[status]);
+					return;
+				}
+			}
+		}
+		System.out.println("Room does not exist!");
+	}
+
 
 	private int getNumTypeRoom(String roomType) {
 		int numRoom = 0;
@@ -496,7 +537,7 @@ public class RoomMgr implements Serializable {
 
 				if (tempRoomType.equals("Single"))
 					tempBed = 0;
-				else if (tempRoomType.equals("Deluxe") || tempRoomType.equals("VIP Suit")) {
+				else if (tempRoomType.equals("Deluxe") || tempRoomType.equals("VIP Suite")) {
 					tempBed = 1;
 					isSmoking = true;
 					isWIFI = true;

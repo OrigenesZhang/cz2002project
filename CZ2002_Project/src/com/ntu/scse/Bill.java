@@ -12,7 +12,7 @@ public class Bill implements Serializable {
                 double quantity,
                 double discount,
                 double taxRate
-                ) throws InvalidInfoException {
+                ) {
     	this.billNo = billNo;
         this.item = item;
         this.quantity = quantity;

@@ -16,7 +16,7 @@ public class Guest implements Serializable{
                  String address,
                  String country,
                  String idType,
-                 String idNumber)  {
+                 String idNumber){
         this.guestID = guestID;
         this.gender = gender;
         this.idType = idType;
