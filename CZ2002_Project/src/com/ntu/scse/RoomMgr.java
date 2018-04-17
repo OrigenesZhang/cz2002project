@@ -416,13 +416,15 @@ public class RoomMgr implements Serializable {
 		System.out.println();
 	}
 
-	public int viewAllRoomByStatus(int choice) {
-		int count = 0;
-		for (Room r : room)
-			if (r.getRoomStatus().equals(status[choice - 1]))
-				count++;
+	public void viewAllRoomByStatus(int choice) {
+		boolean flag = false;
+		for (Room r : room) //Check at least 1 of selected room type
+			if (r.getRoomStatus().equals(status[choice - 1])){
+                flag = true;
+                break;
+            }
 
-		if (count != 0) {
+		if (flag) {
 			System.out.println("\nViewing " + status[choice - 1] + " Room: \n");
 			System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
 					"Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
@@ -435,39 +437,43 @@ public class RoomMgr implements Serializable {
 			}
 		} else
 			System.out.println("No " + status[choice - 1] + " Rooms");
-		return count;
 	}
 
 	public void viewAllVacantRoom(int numGuest) {
-		
-		System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
-				"Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
-		
-		for (Room r : room) {
-			if(numGuest > 1)
-			{
-				//if guest more than 1, cannot book Single room
-				if (!r.getRoomType().equals(roomType[0]) && r.getRoomStatus().equals(status[0]))
-					System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(),
-							r.getRoomType(), r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(),
-							r.getRoomStatus(), r.getRoomRate(), r.getGuest());
-					
-			} else
-			{
-				if (r.getRoomStatus().equals(status[0]))
-					System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(),
-							r.getRoomType(), r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(),
-							r.getRoomStatus(), r.getRoomRate(), r.getGuest());
-			}
-			
-		}
-		/*
-		 * int numVacant = 0;
-		if (numVacant == 0)
-			System.out.println("Hotel fully occupied!");
-		else {
-			viewAllRoomByStatus(1);
-		}*/
+        boolean flag = false;
+        for (Room r : room) { //Check at least 1 suitable room
+            if (numGuest > 1) {
+                //if guest more than 1, cannot book Single room
+                if (!r.getRoomType().equals(roomType[0]) && r.getRoomStatus().equals(status[0]))
+                    flag = true;
+                    break;
+            } else {
+                if (r.getRoomStatus().equals(status[0]))
+                    flag = true;
+                    break;
+            }
+        }
+
+        if (flag && numGuest > 1) {
+            System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
+                    "Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+            for (Room r : room)
+            if (!r.getRoomType().equals(roomType[0]) && r.getRoomStatus().equals(status[0]))
+                System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(),
+                        r.getRoomType(), r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(),
+                        r.getRoomStatus(), r.getRoomRate(), r.getGuest());
+
+        }else if (flag && numGuest == 1){
+            System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15s%-15s\n", "Room no.", "Room Type", "Bed Type",
+                    "Room Facing", "WIFI", "Smoking", "Status", "Room Rate", "Guest");
+            for (Room r : room)
+            if (r.getRoomStatus().equals(status[0]))
+                System.out.format("%-15s%-15s%-15s%-15s%-15s%-15s%-25s%-15.2f%-15s\n", r.getRoomNO(),
+                        r.getRoomType(), r.getBedType(), r.getFacing(), r.isWIFI(), r.isSmoking(),
+                        r.getRoomStatus(), r.getRoomRate(), r.getGuest());
+        }else{
+            System.out.println("No suitable rooms are vacant!");
+        }
 	}
 	
 
