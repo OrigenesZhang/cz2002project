@@ -467,8 +467,10 @@ public class ReservationMgr {
 			System.out.print("\n" + display);
 			try {
 				tempChoice = input.nextInt();
-				if(display.equals("Enter number of kids: ") && tempChoice < 0) //only for kids 
-					throw new IllegalArgumentException("Error input\n");
+				if(display.equals("Enter number of kids: ")) { //only for kids
+					if(tempChoice < 0)
+						throw new IllegalArgumentException("Error input\n");
+				}
 				else if (tempChoice < 1)
 					throw new IllegalArgumentException("Error input\n");
 				break;
@@ -508,5 +510,4 @@ public class ReservationMgr {
 
 		return index;
 	}
-
 }
