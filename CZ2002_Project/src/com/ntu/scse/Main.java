@@ -61,7 +61,7 @@ public class Main {
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
-                	roomMgr.viewAllVacantRoom();
+                	roomMgr.viewAllRoomByStatus(1);
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
