@@ -37,8 +37,7 @@ public class ReservationMgr {
 			System.out.println("(4) Remove RESERVATION detail");
 			System.out.println("(5) View all RESERVATION detail");
 			System.out.println("(6) Return to the previous menu");
-			System.out.print("Enter the number of your choice: ");
-			choice = sc.nextInt();
+			choice = errorCheckingInt("Enter the number of your choice: ");
 
 			switch (choice) {
 				case 1: //(1) Create New RESERVATION
@@ -46,11 +45,11 @@ public class ReservationMgr {
 					break;
 
 				case 2:	//(2) Update RESERVATION detail
+					updateResvOption(rm);
 					break;
 
 				case 3: //(3) Search RESERVATION detail
-					System.out.println("Enter Reservation No.: ");
-					int resvNo = sc.nextInt();
+					int resvNo = errorCheckingInt("Enter Reservation No.: ");
 					readReservation(searchReservation(resvNo));
 					break;
 
@@ -101,10 +100,9 @@ public class ReservationMgr {
 				else{
 					System.out.println("(1) Guest ID");
 					System.out.println("(2) Guest Name");
-					ch = sc.nextInt();
+					ch = errorCheckingInt("Select option: ", 2);
 					if (ch == 1){
-						System.out.println("Enter guest ID: ");
-						ch = sc.nextInt();
+						ch = errorCheckingInt("Enter guest ID: ");
 						if (gm.checkGuestExist(ch)) {
 							guest = gm.readGuestInfo(ch);
 							valid = true;
@@ -136,12 +134,10 @@ public class ReservationMgr {
 			else
 				System.out.println("Invalid Input!");
 		} while (!valid);
-		System.out.print("Enter number of adults: ");
-		adultNo = sc.nextInt();
-		System.out.print("Enter number of kids: ");
-		kidNo = sc.nextInt();
+		adultNo = errorCheckingInt("Enter number of adults: ");
+		kidNo = errorCheckingInt("Enter number of kids: ");
 		sc.nextLine();
-		rm.viewAllVacantRoom();
+		rm.viewAllVacantRoom(adultNo+kidNo);
 		while (true) {
 			System.out.print("Enter Room No to book: ");
 			roomNo = sc.nextLine();
@@ -187,9 +183,12 @@ public class ReservationMgr {
 		}
 
 		resvTime = LocalTime.now();
+		
+		
+		
 		resv = addResv(roomNo, guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
 				resvTime);
-		rm.assignRoom(roomNo,2);
+		rm.assignRoom(roomNo,2, guest.getFirstName()+ " " +guest.getLastName());
 		return resv;
 	}
 
@@ -234,11 +233,11 @@ public class ReservationMgr {
 			System.out.println("No reservations available!");
 		} else{
 			System.out.println("\nDisplaying Reservation List: \n");
-			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Reservation No.", "Guest ID", "Num Adult",
+			System.out.format("%-20s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Reservation No.", "Guest ID", "Num Adult",
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
 
 			for (Reservation r : rList) {
-				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
+				System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
 						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 						r.getResvTime());
 			}
@@ -252,11 +251,11 @@ public class ReservationMgr {
 				count++;
 		if (count != 0) {
 			System.out.println("\nDisplaying " + rStatus[choice - 1] + " reservation List: \n");
-			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Reservation No.", "Guest ID", "Num Adult",
+			System.out.format("%-20s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Reservation No.", "Guest ID", "Num Adult",
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
 			for (Reservation r : rList) {
 				if (r.getResvStatus().equals(rStatus[choice - 1])) {
-					System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
+					System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
 							r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 							r.getResvTime());
 				}
@@ -279,7 +278,8 @@ public class ReservationMgr {
 		}
 	}
 
-	public void updateResv(RoomMgr rm) {
+	public void updateResvOption(RoomMgr rm) {
+		boolean flag = false;
 		Scanner sc = new Scanner(System.in);
 		int ch, rNo;
 
@@ -301,21 +301,26 @@ public class ReservationMgr {
 					System.out.print("Enter the number of your choice: ");
 					ch = sc.nextInt();
 					sc.nextLine();
-					updateResv(rm, r, ch);
+					updateResv(rm, r, r.getAdultNo()+r.getKidNo(), ch);
 				} while (ch > 0 && ch < 9);
+				flag = true;
 				break;
 			}
 		}
+		
+		if(!flag)
+			System.out.println("Reservation no does not exist");
 	}
 
-	public void updateResv(RoomMgr rm, Reservation r, int choice) {
+	public void updateResv(RoomMgr rm, Reservation r, int choice, int numGuest) {
 
 		Scanner sc = new Scanner(System.in);
+		LocalDate localDateNow = LocalDate.now();
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-
+		
 		switch (choice) {
 		case 1:
-			rm.viewAllVacantRoom();
+			rm.viewAllVacantRoom(numGuest);
 			while (true) {
 				System.out.print("Enter Room No to book: ");
 				String roomNo = sc.nextLine();
@@ -329,14 +334,12 @@ public class ReservationMgr {
 			break;
 
 		case 2:
-			System.out.print("Enter number of adult: ");
-			int adultNo = sc.nextInt();
+			int adultNo = errorCheckingInt("Enter number of adult: ");
 			r.setAdultNo(adultNo);
 			break;
 
 		case 3:
-			System.out.print("Enter number of kids: ");
-			int kidNo = sc.nextInt();
+			int kidNo = errorCheckingInt("Enter number of kids: ");	
 			sc.nextLine();
 			r.setKidNo(kidNo);
 			break;
@@ -348,6 +351,10 @@ public class ReservationMgr {
 
 				try {
 					LocalDate localDateIn = LocalDate.parse(dateIn, format);
+					if (localDateIn.isBefore(localDateNow)) {
+						System.out.println("Error input. Check in date must be after today!");
+						continue;
+					}
 					System.out.println(format.format(localDateIn));
 					r.setDateCheckIn(localDateIn);
 					break;
@@ -365,6 +372,10 @@ public class ReservationMgr {
 				try {
 
 					LocalDate localDateOut = LocalDate.parse(dateOut, format);
+					if (localDateOut.isBefore(localDateNow)) {
+						System.out.println("Error input. Check in date must be after today!");
+						continue;
+					}
 					System.out.println(format.format(localDateOut));
 					r.setDateCheckOut(localDateOut);
 					break;
@@ -380,7 +391,7 @@ public class ReservationMgr {
 			System.out.println("(3) " + rStatus[2]);
 			System.out.println("(4) " + rStatus[3]);
 			System.out.println("(5) Return");
-			choice = sc.nextInt();
+			choice = errorCheckingInt("Select option: ", 5);
 			sc.nextLine();
 
 			if (choice != 5) {
@@ -440,9 +451,62 @@ public class ReservationMgr {
 				System.out.println("Reservation no. does not exist!");
 		}
 	}
-
+	
+	
+	// ----------------------Other Section -----------------------//
 	public List<Reservation> saveToFile() {
 		return rList;
+	}
+	
+	private int errorCheckingInt(String display) {
+
+		int tempChoice;
+		Scanner input = new Scanner(System.in);
+
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				tempChoice = input.nextInt();
+				if(display.equals("Enter number of kids: ") && tempChoice < 0) //only for kids 
+					throw new IllegalArgumentException("Error input\n");
+				else if (tempChoice < 1)
+					throw new IllegalArgumentException("Error input\n");
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Error input \n");
+				input.next();
+			} catch (IllegalArgumentException e) {
+				System.out.println(e);
+			}
+		}
+
+		input.nextLine();
+
+		return tempChoice;
+	}
+
+	private int errorCheckingInt(String display, int lastItem) {
+		int index;
+		Scanner input = new Scanner(System.in);
+
+		while (true) {
+			System.out.print("\n" + display);
+			try {
+				index = input.nextInt();
+				if (index < 1 || index > lastItem)
+					throw new IllegalArgumentException("Error input\n");
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Error input\n");
+				input.next();
+			} catch (IllegalArgumentException e) {
+				System.out.println(e);
+			}
+		}
+
+		input.nextLine();
+
+		return index;
 	}
 
 }
