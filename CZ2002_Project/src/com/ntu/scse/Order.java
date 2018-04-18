@@ -15,11 +15,11 @@ public class Order implements Serializable, Comparable<Order> {
 	private String[] arrayStatus = { "Confirmed", "Preparing", "Delivered" };
 	private String roomNo, ordFName, ordRemarks, dateTime, status;
 	private float price;
-	private int quan, itemID;
+	private int quan, orderID;
 
-	public Order(String rNo, int iID, String fn, float c, int q, String r) {
+	public Order(String rNo, int oID, String fn, float c, int q, String r) {
 		roomNo = rNo;
-		itemID = iID;
+		orderID = oID;
 		ordFName = fn;
 		price = c;
 		quan = q;
@@ -50,12 +50,12 @@ public class Order implements Serializable, Comparable<Order> {
 		return roomNo;
 	}
 
-	public int getItemID() {
-		return itemID;
+	public int getID() {
+		return orderID;
 	}
 
-	public void setItemID(int id) {
-		itemID = id;
+	public void setID(int id) {
+		orderID = id;
 	}
 
 	public void setOrdRemarks(String ordRemarks) {
@@ -108,8 +108,8 @@ public class Order implements Serializable, Comparable<Order> {
 
 	@Override
 	public int compareTo(Order comparesTo) {
-		int compareID=(comparesTo).getItemID();
-		return this.itemID-compareID;
+		int compareID=(comparesTo).getID();
+		return this.orderID-compareID;
 	}
 }
 

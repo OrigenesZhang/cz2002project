@@ -1,6 +1,5 @@
 package com.ntu.scse;
 
-import javax.naming.spi.ResolveResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +9,7 @@ import java.util.*;
 public class ReservationMgr {
 
 	private List<Reservation> rList = null;
-	private String[] rStatus = { "CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT" };
+	private String[] rStatus = { "CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT" , "EXPIRED"};
 	private int numOfReservation = 0, resNo;
 
 	public ReservationMgr(ArrayList reservationList) {
@@ -41,7 +40,7 @@ public class ReservationMgr {
 
 			switch (choice) {
 				case 1: //(1) Create New RESERVATION
-					createNewResv(gm, rm);
+					createNewResv(gm, rm, false);
 					break;
 
 				case 2:	//(2) Update RESERVATION detail
@@ -54,7 +53,7 @@ public class ReservationMgr {
 					break;
 
 				case 4: //(4) Remove RESERVATION detail
-					removeReservation();
+					removeReservation(rm);
 					break;
 
 				case 5: //(5) View all RESERVATION detail
@@ -68,11 +67,12 @@ public class ReservationMgr {
 					System.out.println("Invalid Input!");
 					break;
 			}
+			refreshReservations(rm);
 			Collections.sort(rList);
 		} while (choice != 6);
 	}
 
-	public Reservation createNewResv(GuestMgr gm, RoomMgr rm) {
+	public Reservation createNewResv(GuestMgr gm, RoomMgr rm, boolean walkIn) {
 		int adultNo, kidNo, dayNo, ch;
 		boolean valid = false;
 		String roomNo, dateIn, dateOut;
@@ -98,36 +98,15 @@ public class ReservationMgr {
 				if (gm.getNumGuest() == 0)
 					System.out.println("No existing guests!");
 				else{
-					System.out.println("(1) Guest ID");
-					System.out.println("(2) Guest Name");
-					ch = errorCheckingInt("Select option: ", 2);
-					if (ch == 1){
-						ch = errorCheckingInt("Enter guest ID: ");
-						if (gm.checkGuestExist(ch)) {
-							guest = gm.readGuestInfo(ch);
-							valid = true;
-						}
-						else
-							System.out.println("Guest does not exist!");
+					gm.readGuestList();
+					System.out.println();
+					ch = errorCheckingInt("Enter guest ID: ");
+					if (gm.checkGuestExist(ch)) {
+						guest = gm.readGuestInfo(ch);
+						valid = true;
 					}
-					else if (ch == 2){
-						sc.nextLine();
-						System.out.printf("Enter guest first name: ");
-						String fName = sc.nextLine();
-						System.out.printf("Enter guest last name: ");
-						String lName = sc.nextLine();
-						ch = gm.getIDfromName(lName,fName);
-						if (gm.checkGuestExist(ch)) {
-							guest = gm.readGuestInfo(ch);
-							valid = true;
-						}
-						else
-							System.out.println("Guest does not exist!");
-					}
-					else{
-						System.out.println("Invalid Input!");
-						continue;
-					}
+					else
+						System.out.println("Guest does not exist!");
 				}
 			} else if (ch == 3)
 				return null;
@@ -147,21 +126,23 @@ public class ReservationMgr {
 				System.out.println("Error input!\n");
 			}
 		}
-
-		while (true) {
-			System.out.print("Enter date check-in (dd-MM-yyyy): ");
-			dateIn = sc.nextLine();
-
-			try {
-				localDateIn = LocalDate.parse(dateIn, format);
-				if (localDateIn.isBefore(localDateNow)) {
-					System.out.println("Error input. Check in date must be after today!");
-					continue;
+		if (walkIn){
+			localDateIn = localDateNow;
+		}else{
+			while (true) {
+				System.out.print("Enter date check-in (dd-MM-yyyy): ");
+				dateIn = sc.nextLine();
+				try {
+					localDateIn = LocalDate.parse(dateIn, format);
+					if (localDateIn.isBefore(localDateNow)) {
+						System.out.println("Error input. Check in date must be after today!");
+						continue;
+					}
+					System.out.println(format.format(localDateIn));
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Error input. dd-MM-yyyy = 01-02-2018");
 				}
-				System.out.println(format.format(localDateIn));
-				break;
-			} catch (DateTimeParseException e) {
-				System.out.println("Error input. dd-MM-yyyy = 01-02-2018");
 			}
 		}
 
@@ -183,12 +164,12 @@ public class ReservationMgr {
 		}
 
 		resvTime = LocalTime.now();
-		
-		
-		
+
 		resv = addResv(roomNo, guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
 				resvTime);
 		rm.assignRoom(roomNo,2, guest.getFirstName()+ " " +guest.getLastName());
+		System.out.println("Reservation confirmed! Receipt of reservation:\n");
+		readReservation(resv);
 		return resv;
 	}
 
@@ -229,7 +210,7 @@ public class ReservationMgr {
 
 	public void readReservationList() {
 
-		if (rList.size() < 1) {
+		if (rList.size() == 0) {
 			System.out.println("No reservations available!");
 		} else{
 			System.out.println("\nDisplaying Reservation List: \n");
@@ -244,7 +225,7 @@ public class ReservationMgr {
 		}
 	}
 	public int readReservationListByStatus(int choice) {
-		//"CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT"
+		//"CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT", EXPIRED
 		int count = 0;
 		for (Reservation r : rList)
 			if (r.getResvStatus().equals(rStatus[choice - 1]))
@@ -406,7 +387,7 @@ public class ReservationMgr {
 			break;
 			
 		default:
-			System.out.println("Eror input");
+			System.out.println("Error input");
 			break;
 
 		}
@@ -424,7 +405,7 @@ public class ReservationMgr {
 		return resv;
 	}
 
-	public void removeReservation() {
+	public void removeReservation(RoomMgr rm) {
 
 		int rNo = 0;
 		boolean flag = false;
@@ -434,6 +415,7 @@ public class ReservationMgr {
 		if (rList.size() < 1) {
 			System.out.println("No Reservations to remove\n");
 		} else {
+			readReservationList();
 			System.out.println("Enter the reservation no: ");
 			rNo = input.nextInt();
 
@@ -441,17 +423,33 @@ public class ReservationMgr {
 				Reservation str = iter.next();
 
 				if (str.getResvNo() == rNo && !flag) {
-					iter.remove();
-					System.out.println("Reservation number " + rNo + " removed!");
+					//CHECK IF GUEST IN RESERVATION IS STILL CHECKED-IN
+					if (str.getResvStatus() == rStatus[2]){
+						System.out.println("Reservation number " + rNo + " cannot be removed as guest is still checked-in!");
+					}
+					else {
+						iter.remove();
+						rm.assignRoom(str.getRoomNo(),0); //Make room vacant
+						System.out.println("Reservation number " + rNo + " removed!");
+					}
 					flag = true;
 				}
 			}
-
 			if (!flag)
 				System.out.println("Reservation no. does not exist!");
 		}
 	}
-	
+	public void refreshReservations(RoomMgr rm){
+		int count=0;
+		for (Reservation r : rList){
+			if ((r.getResvStatus() == rStatus[0] || r.getResvStatus() == rStatus[1]) && r.getDateCheckIn().isAfter(LocalDate.now())){
+				r.setResvStatus(rStatus[4]);
+				rm.assignRoom(r.getRoomNo(),0);
+				count++;
+			}
+		}
+		System.out.println(count + " Reservations expired!");
+	}
 	
 	// ----------------------Other Section -----------------------//
 	public List<Reservation> saveToFile() {

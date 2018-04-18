@@ -53,9 +53,8 @@ public class GuestMgr {
 		return "";
 	}
 
-	public void searchGuest(int guestID) {
+	public Guest searchGuest(int guestID) {
 
-		boolean searched = false;
 		for (Guest g : guestList) {
 			if (g.getGuestID() == guestID) {
 				System.out.println("\nDisplaying " + g.getFirstName() + " " + g.getLastName() + " information: ");
@@ -65,12 +64,53 @@ public class GuestMgr {
 				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", g.getGuestID(), g.getFirstName(),
 						g.getLastName(), g.getGender(), g.getCreditCardNo(), g.getAddress(), g.getCountry(),
 						g.getGuestID(), g.getIdNumber());
-				searched = true;
-				break;
+				return g;
 			}
 		}
-		if (!searched)
+		System.out.println("Guest does not exist!");
+		return null;
+	}
+	public Guest searchGuest(String firstName) {
+
+		boolean searched = false;
+		List<Guest> matchingList = new ArrayList<>();
+		Guest tempGuest = null;
+
+		for (Guest g : guestList) {
+			if (g.getFirstName() == firstName) {
+				matchingList.add(g);
+			}
+		}
+		if (matchingList.size() == 0) {
+			searched = false;
+		} else if (matchingList.size() == 1) {
+			tempGuest = matchingList.get(0);
+			searched = true;
+		} else {
+			Scanner sc = new Scanner(System.in);
+			String lastName;
+			System.out.println("More than 1 guest found with first name = " + firstName);
+			System.out.println("Please enter last name: ");
+			lastName = sc.nextLine();
+			for (Guest g : matchingList) {
+				if (g.getLastName() == lastName) {
+					tempGuest = g;
+					searched = true;
+					break;
+				}
+			}
+		}
+		if (searched) {
+			System.out.println("\nDisplaying " + tempGuest.getFirstName() + " " + tempGuest.getLastName() + " information: ");
+			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", "Guest ID", "First Name",
+					"Last Name", "Gender", "Credit Card No.", "Address", "Country", "ID Type", "ID Number");
+
+			System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-15s%-15s\n", tempGuest.getGuestID(), tempGuest.getFirstName(),
+					tempGuest.getLastName(), tempGuest.getGender(), tempGuest.getCreditCardNo(), tempGuest.getAddress(), tempGuest.getCountry(),
+					tempGuest.getGuestID(), tempGuest.getIdNumber());
+		} else
 			System.out.println("Guest does not exist!");
+		return tempGuest;
 	}
 
 	public void readGuestList() {

@@ -49,7 +49,7 @@ public class Main {
                     break;
 
                 case 3: /* (3) Print/Check/Update ROOM details */
-                	roomMgr.ShowRoomMgrMenuOption();
+                	roomMgr.ShowRoomMgrMenuOption(guestMgr);
                     break;
 
                 case 4: /* (4) Print/Create/Update/Remove ROOM SERVICE orders */
@@ -73,7 +73,7 @@ public class Main {
                     break;
 
                 case 9: /* (9) Print ROOM STATUS statistic report */
-                    roomMgr.RoomStatusStatic();
+                    roomMgr.RoomStatusStatistic();
                     break; 
                     
                 case 10: /* (10) Exit */
@@ -107,7 +107,6 @@ public class Main {
         System.out.println("Initializing data from file...");
 //			Try reading from file, if file doesn't exist or if exception, use defaults
         try {
-        	
         	fiStream = new FileInputStream(dataFileName);
     		biStream = new BufferedInputStream(fiStream);
     		diStream = new ObjectInputStream(biStream);

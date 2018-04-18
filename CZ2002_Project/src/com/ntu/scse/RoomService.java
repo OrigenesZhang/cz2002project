@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class RoomService implements Serializable, Comparable {
+public class RoomService implements Serializable{
 	private List<Menu> menus;
 	private List<Order> orders;
 
@@ -44,7 +44,7 @@ public class RoomService implements Serializable, Comparable {
 
 			case 2:
 				addMenu();
-				System.out.println("");
+				System.out.println();
 				break;
 
 			case 3:
@@ -63,8 +63,8 @@ public class RoomService implements Serializable, Comparable {
 				System.out.println("Error input\n");
 				break;
 			}
+			Collections.sort(menus);
 		} while (choice != 5);
-		Collections.sort(menus);
 	}
 
 	public void ShowRoomServiceOrderOption(RoomMgr rm) {
@@ -84,7 +84,7 @@ public class RoomService implements Serializable, Comparable {
 			choice = errorCheckingInt("Select an option: ");
 
 			switch (choice) {
-			case 1:
+			case 1: //VIEW ORDER
 				System.out.println("(1) view all orders");
 				System.out.println("(2) view order by room no.");
 				choice = errorCheckingInt("Select an option: ", 2);
@@ -97,7 +97,7 @@ public class RoomService implements Serializable, Comparable {
 				}
 				break;
 
-			case 2:
+			case 2: //ADD ORDER
 				System.out.print("Enter Room no. : ");
 				roomNo = input.nextLine();
 
@@ -108,34 +108,34 @@ public class RoomService implements Serializable, Comparable {
 					finalizeOrder(roomNo);
 				} else {
 					System.out.println("Invalid Room no. \n");
-					System.out.println("Room not available for odering");
+					System.out.println("Room not available for ordering");
 				}
 
 				break;
 
-			case 3:
+			case 3: //REMOVE ORDER
 				System.out.print("Enter Room no. : ");
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
-					viewOrderByRoomID(roomNo);
-					removeOrderItem(roomNo);
+					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
+						removeOrder(roomNo);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
 
-			case 4:
+			case 4: //UPDATE ORDER
 				System.out.println("Enter Room no. : ");
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
-					viewOrderByRoomID(roomNo);
-					updateOrderItem(roomNo);
+					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
+						updateOrderItem(roomNo);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
 
-			case 5:
+			case 5: //RETURN
 				System.out.println("Returning to main.....\n");
 				break;
 
@@ -150,10 +150,11 @@ public class RoomService implements Serializable, Comparable {
 	// ----------------------Menu Section -----------------------//
 
 	private void initializeMenu() {
-		menus.add(new Menu(1, "Chicken Chop", "Plain-grilled chicken with black pepper", 6));
-		menus.add(new Menu(2, "Fish & Chip", "Fried battered fish with french fries", 6));
-		menus.add(new Menu(3, "Aglio E Olio", "Freshly grounded garlic with chili flakes", 7));
-
+		menus.add(new Menu(1, "Chicken Chop", "Char-grilled chicken with black pepper sauce", 10));
+		menus.add(new Menu(2, "Fish & Chips", "Fried battered fish with french fries", 12));
+		menus.add(new Menu(3, "Aglio Olio", "Pasta with olive oil, freshly grounded garlic, and chili flakes", 8));
+		menus.add(new Menu(4, "Alfredo", "Creamy pasta with broccoli and chicken chunks", 8));
+		menus.add(new Menu(5, "Coffee", "Freshly grounded Colombian coffee", 4));
 	}
 
 	public void viewMenu() {
@@ -169,51 +170,46 @@ public class RoomService implements Serializable, Comparable {
 			for (Menu mm : menus) {
 				System.out.format("%s%-9d%-40s%-100s%.2f\n", " ", mm.getID(), mm.getFood(), mm.getDesc(), mm.getPrice());
 			}
-			System.out.println("");
+			System.out.println();
 		}
 	}
 
 	public void addMenu() {
 
-		int tempID = getNewItemID(), noItem;
+		int tempID;
 		String fn, desc;
 		float p;
 
 		Scanner input = new Scanner(System.in);
+		System.out.println("\nEnter information for item:");
+		System.out.print("Enter food name: ");
+		fn = input.nextLine();
+		System.out.print("Enter food description: ");
+		desc = input.nextLine();
 
-		noItem = errorCheckingInt("Enter amount of item to add: ");
+		p = errorCheckingFloat("Enter food price: ");
+		tempID = getNewItemID();
 
-		for (int i = 1; i <= noItem; i++) {
-			System.out.println("\nEnter information for item " + i);
-			System.out.print("Enter food name: ");
-			fn = input.nextLine();
-			System.out.print("Enter food description: ");
-			desc = input.nextLine();
+		menus.add(new Menu(tempID, fn, desc, p));
 
-			p = errorCheckingFloat("Enter food price: ");
-			tempID += 1;
-
-			menus.add(new Menu(tempID, fn, desc, p));
-		}
 	}
 
 	public void removeMenuItem() {
 
-		boolean flag = false;
+		viewMenu();
 		int id = errorCheckingInt("Select the index to remove item from menu: ", getLastItemID());
 		Iterator<Menu> iter = menus.iterator();
 
 		while (iter.hasNext()) {
 			Menu str = iter.next();
 
-			if (str.getID() == id && !flag) {
+			if (str.getID() == id) {
+				System.out.print(str.getFood() + " has been removed from the menu!");
 				iter.remove();
-				flag = true;
-
-			} else if (flag) {
-				str.setId(str.getID() - 1);
+				return;
 			}
 		}
+		System.out.print("Invalid option!");
 	}
 
 	public void updateMenuItem() {
@@ -281,7 +277,7 @@ public class RoomService implements Serializable, Comparable {
 					}
 				} while (!flag);
 
-				System.out.println("");
+				System.out.println();
 
 			}
 		}
@@ -291,58 +287,49 @@ public class RoomService implements Serializable, Comparable {
 
 	public void viewAllOrder() {
 		
-		if(orders.size() < 1)
+		if(orders.size() == 0)
 		{
 			System.out.println("No orders to display\n");
 		} else 
 		{
-			Collections.sort(orders, new Comparator<Order>() {
-				@Override
-				public int compare(Order o1, Order o2) {
-					String oo1 = o1.getRoomNo();
-					String oo2 = o2.getRoomNo();
-					return oo1.compareTo(oo2);
-				}
-			});
-
 			System.out.println("\nViewing all Order");
 			System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Item No.", "Food Name",
 					"Price (S$)", "Quantity", "Remarks", "Status", "Date/Time");
 			for (Order oo : orders) {
 
-				System.out.format("%-15s%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getRoomNo(), oo.getItemID(),
+				System.out.format("%-15s%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getRoomNo(), oo.getID(),
 						oo.getOrdFName(), oo.getPrice(), oo.getQuan(), oo.getOrdRemarks(), oo.getStatus(),
 						oo.getDateTime());
 			}
-			System.out.println("");
+			System.out.println();
 		}
 	}
 
-	public void viewOrderByRoomID(String roomID) {
+	public boolean viewOrderByRoomID(String roomID) {
 
 		boolean flag = false;
-
 		for (Order oo : orders) {
 			if (oo.getRoomNo().equals(roomID)) {
+				System.out.println("\nViewing Room no. " + roomID + " Orders");
+				System.out.format("%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Item No.", "Food Name", "Price (S$)",
+						"Quantity", "Remarks", "Status", "Date/Time");
 				flag = true;
 				break;
 			}
 		}
-
 		if (flag) {
-			System.out.println("\nViewing Room no. " + roomID + " Orders");
-			System.out.format("%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Item No.", "Food Name", "Price (S$)",
-					"Quantity", "Remarks", "Status", "Date/Time");
 			for (Order oo : orders) {
 				if (oo.getRoomNo().equals(roomID)) {
-					System.out.format("%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getItemID(), oo.getOrdFName(),
+					System.out.format("%-15d%-40s%-20.2f%-20d%-40s%-15s%-15s\n", oo.getID(), oo.getOrdFName(),
 							oo.getPrice(), oo.getQuan(), oo.getOrdRemarks(), oo.getStatus(), oo.getDateTime());
+					System.out.println();
 				}
 			}
-			System.out.println("");
-		} else
+			return true;
+		} else {
 			System.out.println("\nNo order made from Room no. " + roomID);
-
+			return false;
+		}
 	}
 
 	public void addOrderItem(String roomNo) {
@@ -352,13 +339,13 @@ public class RoomService implements Serializable, Comparable {
 		char yesNo;
 		String remarks;
 
-		int orderNo = errorCheckingInt("Enter the number of order: ");
+		int orderNo = errorCheckingInt("Enter the number of order(s): ");
 
 		for (int i = 1; i <= orderNo; i++) {
-			System.out.println("");
+			System.out.println();
 			System.out.println("Order item " + i);
-			menuID = errorCheckingInt("Enter menu index to add item to order: ", getLastItemID());
-			quantity = errorCheckingInt("Enter quanity: ");
+			menuID = errorCheckingInt("Enter index of menu item to add into order: ", getLastItemID());
+			quantity = errorCheckingInt("Enter quantity: ");
 
 			while (true) {
 				System.out.print("Include remarks (Y/N)? : ");
@@ -375,12 +362,9 @@ public class RoomService implements Serializable, Comparable {
 					System.out.println("Error input\n");
 				}
 			}
-
 			addOrder(roomNo, menuID, quantity, remarks);
 		}
-
-		System.out.println("");
-
+		System.out.println();
 	}
 
 	private void addOrder(String roomNo, int menuID, int quan, String r) {
@@ -388,40 +372,34 @@ public class RoomService implements Serializable, Comparable {
 		int index = getLastItemID(roomNo);
 
 		for (Menu mm : menus) {
-
 			if (mm.getID() == menuID) {
 				orders.add(new Order(roomNo, index, mm.getFood(), mm.getPrice(), quan, r));
 			}
 		}
 	}
 
-	public void removeOrderItem(String roomNo) {
-
-		boolean flag = false;
+	public void removeOrder(String roomNo) {
+		//TODO UPDATE BILL
 		int index = errorCheckingInt("Enter index to remove item from order: ", getLastItemID(roomNo));
 		Iterator<Order> iter = orders.iterator();
 		
 		while (iter.hasNext()) {
 			Order str = iter.next();
 
-			if (str.getRoomNo().equals(roomNo) && str.getItemID() == index && !str.getStatus().equals("Delivered")
-					&& !flag) {
+			if (str.getRoomNo().equals(roomNo) && str.getID() == index && !str.getStatus().equals("Delivered")) {
+				System.out.print("Order number " + str.getID() + " has been removed!");
 				iter.remove();
-				flag = true;
-			} else if (str.getRoomNo().equals(roomNo) && str.getItemID() == index && str.getStatus().equals("Delivered")
-					&& !flag) {
-				System.out.println("Delivered order cannot be removed\n");
-			}
-			
-			
-			else if (str.getRoomNo().equals(roomNo) && flag) {
-				str.setItemID(str.getItemID() - 1);
+				return;
+			} else if (str.getRoomNo().equals(roomNo) && str.getID() == index && str.getStatus().equals("Delivered")) {
+				System.out.println("Delivered orders cannot be removed\n");
+				return;
 			}
 		}
-
+		System.out.println("Invalid index!");
 	}
 
 	public void finalizeOrder(String roomNo) {
+		//TODO UPDATE BILL
 		boolean flag = false;
 		LocalDateTime tempDT = null;
 		String tempDateTime = null;
@@ -452,7 +430,7 @@ public class RoomService implements Serializable, Comparable {
 		while (iter.hasNext()) {
 			Order str = iter.next();
 
-			if (str.getRoomNo().equals(roomNo) && str.getItemID() == orderIndex
+			if (str.getRoomNo().equals(roomNo) && str.getID() == orderIndex
 					&& (str.getStatus().equals("Confirmed") || str.getStatus().equals("Preparing"))) {
 
 				System.out.println("\nContent to edit");
@@ -498,7 +476,7 @@ public class RoomService implements Serializable, Comparable {
 					}
 				} while (!flag);
 
-				System.out.println("");
+				System.out.println();
 
 				if (choice != 4 && !str.getStatus().equals("Delivered")) {
 					LocalDateTime tempDT = LocalDateTime.now();
@@ -515,11 +493,10 @@ public class RoomService implements Serializable, Comparable {
 	// ----------------------Other Section -----------------------//
 
 	public int getLastItemID() {
-
 		return (menus.get(menus.size() - 1).getID());
 	}
 	private int getNewItemID(){
-		boolean gap = false;
+		boolean gap;
 		if (menus.size() == 0)
 			return 1;
 		else
@@ -539,11 +516,11 @@ public class RoomService implements Serializable, Comparable {
 
 	public int getLastItemID(String roomNo) {
 
-		int i = 1;
+		int i = 0;
 
 		for (Order oo : orders) {
 			if (oo.getRoomNo().equals(roomNo))
-				i += 1;
+				i = oo.getID();
 		}
 		return i;
 	}
@@ -619,12 +596,6 @@ public class RoomService implements Serializable, Comparable {
 		input.nextLine();
 
 		return price;
-	}
-
-	@Override
-	public int compareTo(Object arg0) {
-		// required for comparable to override
-		return 0;
 	}
 
 	public List<Menu> saveMenuToFile() {
