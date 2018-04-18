@@ -3,7 +3,7 @@ package com.ntu.scse;
 import java.io.Serializable;
 
 public class Bill implements Comparable<Bill> {
-	private int billNo;
+	private int billNo,resvIndex;
     private double price, quantity, discount, taxRate, total;
     private Menu item;
 
@@ -11,13 +11,15 @@ public class Bill implements Comparable<Bill> {
     			int billNo,
                 double quantity,
                 double discount,
-                double taxRate
+                double taxRate,
+                 int resvIndex
                 ) {
     	this.billNo = billNo;
         this.item = item;
         this.quantity = quantity;
         this.discount = discount;
         this.taxRate = taxRate;
+        this.resvIndex = resvIndex;
 
 //        this.price = this.item.price;  // YET TO IMPLEMENT MENU
 //        this.total = this.price * this.quantity * this.discount * (1+this.taxRate);  // YET TO IMPLEMENT MENU
@@ -52,6 +54,8 @@ public class Bill implements Comparable<Bill> {
         return item;
     }
 
+    public int getResvIndex() { return resvIndex; }
+
     public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
@@ -67,6 +71,7 @@ public class Bill implements Comparable<Bill> {
     public void setItem(Menu item) {
         this.item = item;
     }
+
 
     @Override
     public int compareTo(Bill comparesTo) {

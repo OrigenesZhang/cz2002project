@@ -25,8 +25,8 @@ public class BillMgr {
     		Menu item,
             double quantity,
             double discount,
-            double taxRate
-            ) throws InvalidInfoException {
+            double taxRate,
+            int resvIndex) throws InvalidInfoException {
     	int newBillNo =0;
     	
     	if (checkGap() == false) { //no gap, add bill at back
@@ -41,7 +41,7 @@ public class BillMgr {
     		}
     	}
     	try {
-	        Bill newBill = new Bill(item, newBillNo, quantity, discount, taxRate);
+	        Bill newBill = new Bill(item, newBillNo, quantity, discount, taxRate,resvIndex);
 	        billList.add(newBill);
 	        numOfBill++;
 	        System.out.println("Total number of bills: " + numOfBill);
@@ -64,6 +64,15 @@ public class BillMgr {
     	System.out.println("Bill number does not exist!");
     	return bill;
     }
+    public ArrayList<Bill> seachBillByResv(int resvIndex){
+    	ArrayList<Bill> b = new ArrayList<>();
+    	for(Bill bill:billList){
+    	    if(bill.getResvIndex() == resvIndex){
+    	        b.add(bill);
+            }
+        }
+    	return b;
+	}
 
     public void deleteBill (int billNo){
     	for (int i = 0; i < billList.size(); i++) {
