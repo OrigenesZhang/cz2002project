@@ -213,6 +213,7 @@ public class GuestMgr {
     	//numOfGuest = guestList.size();
     	if (numOfGuest == 0) { //Nothing to save
     		System.out.println("No guests to save to file!");
+
     	}
     	else {
 	    	try {

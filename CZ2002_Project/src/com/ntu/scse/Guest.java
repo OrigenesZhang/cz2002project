@@ -11,7 +11,7 @@ public class Guest implements Serializable{
     private int guestID, idType;
     private char gender;
     private String firstName, lastName, creditCardNo, address, country, idNumber;
-
+    public Guest(){};
     public Guest(int guestID,
                  String firstName,
                  String lastName,

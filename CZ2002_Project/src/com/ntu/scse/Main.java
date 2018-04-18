@@ -18,7 +18,7 @@ public class Main {
 	static ReservationMgr reservationMgr;
 	static RoomServiceMgr roomServiceMgr;
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidInfoException {
 
         int choice;
         
@@ -48,11 +48,56 @@ public class Main {
             System.out.print("        Enter the number of your choice: ");
             choice = sc.nextInt();
             switch (choice) {
-                case 1: /* (1) Create/Update/Search GUEST detail */
-                    break;
 
-                case 2: /* (2) Create/Update/Remove/Print RESERVATION */
+
+                case 1:
+                    System.out.println("-1. new GUEST \n -2.n");
+                    int guestChoice = sc.nextInt();
+                    switch(guestChoice){
+                        case 1:
+                            guestMgr.addNewGuest(sc.nextInt(),sc.next(),sc.next(),sc.next().charAt(0),
+                                    sc.next(),sc.next(),sc.nextInt(),sc.next());
+                }
+                    /* (1) Create/Update/Search GUEST detail */
+                   /* while(guestChoice >0 && guestChoice<4){
+                        switch(guestChoice){
+                            case 1:
+                                //Create a new GUEST object
+                                /*Guest newGuest = new Guest();
+                                System.out.println("Create GUEST detail");
+                                System.out.println("Please input your First Name(eg:Peter)");
+                                newGuest.setFirstName(sc.next());
+                                System.out.println("Please input your Last Name(eg:Chua)");
+                                newGuest.setLastName(sc.next());
+                                System.out.println("gender: input M for male, F for female");
+                                newGuest.setGender(sc.next().charAt(0));
+                                System.out.println("Please choose id type: 1_DRIVING LICENSE  2_PASSPORT");
+                                newGuest.setIdType(sc.nextInt());
+                                System.out.println("Please input id number");
+                                newGuest.setIdNumber(sc.next());
+                                System.out.println("Please input your Credit card number");
+                                newGuest.setCreditCardNo(sc.next());
+                                System.out.println("");
+                                break;
+                            case 2:
+                                System.out.println("Update GUEST detail");
+                                break;
+                            case 3:
+                                System.out.println("Search GUEST detail");
+                                break;
+                        }
+
+					}
                     break;
+        */
+                case 2: /* (2) Create/Update/Remove/Print RESERVATION */
+					/*switch(){
+						case 1:
+						case 2:
+						case 3:
+
+					}
+                    break;*/
 
                 case 3: /* (3) Update ROOM details */
                     break;

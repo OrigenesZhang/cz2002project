@@ -12,12 +12,14 @@ public class Bill implements Serializable {
                 double quantity,
                 double discount,
                 double taxRate
+                 //int status,
                 ) throws InvalidInfoException {
     	this.billNo = billNo;
         this.item = item;
         this.quantity = quantity;
         this.discount = discount;
         this.taxRate = taxRate;
+        //this.status  = status;
 
 //        this.price = this.item.price;  // YET TO IMPLEMENT MENU
 //        this.total = this.price * this.quantity * this.discount * (1+this.taxRate);  // YET TO IMPLEMENT MENU
