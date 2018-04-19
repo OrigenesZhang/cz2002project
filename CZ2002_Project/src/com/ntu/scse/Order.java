@@ -17,7 +17,7 @@ import java.time.LocalTime;
  */
 public class Order implements Serializable, Comparable<Order> {
 	/**
-	 A variable to store dates
+	 The date and time an order was placed
 	 */
 	private LocalDateTime dt;
 	/**
@@ -149,8 +149,30 @@ public class Order implements Serializable, Comparable<Order> {
 		this.quan = quan;
 	}
 	/**
-	 * Sets the quantity of food in this order.
-	 * @return quan the new quantity of food to set.
+	 * Sets the date and time of this order.
+	 * @param time the time of the order to set.
+	 * @param lDateTime the date of the order to set.
+	 */
+	public void setOrderDateTime(String time, LocalDateTime lDateTime) {
+		dt = lDateTime;
+		dateTime = time;
+		status = arrayStatus[0];
+	}
+	/**
+	 * Formats the date and time of this order into dd-MM-yyyy HH:mm:ss.
+	 * @param lDateTime the date & time of the order to format.
+	 * @return returns the formatted date & time of the order
+	 */
+	public String setOrderDateTime(LocalDateTime lDateTime) {
+
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		String formatDateTime = lDateTime.format(format);
+
+		return formatDateTime;
+	}
+	/**
+	 * Checks how long has passed since an order has been placed
+	 * @return returns the status to set an order to based on time passed since order placed
 	 */
 	private int checkTiming() {
 		LocalDateTime tempDateTime = LocalDateTime.now();
@@ -165,7 +187,7 @@ public class Order implements Serializable, Comparable<Order> {
 			return 0;
 	}
 	/**
-	 * Overwritten method for sorting Order Items according to their ID
+	 * Overwritten method for sorting Orders according to their ID
 	 */
 	@Override
 	public int compareTo(Order comparesTo) {
