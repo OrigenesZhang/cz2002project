@@ -282,7 +282,7 @@ public class ReservationMgr {
 					System.out.print("Enter the number of your choice: ");
 					ch = sc.nextInt();
 					sc.nextLine();
-					updateResv(rm, r, r.getAdultNo()+r.getKidNo(), ch);
+					updateResv(rm, r, ch,r.getAdultNo()+r.getKidNo());
 				} while (ch > 0 && ch < 9);
 				flag = true;
 				break;

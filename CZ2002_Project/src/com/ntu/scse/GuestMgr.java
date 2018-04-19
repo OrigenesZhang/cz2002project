@@ -254,7 +254,12 @@ public class GuestMgr {
 	
 	//-----------------------------------------------------------------//
 	/**
-	 * Shows the main menu for all guest-related operations
+	 * Shows the main menu for all guest-related operations such as
+	 * Creating a new guest
+	 * Updating guest details
+	 * Searching for guests
+	 * Removing guests
+	 * Viewing all guests
 	 * @param rm The reservation manager object
 	 */
 	public void mainGuestView(ReservationMgr rm){
@@ -352,7 +357,17 @@ public class GuestMgr {
 			Collections.sort(guestList);
 		} while (choice < 5 && choice > 0);
 	}
-
+	/**
+	 * Shows the menu for updating guest details. Details of a guest that can be updated are:
+	 * First & Last name
+	 * Gender
+	 * Credit card number
+	 * Billing address
+	 * Country
+	 * Identification document type
+	 * National identification number
+	 * @param guestID The unique identifier of the guest
+	 */
 	public void updateGuestByID(int guestID) {
 		Scanner sc = new Scanner(System.in);
 		int ch;
@@ -383,7 +398,18 @@ public class GuestMgr {
 		}
 
 	}
-
+	/**
+	 * Executes the updating of guest details based on choice of detail to update. Details of a guest that can be updated are:
+	 * First & Last name
+	 * Gender
+	 * Credit card number
+	 * Billing address
+	 * Country
+	 * Identification document type
+	 * National identification number
+	 * @param guest The guest to update
+	 * @param choice The choice of detail to update
+	 */
 	private void updateGuestByID(Guest guest, int choice) {
 		Scanner sc = new Scanner(System.in);
 
@@ -484,7 +510,10 @@ public class GuestMgr {
 		}
 
 	}
-
+	/**
+	 * Asks the user for relevant information required for creating a new guest before proceeding to create the new guest
+	 * @return returns the newly created Guest
+	 */
 	public Guest createNewGuest() {
 		Scanner sc = new Scanner(System.in);
 		String dummy, firstName, lastName, creditCardNo, address, country, idNumber;
@@ -547,6 +576,10 @@ public class GuestMgr {
 		sc.nextLine();
 		return newGuest;
 	}
+	/**
+	 * Gets the number of guests
+	 * @return returns the number of guests in the hotel
+	 */
 	public int getNumGuest(){
 		return guestList.size();
 	}
