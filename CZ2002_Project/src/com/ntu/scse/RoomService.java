@@ -4,17 +4,38 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class RoomService implements Serializable{
+/**
+  Represents a hotel Bill Manager that contains a list of all bills as well as
+  methods for manipulating those bills. One BillManager can contain many Bills.
+  
+  @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+  @version 1.0
+  @since 19/04/2018
+ */
+
+public class RoomService implements Serializable {
+	/**
+	 * An array of list of menu for the hotel
+	 */
 	private List<Menu> menus;
+	
+	/**
+	 * An array of list of order for the hotel
+	 */
 	private List<Order> orders;
 
+	/**
+	 * Create a new RoomService with a list of menu and order
+	 * The constructor will check for existing list data
+	 * @param m The list received from Main. If there was previous data, use this, else, create an empty list.
+	 * @param o The list received from Main. If there was previous data, use this, else, create an empty list.
+	 */
 	public RoomService(ArrayList<Menu> m, ArrayList<Order> o) {
 		if (m == null) {// Initialize
 			this.menus = new ArrayList<>();
 			initializeMenu();
 			System.out.println("Room Service Menu initialized!");
-		}
-		 else {
+		} else {
 			this.menus = m;
 			System.out.println(this.menus.size() + " Room Service Menu Items loaded!");
 		}
@@ -22,9 +43,17 @@ public class RoomService implements Serializable{
 			this.orders = new ArrayList<>();
 		else
 			this.orders = o;
-			System.out.println(this.orders.size() + " Room Service Orders loaded!");
+		System.out.println(this.orders.size() + " Room Service Orders loaded!");
 	}
-
+	
+	/**
+	 * Display all the available Menu option for client
+	 * 1) Read Menu
+	 * 2) Add item to menu
+	 * 3) Remove item from menu
+	 * 4) Update menu item
+	 * 5) Return main screen
+	 */
 	public void ShowRoomServiceMenuOption() {
 
 		int choice = 0;
@@ -67,7 +96,17 @@ public class RoomService implements Serializable{
 			Collections.sort(menus);
 		} while (choice != 5);
 	}
-
+	
+	/**
+	 * Display all the available Order option for client
+	 * 1) View order allow client to select whether they want to view all orders or by room no.
+	 * 2) Add order allow client to add order only if the room is occupied.
+	 * 3) Remove order allow client to remove order only if order is under the status of "Confirmed" and "Preparing"
+	 * 4) Update order allow client to update order only if order is under the status of "Confirmed" and "Preparing".
+	 *    All updated order will change its status to "Confirmed".
+	 * 5) Change order status allow client to change the order status to any of the available option, "Confirmed", "Preparing" and "Delivered"
+	 * 6) Return will return the client to main.
+	 */
 	public void ShowRoomServiceOrderOption(RoomMgr rm, BillMgr bm) {
 		int choice;
 		String roomNo;
@@ -86,7 +125,7 @@ public class RoomService implements Serializable{
 			choice = errorCheckingInt("Select an option: ");
 
 			switch (choice) {
-			case 1: //VIEW ORDER
+			case 1: // VIEW ORDER
 				System.out.println("(1) view all orders");
 				System.out.println("(2) view order by room no.");
 				choice = errorCheckingInt("Select an option: ", 2);
@@ -99,7 +138,7 @@ public class RoomService implements Serializable{
 				}
 				break;
 
-			case 2: //ADD ORDER
+			case 2: // ADD ORDER
 				System.out.print("Enter Room no. : ");
 				roomNo = input.nextLine();
 
@@ -115,45 +154,45 @@ public class RoomService implements Serializable{
 
 				break;
 
-			case 3: //REMOVE ORDER
+			case 3: // REMOVE ORDER
 				System.out.print("Enter Room no. : ");
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
-					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
+					if (viewOrderByRoomID(roomNo)) // If at least 1 order from room
 						removeOrder(roomNo, bm);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
 
-			case 4: //UPDATE ORDER
+			case 4: // UPDATE ORDER
 				System.out.println("Enter Room no. : ");
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
-					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
+					if (viewOrderByRoomID(roomNo)) // If at least 1 order from room
 						updateOrderItem(roomNo, bm);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
-			case 5: //CHANGE ORDER STATUS
+			case 5: // CHANGE ORDER STATUS
 				int x;
 				System.out.println("Enter Room no. : ");
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
-					if(viewOrderByRoomID(roomNo)) { //If at least 1 order from room
+					if (viewOrderByRoomID(roomNo)) { // If at least 1 order from room
 						do {
 							System.out.println("(1) Preparing");
 							System.out.println("(2) Delivered");
 							x = input.nextInt();
-						}while(x != 1 && x != 2);
+						} while (x != 1 || x != 2);
 						changeOrderStatus(roomNo, x);
 					}
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
-			case 6: //RETURN
+			case 6: // RETURN
 				System.out.println("Returning to main.....\n");
 				break;
 
@@ -165,8 +204,9 @@ public class RoomService implements Serializable{
 		} while (choice != 6);
 	}
 
-	// ----------------------Menu Section -----------------------//
-
+	/**
+	 * Initialize menu for the first time if menu does not have any existing data
+	 */
 	private void initializeMenu() {
 		menus.add(new Menu(1, "Chicken Chop", "Char-grilled chicken with black pepper sauce", 10));
 		menus.add(new Menu(2, "Fish & Chips", "Fried battered fish with french fries", 12));
@@ -175,23 +215,28 @@ public class RoomService implements Serializable{
 		menus.add(new Menu(5, "Coffee", "Freshly grounded Colombian coffee", 4));
 	}
 
+	/**
+	 * View menu display all available menu item
+	 */
 	public void viewMenu() {
-		
-		if(menus.size() < 1)
-		{
+
+		if (menus.size() < 1) {
 			System.out.println("No menu to display\n");
-		} else 
-		{
+		} else {
 			System.out.println("\nMenu list");
 			System.out.format("%-10s%-40s%-100s%s\n", "Item No.", "Food Name", "Description", "Price (S$)");
 
 			for (Menu mm : menus) {
-				System.out.format("%s%-9d%-40s%-100s%.2f\n", " ", mm.getID(), mm.getFood(), mm.getDesc(), mm.getPrice());
+				System.out.format("%s%-9d%-40s%-100s%.2f\n", " ", mm.getID(), mm.getFood(), mm.getDesc(),
+						mm.getPrice());
 			}
 			System.out.println();
 		}
 	}
 
+	/**
+	 * Add new menu item into the menu list.
+	 */
 	public void addMenu() {
 
 		int tempID;
@@ -212,6 +257,9 @@ public class RoomService implements Serializable{
 
 	}
 
+	/**
+	 * Remove any selected menu item from the menu list.
+	 */
 	public void removeMenuItem() {
 
 		viewMenu();
@@ -222,7 +270,7 @@ public class RoomService implements Serializable{
 			Menu str = iter.next();
 
 			if (str.getID() == id) {
-				System.out.print(str.getFood() + " has been removed from the menu!");
+				System.out.print(str.getFood() + " has been removed from the menu!\n");
 				iter.remove();
 				return;
 			}
@@ -230,6 +278,14 @@ public class RoomService implements Serializable{
 		System.out.print("Invalid option!");
 	}
 
+	/**
+	 * Update menu item with the given option to update
+	 * 1) food name
+	 * 2) food description
+	 * 3) food price
+	 * 4) update everything at once
+	 * 5) return to main
+	 */
 	public void updateMenuItem() {
 
 		Scanner input = new Scanner(System.in);
@@ -301,15 +357,15 @@ public class RoomService implements Serializable{
 		}
 	}
 
-	// ----------------------Order Section -----------------------//
-
+	
+	/**
+	 * To view all orders and details 
+	 */
 	public void viewAllOrder() {
-		
-		if(orders.size() == 0)
-		{
+
+		if (orders.size() == 0) {
 			System.out.println("No orders to display\n");
-		} else 
-		{
+		} else {
 			System.out.println("\nViewing all Order");
 			System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Order No.", "Food Name",
 					"Price (S$)", "Quantity", "Remarks", "Status", "Date/Time");
@@ -323,6 +379,10 @@ public class RoomService implements Serializable{
 		}
 	}
 
+	/**
+	 * To view all selected orders based on room no
+	 * @param roomID client enter the room no to view selected room order  
+	 */
 	public boolean viewOrderByRoomID(String roomID) {
 
 		boolean flag = false;
@@ -350,6 +410,11 @@ public class RoomService implements Serializable{
 		}
 	}
 
+	/**
+	 * Add order for room
+	 * @param roomNo selected roomNo for adding order
+	 * @param bm from billMgr class 
+	 */
 	public void addOrderItem(String roomNo, BillMgr bm) {
 
 		Scanner input = new Scanner(System.in);
@@ -383,15 +448,23 @@ public class RoomService implements Serializable{
 				}
 			}
 			order = addOrder(roomNo, menuID, quantity, remarks);
-			test = bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo),order);
+			test = bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo), order);
 			System.out.println("Order has been added! " + test);
 		}
 		System.out.println();
 	}
 
+	/**
+	 *  For addOrderItem to create a new order by calling addOrder and passing the 
+	 *  parameters into Order class.
+	 *  @param roomNo the guest room no
+	 *  @param menuID this menu list item id
+	 *  @param quan the quantity of the selected menu item
+	 *  @param r additional remarks for the particular order item
+	 */
 	private Order addOrder(String roomNo, int menuID, int quan, String r) {
 		// get the last itemID;
-		int index = getLastItemID(roomNo)+1;
+		int index = getLastItemID(roomNo) + 1;
 		Order newOrder;
 
 		for (Menu mm : menus) {
@@ -403,6 +476,11 @@ public class RoomService implements Serializable{
 		}
 		return null;
 	}
+
+	/**
+	 *  Remove all order based on room no when guest check out 
+	 *  @param roomNo the guest room no
+	 */
 	public void removeAllOrderFromRoom(String roomNo) {
 		Iterator<Order> iter = orders.iterator();
 
@@ -414,18 +492,23 @@ public class RoomService implements Serializable{
 			}
 		}
 	}
-
+	
+	/**
+	 *  Removing a single order from order list and bill.
+	 *  @param roomNo the guest room no
+	 *  @param bm the billMgr class 
+	 */
 	public void removeOrder(String roomNo, BillMgr bm) {
 		int index = errorCheckingInt("Enter index to remove item from order: ", getLastItemID(roomNo));
 		Iterator<Order> iter = orders.iterator();
-		
+
 		while (iter.hasNext()) {
 			Order str = iter.next();
 
 			if (str.getRoomNo().equals(roomNo) && str.getID() == index && !str.getStatus().equals("Delivered")) {
 				System.out.print("Order number " + str.getID() + " has been removed!");
 				iter.remove();
-				bm.removeOrderFromBill(bm.getBillNoFromRoomNo(str.getRoomNo()),str.getID());
+				bm.removeOrderFromBill(bm.getBillNoFromRoomNo(str.getRoomNo()), str.getID());
 				return;
 			} else if (str.getRoomNo().equals(roomNo) && str.getID() == index && str.getStatus().equals("Delivered")) {
 				System.out.println("Delivered orders cannot be removed\n");
@@ -434,9 +517,14 @@ public class RoomService implements Serializable{
 		}
 		System.out.println("Invalid index!");
 	}
+	
+	/**
+	 *  After client finish order, finalizeOrder method will be called to
+	 *  set time and date for the orders
+	 *  @param roomNo the guest room no
+	 */
 
 	public void finalizeOrder(String roomNo) {
-		//TODO UPDATE BILL
 		boolean flag = false;
 		LocalDateTime tempDT = null;
 		String tempDateTime = null;
@@ -454,11 +542,16 @@ public class RoomService implements Serializable{
 			}
 		}
 	}
-
-	public void changeOrderStatus(String roomNo, int choice){
-		int count=0;
-		for (Order o : orders){
-			if (o.getRoomNo().equals(roomNo)){
+	
+	/**
+	 *  Update the current order status
+	 *  @param roomNo the guest room no
+	 *  @param choice the status choice, "Confirmed", "Preparing", "Delivered"
+	 */
+	public void changeOrderStatus(String roomNo, int choice) {
+		int count = 0;
+		for (Order o : orders) {
+			if (o.getRoomNo().equals(roomNo)) {
 				o.setStatus(choice);
 				System.out.println("Order number " + o.getID() + "has been set to " + o.getStatus());
 				count++;
@@ -468,6 +561,16 @@ public class RoomService implements Serializable{
 			System.out.println("No orders are under that room number!");
 	}
 
+	/**
+	 * Update order item with the given option to update
+	 * 1) quantity
+	 * 2) remarks
+	 * 3) update everything at once
+	 * 4) return to main
+	 * 
+	 * @param roomNo the guest room no. 
+	 * @param bm the BillMgr class
+	 */
 	public void updateOrderItem(String roomNo, BillMgr bm) {
 
 		Scanner input = new Scanner(System.in);
@@ -541,21 +644,31 @@ public class RoomService implements Serializable{
 		}
 	}
 
-	// ----------------------Other Section -----------------------//
 
+	/**
+	 * The method to get the last item from the menu list to increase the index (menuID) 
+	 * for new item
+	 */
 	public int getLastItemID() {
 		return (menus.get(menus.size() - 1).getID());
 	}
-	private int getNewItemID(){
+
+	/**
+	 * Check if there was any previously removed menu item.
+	 * If there is an empty space for example menuID 2 item is remove, it will become empty.
+	 * So, if there is a new menu item to be added, it will be added at position 2 else if the menu list
+	 * does not have any previously removed menu item, it will then be added at the back of the list 
+	 */
+	private int getNewItemID() {
 		boolean gap;
 		if (menus.size() == 0)
 			return 1;
 		else
-			gap = !(menus.get(menus.size()-1).getID() == menus.size());
+			gap = !(menus.get(menus.size() - 1).getID() == menus.size());
 
-		if (gap == false) { //no gap, add item at back
+		if (gap == false) { // no gap, add item at back
 			return menus.size() + 1;
-		} else { //add item in between
+		} else { // add item in between
 			for (int i = 0; i < menus.size(); i++) {
 				if (menus.get(i).getID() != (i + 1)) {
 					return i + 1;
@@ -564,6 +677,12 @@ public class RoomService implements Serializable{
 		}
 		return -1;
 	}
+	
+	/**
+	 * Get the last item from the order list based on the room no.
+	 * If room makes another order, it will be reflected properly as their nth order.
+	 * @param roomNo the guest room no.
+	 */
 
 	public int getLastItemID(String roomNo) {
 
@@ -576,6 +695,11 @@ public class RoomService implements Serializable{
 		return i;
 	}
 
+	/**
+	 * To check for any input mismatch 
+	 * or illegal argument such as negative value
+	 * @param display the display for client to see
+	 */
 	private int errorCheckingInt(String display) {
 
 		int tempChoice;
@@ -601,6 +725,13 @@ public class RoomService implements Serializable{
 		return tempChoice;
 	}
 
+	/**
+	 * To check for any input mismatch  
+	 * or illegal argument such as negative value. The lastItem id will prevent client from exceeding the 
+	 * number of available.
+	 * @param display the display for client to see
+	 * @param lastItem for the last option number
+	 */
 	private int errorCheckingInt(String display, int lastItem) {
 		int index;
 		Scanner input = new Scanner(System.in);
@@ -625,6 +756,10 @@ public class RoomService implements Serializable{
 		return index;
 	}
 
+	/**
+	 * To check for any input mismatch regarding float value
+	 * @param display the String to output
+	 */
 	private float errorCheckingFloat(String display) {
 		float price;
 		Scanner input = new Scanner(System.in);
@@ -649,10 +784,17 @@ public class RoomService implements Serializable{
 		return price;
 	}
 
+	/**
+	 * Save the list of menus
+	 */
 	public List<Menu> saveMenuToFile() {
 		return menus;
 	}
-
+	
+	
+	/**
+	 * Save the list of orders
+	 */
 	public List<Order> saveOrderToFile() {
 		return orders;
 	}
