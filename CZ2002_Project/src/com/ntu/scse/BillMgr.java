@@ -2,7 +2,6 @@ package com.ntu.scse;
 
 import java.util.ArrayList;
 public class BillMgr {
-
 	
 	static ArrayList<Bill> billList = null;
 	private String[] bStatus = { "OPEN", "PAID" };
@@ -28,8 +27,8 @@ public class BillMgr {
     	try {
 	        Bill newBill = new Bill(newBillNo, resvNo, roomDays, roomType, roomNo, roomRate, discount);
 	        billList.add(newBill);
-			System.out.println("Bill no. " + newBillNo + " has been added!");
-	        System.out.println("Total number of bills: " + billList.size());
+			//System.out.println("Bill no. " + newBillNo + " has been added!");
+	        //System.out.println("Total number of bills: " + billList.size());
 	        return newBill;
     	}
     	catch (Exception e) {
@@ -37,7 +36,7 @@ public class BillMgr {
         }
         return null;
     }
-    
+    /*
     public Bill searchBill(int billNo) {
     	Bill bill;
     	for (int i = 0; i < billList.size(); i++) {
@@ -48,6 +47,7 @@ public class BillMgr {
 		}
     	return null;
     }
+    */
     public boolean addOrderToBill(int billNo, Order order){
     	try {
 			billList.get(billNo - 1).addOrder(order);
@@ -71,9 +71,10 @@ public class BillMgr {
 
 		for (Bill b : billList){
 			if (b.getResvNo() == resvNo){
-				b.printOrders();
 
 				System.out.println("Printing bill no. " + b.getBillNo());
+				b.printOrders();
+
 				System.out.format("%-15s%-15s%-15s%-15s%-20s%-25s%-25s%-25s%-15s\n", "Bill No.", "Resv No.",
 						"Room Type", "Room Rate", "No. of nights", "Discount", "Tax", "Room Price","Bill Status");
 
@@ -83,6 +84,9 @@ public class BillMgr {
 
 				System.out.println("\n\nTotal Due:");
 				System.out.format("%-15.7s", "$"+ (b.getTotal() * (1.0+b.getTaxRate())));
+				System.out.println();
+				//SET TO PAID
+				b.setBillStatus(1);
 				return;
 			}
 		}

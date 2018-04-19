@@ -601,7 +601,7 @@ public class RoomMgr implements Serializable {
 		} while (choice != 3);
 	}
 
-	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm) {
+	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm, RoomService rs) {
 		int resvNo, numResv;
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
@@ -615,6 +615,8 @@ public class RoomMgr implements Serializable {
 				if (resv.getResvStatus().equals("CHECKED-IN")) {
 					bm.printBill(resvNo);
 					assignRoom(resv.getRoomNo(), 0); // set room to vacant
+					//REMOVE ALL ORDERS FROM ROOM
+					rs.removeAllOrderFromRoom(resv.getRoomNo());
 					resv.setResvStatus("CHECKED-OUT");
 					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "
 							+ resv.getRoomNo());

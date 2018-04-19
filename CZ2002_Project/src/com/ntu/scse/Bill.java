@@ -79,7 +79,7 @@ public class Bill implements Serializable, Comparable<Bill> {
 
     public void setBillStatus (int choice){this.billStatus = bStatus[choice];}
 
-//    public void setRoomType (String roomType){this.roomType = roomType;}
+    //public void setRoomType (String roomType){this.roomType = roomType;}
 
     public void addOrder(Order item) {
         this.orders.add(item);
