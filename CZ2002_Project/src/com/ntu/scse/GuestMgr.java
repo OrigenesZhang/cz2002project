@@ -407,16 +407,21 @@ public class GuestMgr {
 		case 3:
 			char dummy;
 			while (true) {
-				System.out.printf("Please enter the Gender (M/F), or press Enter to exit: ");
-				dummy = Character.toUpperCase(sc.nextLine().charAt(0));
-				if (dummy == ' ') {
+				try {
+					System.out.printf("Please enter the Gender (M/F), or press Enter to exit: ");
+					dummy = Character.toUpperCase(sc.nextLine().charAt(0));
+					
+					if (dummy == 'M' || dummy == 'F') {
+						guest.setGender(dummy);
+						System.out.printf("* Successfully Updated the Gender to \'" + dummy + "\'\n");
+						break;
+					} else {
+						System.out.println("##Invalid Gender Input!\n");
+					}
+					
+				} catch (StringIndexOutOfBoundsException e)
+				{
 					break;
-				} else if (dummy == 'M' || dummy == 'F') {
-					guest.setGender(dummy);
-					System.out.printf("* Successfully Updated the Gender to \'" + dummy + "\'\n");
-					break;
-				} else {
-					System.out.println("##Invalid Gender Input!\n");
 				}
 			}
 			break;
