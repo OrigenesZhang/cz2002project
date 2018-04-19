@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
-  Represents a hotel Bill Manager that contains a list of all bills as well as
-  methods for manipulating those bills. One BillManager can contain many Bills.
+  Represents the hotel's Room Service that contains a list of all menus and order as well as
+  methods for manipulating menus and order. One Room Service contain the entire list of menus and orders
   
   @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
   @version 1.0
