@@ -106,7 +106,8 @@ public class BillMgr {
 						"Room Type", "Room Rate", "No. of nights", "Discount", "Tax", "Room Price","Bill Status");
 
 				System.out.format("%-15d%-15s%-15s%-15s%-20s%-25.4s%-25s%-25s%-15s\n", b.getBillNo(), b.getResvNo(),
-						b.getRoomType(), b.getRoomRate(), b.getRoomDays(), (b.getDiscount()*100)+"%", (b.getTaxRate()*100)+"%", "$"+ (b.getRoomDays()*b.getRoomRate()),
+						b.getRoomType(), b.getRoomRate(), b.getRoomDays(), (b.getDiscount()*100)+"%", (b.getTaxRate()*100)+"%",
+						"$"+ (b.getRoomDays()*b.getRoomRate()),
 						b.getBillStatus());
 
 				System.out.println("\n\nTotal Due:");

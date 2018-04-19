@@ -627,12 +627,14 @@ public class RoomMgr implements Serializable {
 					} while (choice < 1 && choice > 3);
 					if (choice != 3) {
 						bm.printBill(resvNo, choice);
-						assignRoom(resv.getRoomNo(), 0); // set room to vacant
+						String roomNo = resv.getRoomNo();
+						assignRoom(roomNo, 0); // set room to vacant
 						//REMOVE ALL ORDERS FROM ROOM
-						rs.removeAllOrderFromRoom(resv.getRoomNo());
+						rs.removeAllOrderFromRoom(roomNo);
 						resv.setResvStatus("CHECKED-OUT");
-						System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "
-								+ resv.getRoomNo());
+						int guestID = resv.getGuestID();
+						System.out.println(guestMgr.getNamefromID(guestID) + " has been checked out of room "
+								+ roomNo);
 					}
 				} else
 					System.out.println("Please enter a valid checked-in reservation no.!");
