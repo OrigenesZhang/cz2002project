@@ -577,13 +577,15 @@ public class GuestMgr {
 		return newGuest;
 	}
 	/**
-	 * Gets the number of guests
+	 * Gets the number of guests in the hotel
 	 * @return returns the number of guests in the hotel
 	 */
 	public int getNumGuest(){
 		return guestList.size();
 	}
-
+	/**
+	 * Initializes a list of 10 guests
+	 */
 	private void initialize10Guests(){
 		guestList.add(new Guest(1,"Alan","Ang",'M',"12345","123 NTU","Singapore",idTypeName[0],"12345"));
 		guestList.add(new Guest(2,"Ben","Boon",'M',"23456","246 NTU","Singapore",idTypeName[1],"23456"));
@@ -596,8 +598,11 @@ public class GuestMgr {
 		guestList.add(new Guest(9,"Iggrite","Inc",'F',"87654","567 NTU","Singapore",idTypeName[0],"87654"));
 		guestList.add(new Guest(10,"Jack","Jo",'M',"76543","001 NTU","Singapore",idTypeName[1],"76543"));
 	}
-
-	private boolean checkGap() { //Checks if any gap due to previously deleted guest
+	/**
+	 * Checks if there is any gap in guest ID due to previously deleted guests
+	 * @return returns true if there is a gap in guest ID, returns false if all guest IDs are in consecutive order
+	 */
+	private boolean checkGap() {
 		if (guestList.size() == 0)
 			return false;
 		else

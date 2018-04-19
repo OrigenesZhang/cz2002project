@@ -8,9 +8,17 @@ import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+/**
+ Represents one hotel Room Service Order that contains information on the item.
+ One RoomService can contain many Orders.
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+ */
 public class Order implements Serializable, Comparable<Order> {
-
+	/**
+	 A variable to store
+	 */
 	private LocalDateTime dt;
 	private String[] arrayStatus = { "Confirmed", "Preparing", "Delivered" };
 	private String roomNo, ordFName, ordRemarks, dateTime, status;

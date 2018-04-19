@@ -146,7 +146,7 @@ public class RoomService implements Serializable{
 							System.out.println("(1) Preparing");
 							System.out.println("(2) Delivered");
 							x = input.nextInt();
-						}while(x != 1 || x != 2);
+						}while(x != 1 && x != 2);
 						changeOrderStatus(roomNo, x);
 					}
 				} else {
