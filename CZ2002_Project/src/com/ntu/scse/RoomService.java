@@ -106,6 +106,8 @@ public class RoomService implements Serializable {
 	 *    All updated order will change its status to "Confirmed".
 	 * 5) Change order status allow client to change the order status to any of the available option, "Confirmed", "Preparing" and "Delivered"
 	 * 6) Return will return the client to main.
+	 * @param rm from RoomManager class
+	 * @param bm from BillMgr class
 	 */
 	public void ShowRoomServiceOrderOption(RoomMgr rm, BillMgr bm) {
 		int choice;
