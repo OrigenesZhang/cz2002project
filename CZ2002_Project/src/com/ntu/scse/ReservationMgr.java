@@ -168,7 +168,7 @@ public class ReservationMgr {
 		resv = addResv(roomNo, rm.getRoomTypeFromNum(roomNo), guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
 				resvTime);
 		rm.assignRoom(roomNo,2, guest.getFirstName()+ " " +guest.getLastName());
-		System.out.println("Reservation confirmed! Receipt of reservation:\n");
+		System.out.println("Reservation confirmed! Receipt of reservation:");
 		readReservation(resv);
 		return resv;
 	}

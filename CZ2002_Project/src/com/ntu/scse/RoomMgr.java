@@ -601,8 +601,8 @@ public class RoomMgr implements Serializable {
 		} while (choice != 3);
 	}
 
-	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm, RoomService rs) {
-		int resvNo, numResv;
+	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm, RoomService rs, int paymentMethod) {
+		int resvNo, numResv, choice;
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
 		numResv = resvMgr.readReservationListByStatus(3); // show all checked-in resv
@@ -613,13 +613,22 @@ public class RoomMgr implements Serializable {
 
 			if (resv != null) {
 				if (resv.getResvStatus().equals("CHECKED-IN")) {
-					bm.printBill(resvNo);
-					assignRoom(resv.getRoomNo(), 0); // set room to vacant
-					//REMOVE ALL ORDERS FROM ROOM
-					rs.removeAllOrderFromRoom(resv.getRoomNo());
-					resv.setResvStatus("CHECKED-OUT");
-					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "
-							+ resv.getRoomNo());
+					do {
+						System.out.println("Payment via: ");
+						System.out.println("(1) Cash");
+						System.out.println("(2) Credit Card");
+						System.out.println("(3) Back");
+						choice = sc.nextInt();
+					} while (choice < 1 && choice > 3);
+					if (choice != 3) {
+						bm.printBill(resvNo, choice);
+						assignRoom(resv.getRoomNo(), 0); // set room to vacant
+						//REMOVE ALL ORDERS FROM ROOM
+						rs.removeAllOrderFromRoom(resv.getRoomNo());
+						resv.setResvStatus("CHECKED-OUT");
+						System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "
+								+ resv.getRoomNo());
+					}
 				} else
 					System.out.println("Please enter a valid checked-in reservation no.!");
 			}
