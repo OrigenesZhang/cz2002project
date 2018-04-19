@@ -438,13 +438,15 @@ public class RoomMgr implements Serializable {
         for (Room r : room) { //Check at least 1 suitable room
             if (numGuest > 1) {
                 //if guest more than 1, cannot book Single room
-                if (!r.getRoomType().equals(roomType[0]) && r.getRoomStatus().equals(status[0]))
-                    flag = true;
-                    break;
+                if (!r.getRoomType().equals(roomType[0]) && r.getRoomStatus().equals(status[0])) {
+					flag = true;
+					break;
+				}
             } else {
-                if (r.getRoomStatus().equals(status[0]))
-                    flag = true;
-                    break;
+                if (r.getRoomStatus().equals(status[0])) {
+					flag = true;
+					break;
+				}
             }
         }
 

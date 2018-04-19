@@ -61,7 +61,7 @@ public class Main {
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
-                	roomMgr.viewAllVacantRoom(1);
+                	roomMgr.viewAllRoomByStatus(1);
                     //billMgr.printBill(1);
                     break;
 

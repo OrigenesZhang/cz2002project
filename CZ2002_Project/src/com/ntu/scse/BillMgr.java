@@ -55,6 +55,7 @@ public class BillMgr {
 			billList.get(billNo - 1).addOrder(order);
 			return true;
 		}catch(IndexOutOfBoundsException e){
+    		e.printStackTrace();
     		return false;
 		}
 	}
