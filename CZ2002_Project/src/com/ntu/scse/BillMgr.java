@@ -2,9 +2,10 @@ package com.ntu.scse;
 
 import java.util.ArrayList;
 public class BillMgr {
-	
+
 	static ArrayList<Bill> billList = null;
 	private String[] bStatus = { "OPEN", "PAID" };
+	private String[] payMethod = { "Cash", "Credit Card" };
 
     public BillMgr(ArrayList<Bill> billList) {
     	if (billList == null) //Initialize
@@ -47,11 +48,7 @@ public class BillMgr {
 		}
     	return null;
     }
-<<<<<<< HEAD
-
-=======
     */
->>>>>>> 41764dcba4c0ef6b779a3312014d8208e1dd01f3
     public boolean addOrderToBill(int billNo, Order order){
     	try {
 			billList.get(billNo - 1).addOrder(order);
@@ -71,7 +68,7 @@ public class BillMgr {
 		return false;
 	}
 
-	public void printBill(int resvNo){
+	public void printBill(int resvNo, int paymentMethod){
 
 		for (Bill b : billList){
 			if (b.getResvNo() == resvNo){
@@ -91,6 +88,8 @@ public class BillMgr {
 				System.out.println();
 				//SET TO PAID
 				b.setBillStatus(1);
+				System.out.format("%-7.7s", "$"+ (b.getTotal() * (1.0+b.getTaxRate())));
+				System.out.println(" has been paid via " + payMethod[paymentMethod-1]);
 				return;
 			}
 		}
