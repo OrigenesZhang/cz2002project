@@ -1,12 +1,26 @@
 package com.ntu.scse;
 
 import java.util.ArrayList;
+/**
+ Represents a hotel Bill Manager that contains a list of all bills as well as methods for manipulating those bills.
+ One BillManager can contain many Bills.
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+ */
 public class BillMgr {
-
+	/**
+	 * An array of the master list of Bills for the hotel
+	 */
 	static ArrayList<Bill> billList = null;
-	private String[] bStatus = { "OPEN", "PAID" };
+	/**
+	 * An array of the possible payment methods
+	 */
 	private String[] payMethod = { "Cash", "Credit Card" };
-
+	/**
+	 * Creates a Bill Manager based on loaded data from a file. If no previous data was present, initialize an empty master list.
+	 * @param billList The list received from Main. If there was previous data, use this, else, create an empty list.
+	 */
     public BillMgr(ArrayList<Bill> billList) {
     	if (billList == null) //Initialize
 			this.billList = new ArrayList<>();
@@ -15,7 +29,17 @@ public class BillMgr {
 
         System.out.println(this.billList.size() + " Bills loaded!");
     }
-	
+	/**
+	 * Tries to create a new Bill with the given reservation details and room details.
+	 * Gets a new unique identifier automatically
+	 * @param resvNo The Reservation number associated with this bill.
+	 * @param roomDays The number of nights of stay.
+	 * @param roomType The room type associated with this bill.
+	 * @param roomNo The room number associated with this bill.
+	 * @param roomRate The room price per night associated with this bill.
+	 * @param discount The discount associated with this bill.
+	 * @return returns the newly created Bill
+	 */
     public Bill addBill (
 			int resvNo,
 			int roomDays,
@@ -24,31 +48,22 @@ public class BillMgr {
 			double roomRate,
 			double discount
             ) {
-    	int newBillNo = billList.size()+1;
-    	try {
-	        Bill newBill = new Bill(newBillNo, resvNo, roomDays, roomType, roomNo, roomRate, discount);
-	        billList.add(newBill);
-			//System.out.println("Bill no. " + newBillNo + " has been added!");
-	        //System.out.println("Total number of bills: " + billList.size());
-	        return newBill;
-    	}
-    	catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    /*
-    public Bill searchBill(int billNo) {
-    	Bill bill;
-    	for (int i = 0; i < billList.size(); i++) {
-			if (billList.get(i).getBillNo() == billNo) {
-				bill = billList.get(i);
-				return bill;
-			}
+		int newBillNo = billList.size() + 1;
+		try {
+			Bill newBill = new Bill(newBillNo, resvNo, roomDays, roomType, roomNo, roomRate, discount);
+			billList.add(newBill);
+			return newBill;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-    	return null;
-    }
-    */
+		return null;
+	}
+	/**
+	 * Tries to add a given order to a specified bill
+	 * @param billNo The unique bill identifier
+	 * @param order order to add into the bill
+	 * @return returns true if succeed in adding order, else return false.
+	 */
     public boolean addOrderToBill(int billNo, Order order){
     	try {
 			billList.get(billNo - 1).addOrder(order);
@@ -58,7 +73,12 @@ public class BillMgr {
     		return false;
 		}
 	}
-
+	/**
+	 * Tries to remove a given order from a specified bill
+	 * @param billNo The unique bill identifier
+	 * @param orderNo order number to remove from the bill
+	 * @return returns true if succeed in removing order, else return false.
+	 */
 	public boolean removeOrderFromBill(int billNo, int orderNo){
 		for (Bill b : billList){
 			if (b.getBillNo() == billNo){
@@ -67,7 +87,13 @@ public class BillMgr {
 		}
 		return false;
 	}
-
+	/**
+	 * Prints out the finalized bill including all room service orders
+	 * Sets bill status to "Paid"
+	 * @param resvNo The unique reservation identifier to find the bill from
+	 * @param paymentMethod indicates how the guest is paying the bill
+	 *                      1 = cash, 2 = credit card
+	 */
 	public void printBill(int resvNo, int paymentMethod){
 
 		for (Bill b : billList){
@@ -95,7 +121,11 @@ public class BillMgr {
 		}
     	System.out.println("Bill for reservation not found!");
 	}
-
+	/**
+	 * Gets the bill number from a given room number
+	 * @param roomNo The room number to find the bill from
+	 * @return the Bill number tagged to the given room
+	 */
 	public int getBillNoFromRoomNo(String roomNo){
 		for (Bill b : billList){
 			if (b.getRoomNo().equals(roomNo)){
@@ -104,18 +134,10 @@ public class BillMgr {
 		}
     	return 0;
 	}
-/*
-    public void deleteBill (int billNo){
-    	for (int i = 0; i < billList.size(); i++) {
-			if (billList.get(i).getBillNo() == billNo) {
-				billList.remove(i);
-				System.out.println("Total number of bills: " + billList.size());
-				return;
-			}
-		}
-    	System.out.println("Bill number does not exist!");
-    }
-	*/
+	/**
+	 * Gives the master list back to main to write to file
+	 * @return the master bill list
+	 */
 	public ArrayList<Bill> saveToFile() {
 		return billList;
     }

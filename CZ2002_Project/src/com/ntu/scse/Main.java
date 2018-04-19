@@ -3,16 +3,47 @@ package com.ntu.scse;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
-
+/**
+ Represents a hotel management system for staff to use.
+ Staff are able to add/remove/update Guests.
+ Staff are able to add/remove/update Reservations.
+ Staff are able to view/update Rooms.
+ Staff are able to add/remove/update Room Service Orders.
+ Staff are able to add/remove/update Room Service Menu Items.
+ Staff are able to check in/out on behalf of Guests.
+ Staff are able to view room statistic reports.
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+ */
 public class Main {
-
+    /**
+     * The file name to read/write data
+     */
 	static final String dataFileName = "data.dat";
+    /**
+     * The Room manager object
+     */
 	static RoomMgr roomMgr = null;
+    /**
+     * The Guest manager object
+     */
 	static GuestMgr guestMgr = null;
+    /**
+     * The Bill manager object
+     */
 	static BillMgr billMgr = null;
+    /**
+     * The Reservation manager object
+     */
 	static ReservationMgr reservationMgr = null;
+    /**
+     * The Room service manager object
+     */
 	static RoomService roomService = null;
-	
+    /**
+     * Displays the main menu and writes all changes to file after each operation.
+     */
     public static void main(String[] args) {
 
         int choice;
@@ -87,7 +118,11 @@ public class Main {
         } while (choice < 10 && choice > 0);
         sc.close();
     }
-
+    /**
+     * Displays the welcome screen and attempts to read existing file for any saved data.
+     * If no previous data, initialize defaults.
+     * If previous data exists, load those data and pass respective lists to their managers.
+     */
     private static void Initialize() {
     	
     	FileInputStream fiStream;
@@ -137,7 +172,9 @@ public class Main {
 		}
     }
 
-
+    /**
+     * Writes all data to file.
+     */
 	private static void saveToFile() {
         //ROOM GUEST RESV BILL ROOMSVC
         try {
