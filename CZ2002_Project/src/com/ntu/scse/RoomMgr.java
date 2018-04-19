@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class RoomMgr implements Serializable {
 
-	private List<Room> room;
+	private ArrayList<Room> room;
 	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suite" };
 	private String[] bedType = { "Single", "Double" };
 	private String[] facing = { "North", "South", "East", "West" };
