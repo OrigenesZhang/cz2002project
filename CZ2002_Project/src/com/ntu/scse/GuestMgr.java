@@ -26,8 +26,10 @@ public class GuestMgr {
 	 * @param guest The list received from Main. If there was previous data, use this, else, create an empty list.
 	 */
 	public GuestMgr(ArrayList guest) {
-		if (guest == null)
+		if (guest == null){
 			this.guestList = new ArrayList<>();
+			initialize10Guests();
+		}
 		else
 			this.guestList = guest;
 		System.out.println(this.guestList.size() + " Guests loaded!");
@@ -251,7 +253,10 @@ public class GuestMgr {
 
 	
 	//-----------------------------------------------------------------//
-	
+	/**
+	 * Shows the main menu for all guest-related operations
+	 * @param rm The reservation manager object
+	 */
 	public void mainGuestView(ReservationMgr rm){
 		int choice, guestID;
 		Scanner sc = new Scanner(System.in);
@@ -539,6 +544,19 @@ public class GuestMgr {
 	}
 	public int getNumGuest(){
 		return guestList.size();
+	}
+
+	private void initialize10Guests(){
+		guestList.add(new Guest(1,"Alan","Ang",'M',"12345","123 NTU","Singapore",idTypeName[0],"12345"));
+		guestList.add(new Guest(2,"Ben","Boon",'M',"23456","246 NTU","Singapore",idTypeName[1],"23456"));
+		guestList.add(new Guest(3,"Chris","Chee",'M',"34567","555 NTU","Singapore",idTypeName[0],"34567"));
+		guestList.add(new Guest(4,"Denise","Dee",'F',"45678","100 NTU","Singapore",idTypeName[1],"45678"));
+		guestList.add(new Guest(5,"Elaine","Eng",'F',"56789","999 NTU","Singapore",idTypeName[0],"56789"));
+		guestList.add(new Guest(6,"Farhana","Fareed",'F',"67890","900 NTU","Singapore",idTypeName[1],"67890"));
+		guestList.add(new Guest(7,"Gregory","Gan",'M',"09876","928 NTU","Singapore",idTypeName[0],"09876"));
+		guestList.add(new Guest(8,"Hannah","Ho",'F',"98765","101 NTU","Singapore",idTypeName[1],"98765"));
+		guestList.add(new Guest(9,"Iggrite","Inc",'F',"87654","567 NTU","Singapore",idTypeName[0],"87654"));
+		guestList.add(new Guest(10,"Jack","Jo",'M',"76543","001 NTU","Singapore",idTypeName[1],"76543"));
 	}
 
 	private boolean checkGap() { //Checks if any gap due to previously deleted guest
