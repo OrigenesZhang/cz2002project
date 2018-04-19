@@ -93,7 +93,7 @@ public class BillMgr {
 
 	public int getBillNoFromRoomNo(String roomNo){
 		for (Bill b : billList){
-			if (b.getRoomNo() == roomNo){
+			if (b.getRoomNo().equals(roomNo)){
 				return b.getBillNo();
 			}
 		}

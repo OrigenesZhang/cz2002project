@@ -336,6 +336,7 @@ public class RoomService implements Serializable{
 
 		Scanner input = new Scanner(System.in);
 		int menuID, quantity;
+		boolean test;
 		char yesNo;
 		Order order;
 		String remarks;
@@ -364,8 +365,8 @@ public class RoomService implements Serializable{
 				}
 			}
 			order = addOrder(roomNo, menuID, quantity, remarks);
-			bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo),order);
-			System.out.println("Order has been added!");
+			test = bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo),order);
+			System.out.println("Order has been added! " + test);
 		}
 		System.out.println();
 	}
