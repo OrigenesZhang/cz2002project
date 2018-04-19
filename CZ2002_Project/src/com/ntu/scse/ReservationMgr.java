@@ -165,7 +165,7 @@ public class ReservationMgr {
 
 		resvTime = LocalTime.now();
 
-		resv = addResv(roomNo, guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
+		resv = addResv(roomNo, rm.getRoomTypeFromNum(roomNo), guest.getGuestID(), adultNo, kidNo, localDateIn, localDateOut, rStatus[0],
 				resvTime);
 		rm.assignRoom(roomNo,2, guest.getFirstName()+ " " +guest.getLastName());
 		System.out.println("Reservation confirmed! Receipt of reservation:\n");
@@ -173,7 +173,7 @@ public class ReservationMgr {
 		return resv;
 	}
 
-	public Reservation addResv(String roomNo, int gID, int aNo, int kNo, LocalDate dIn, LocalDate dOut,
+	public Reservation addResv(String roomNo, String roomType,int gID, int aNo, int kNo, LocalDate dIn, LocalDate dOut,
 								 String rStatus, LocalTime time) {
 
 		int newResvNo =0;
@@ -190,7 +190,7 @@ public class ReservationMgr {
 			}
 		}
 		try {
-			newResv = new Reservation(newResvNo, roomNo, gID, aNo, kNo, dIn, dOut, rStatus, time);
+			newResv = new Reservation(newResvNo, roomNo, roomType, gID, aNo, kNo, dIn, dOut, rStatus, time);
 			rList.add(newResv);
 			numOfReservation++;
 			System.out.println("Total number of reservations: " + numOfReservation);
@@ -218,7 +218,7 @@ public class ReservationMgr {
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
 
 			for (Reservation r : rList) {
-				System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
+				System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15.8s\n", r.getResvNo(), r.getGuestID(),
 						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 						r.getResvTime());
 			}
@@ -250,12 +250,12 @@ public class ReservationMgr {
 
 		if (r != null){
 			System.out.println("\nDisplaying Reservation No. " + r.getResvNo() + ": \n");
-			System.out.format("%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Guest ID", "Num Adult",
-					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
+			System.out.format("%-15s%-15s%-15s%-15s%-25s%-15s%-15s%-15s%-15s\n", "Guest ID", "Num Adult",
+					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Num of nights", "Reservation time");
 
-				System.out.format("%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getGuestID(),
+				System.out.format("%-15d%-15s%-15s%-15s%-25s%-15s%-15s%-15s%-15s\n", r.getGuestID(),
 						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
-						r.getResvTime());
+						r.getRoomDays(), r.getResvTime());
 		}
 	}
 

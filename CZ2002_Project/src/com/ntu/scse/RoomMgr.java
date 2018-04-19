@@ -484,6 +484,24 @@ public class RoomMgr implements Serializable {
 		return result;
 	}
 
+	public String getRoomTypeFromNum(String roomNo){
+		for (Room r : room) {
+			if (r.getRoomNO().equals(roomNo)) {
+				return r.getRoomType();
+			}
+		}
+		return null;
+	}
+
+	private double getRoomRateFromNum(String roomNo){
+		for (Room r : room) {
+			if (r.getRoomNO().equals(roomNo)) {
+				return r.getRoomRate();
+			}
+		}
+		return 0;
+	}
+
 	public boolean checkRoomEmpty(String roomNo) {
 		boolean result = false;
 
@@ -534,7 +552,7 @@ public class RoomMgr implements Serializable {
 		System.out.println("Room does not exist!");
 	}
 
-	public void checkIn(ReservationMgr resvMgr, GuestMgr guestMgr) {
+	public void checkIn(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm) {
 		//TODO CREATE BILL
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
@@ -554,6 +572,7 @@ public class RoomMgr implements Serializable {
 					assignRoom(resv.getRoomNo(), 1, guestMgr.getNamefromID(resv.getGuestID())); // change room to occupied
 					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked into room "
 							+ resv.getRoomNo());
+					bm.addBill(resv.getResvNo(), resv.getRoomDays(),resv.roomType, resv.getRoomNo(), getRoomRateFromNum(resv.getRoomNo()),0);
 				}
 
 			} else if (choice == 2) { // RESERVATION
@@ -568,6 +587,7 @@ public class RoomMgr implements Serializable {
 							resv.setResvStatus("CHECKED-IN");
 							System.out.println(guestMgr.getNamefromID(resv.getGuestID())
 									+ " has been checked into room " + resv.getRoomNo());
+							bm.addBill(resv.getResvNo(), resv.getRoomDays(),resv.roomType, resv.getRoomNo(), getRoomRateFromNum(resv.getRoomNo()),0);
 						} else
 							System.out.println("Please enter a valid confirmed reservation no.!");
 					}
@@ -579,7 +599,7 @@ public class RoomMgr implements Serializable {
 		} while (choice != 3);
 	}
 
-	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr) {
+	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm) {
 		int resvNo, numResv;
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
@@ -591,7 +611,7 @@ public class RoomMgr implements Serializable {
 
 			if (resv != null) {
 				if (resv.getResvStatus().equals("CHECKED-IN")) {
-					//TODO PRINT BILL
+					bm.printBill(resvNo);
 					assignRoom(resv.getRoomNo(), 0); // set room to vacant
 					resv.setResvStatus("CHECKED-OUT");
 					System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "

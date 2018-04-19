@@ -53,7 +53,7 @@ public class Main {
                     break;
 
                 case 4: /* (4) Print/Create/Update/Remove ROOM SERVICE orders */
-                	roomService.ShowRoomServiceOrderOption(roomMgr);
+                	roomService.ShowRoomServiceOrderOption(roomMgr, billMgr);
                     break;
 
                 case 5: /* (5) Print/Create/Update/Remove ROOM SERVICE MENU items */
@@ -61,15 +61,16 @@ public class Main {
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
-                	roomMgr.viewAllRoomByStatus(1);
+                	//roomMgr.viewAllRoomByStatus(1);
+                    billMgr.printBill(1);
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
-                    roomMgr.checkIn(reservationMgr,guestMgr);
+                    roomMgr.checkIn(reservationMgr,guestMgr, billMgr);
                     break;
 
                 case 8: /* (8) Room CHECK-OUT and print BILL invoice */
-                    roomMgr.checkOut(reservationMgr,guestMgr);
+                    roomMgr.checkOut(reservationMgr,guestMgr, billMgr);
                     break;
 
                 case 9: /* (9) Print ROOM STATUS statistic report */

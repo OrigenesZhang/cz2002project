@@ -7,44 +7,31 @@ public class BillMgr {
 //    2. If new Guest(While Check In), create a new file for him (And add the room bill)
 	
 	static ArrayList<Bill> billList = null;
-	int numOfBill =0;
-	
+	private String[] bStatus = { "OPEN", "PAID" };
+
     public BillMgr(ArrayList<Bill> billList) {
-    	if (billList == null) {//Initialize
+    	if (billList == null) //Initialize
 			this.billList = new ArrayList<>();
-			numOfBill = 0;
-		}
-		else{
+		else
 			this.billList = new ArrayList<>(billList);
-			numOfBill = billList.size();
-		}
-        System.out.println(numOfBill + " Bills loaded!");
+
+        System.out.println(this.billList.size() + " Bills loaded!");
     }
 	
     public Bill addBill (
-    		Menu item,
-            double quantity,
-            double discount,
-            double taxRate,
-            int resvIndex) throws InvalidInfoException {
-    	int newBillNo =0;
-    	
-    	if (checkGap() == false) { //no gap, add bill at back
-    		newBillNo = numOfBill + 1;
-    	}
-    	else { //add bill in between
-    		for (int i = 0; i < billList.size(); i++) {
-    			if (billList.get(i).getBillNo() != (i+1)) {
-    				newBillNo = i+1;
-    				break;
-    			}
-    		}
-    	}
+			int resvNo,
+			int roomDays,
+			String roomType,
+			String roomNo,
+			double roomRate,
+			double discount
+            ) {
+    	int newBillNo = billList.size()+1;
     	try {
-	        Bill newBill = new Bill(item, newBillNo, quantity, discount, taxRate,resvIndex);
+	        Bill newBill = new Bill(newBillNo, resvNo, roomDays, roomType, roomNo, roomRate, discount);
 	        billList.add(newBill);
-	        numOfBill++;
-	        System.out.println("Total number of bills: " + numOfBill);
+			System.out.println("Bill no. " + newBillNo + " has been added!");
+	        System.out.println("Total number of bills: " + billList.size());
 	        return newBill;
     	}
     	catch (Exception e) {
@@ -54,46 +41,78 @@ public class BillMgr {
     }
     
     public Bill searchBill(int billNo) {
-    	Bill bill = null;
+    	Bill bill;
     	for (int i = 0; i < billList.size(); i++) {
 			if (billList.get(i).getBillNo() == billNo) {
 				bill = billList.get(i);
 				return bill;
 			}
 		}
-    	System.out.println("Bill number does not exist!");
-    	return bill;
+    	return null;
     }
-    public ArrayList<Bill> seachBillByResv(int resvIndex){
-    	ArrayList<Bill> b = new ArrayList<>();
-    	for(Bill bill:billList){
-    	    if(bill.getResvIndex() == resvIndex){
-    	        b.add(bill);
-            }
-        }
-    	return b;
+    public boolean addOrderToBill(int billNo, Order order){
+    	for (Bill b : billList){
+    		if (b.getBillNo() == billNo){
+    			b.addOrder(order);
+    			return true;
+			}
+		}
+		return false;
 	}
 
+	public boolean removeOrderFromBill(int billNo, int orderNo){
+		for (Bill b : billList){
+			if (b.getBillNo() == billNo){
+				return(b.removeOrder(orderNo));
+			}
+		}
+		return false;
+	}
+
+	public void printBill(int resvNo){
+
+		for (Bill b : billList){
+			if (b.getResvNo() == resvNo){
+				b.printOrders();
+
+				System.out.println("Printing bill no. " + b.getBillNo());
+				System.out.format("%-15s%-15s%-15s%-15s%-20s%-25s%-25s%-25s%-15s\n", "Bill No.", "Resv No.",
+						"Room Type", "Room Rate", "No. of nights", "Discount", "Tax", "Room Price","Bill Status");
+
+				System.out.format("%-15d%-15s%-15s%-15s%-20s%-25.4s%-25s%-25s%-15s\n", b.getBillNo(), b.getResvNo(),
+						b.getRoomType(), b.getRoomRate(), b.getRoomDays(), (b.getDiscount()*100)+"%", (b.getTaxRate()*100)+"%", "$"+ (b.getRoomDays()*b.getRoomRate()),
+						b.getBillStatus());
+
+				System.out.println("\n\nTotal Due:");
+				System.out.format("%-15.7s", "$"+ (b.getTotal() * (1.0+b.getTaxRate())));
+				return;
+			}
+		}
+    	System.out.println("Bill for reservation not found!");
+	}
+
+	public int getBillNoFromRoomNo(String roomNo){
+		for (Bill b : billList){
+			if (b.getRoomNo() == roomNo){
+				return b.getBillNo();
+			}
+		}
+    	return 0;
+	}
+/*
     public void deleteBill (int billNo){
     	for (int i = 0; i < billList.size(); i++) {
 			if (billList.get(i).getBillNo() == billNo) {
 				billList.remove(i);
-				numOfBill--;
-				System.out.println("Total number of bills: " + numOfBill);
+				System.out.println("Total number of bills: " + billList.size());
 				return;
 			}
 		}
     	System.out.println("Bill number does not exist!");
     }
-	
+	*/
 	public ArrayList<Bill> saveToFile() {
 		return billList;
     }
-	
-    private boolean checkGap() { //Checks if any gap due to previously deleted bills
-    	if (numOfBill==0)
-    		return false;
-    	else
-    		return !(billList.get(billList.size()-1).getBillNo() == numOfBill);
-    }
+
 }

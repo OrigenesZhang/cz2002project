@@ -67,7 +67,7 @@ public class RoomService implements Serializable{
 		} while (choice != 5);
 	}
 
-	public void ShowRoomServiceOrderOption(RoomMgr rm) {
+	public void ShowRoomServiceOrderOption(RoomMgr rm, BillMgr bm) {
 		int choice;
 		String roomNo;
 
@@ -104,7 +104,7 @@ public class RoomService implements Serializable{
 				// can only add if room is occupied
 				if (rm.checkValidRoomForOrder(roomNo)) {
 					viewMenu();
-					addOrderItem(roomNo);
+					addOrderItem(roomNo, bm);
 					finalizeOrder(roomNo);
 				} else {
 					System.out.println("Invalid Room no. \n");
@@ -118,7 +118,7 @@ public class RoomService implements Serializable{
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
 					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
-						removeOrder(roomNo);
+						removeOrder(roomNo, bm);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
@@ -129,7 +129,7 @@ public class RoomService implements Serializable{
 				roomNo = input.nextLine();
 				if (rm.checkValidRoomForOrder(roomNo)) {
 					if(viewOrderByRoomID(roomNo)) //If at least 1 order from room
-						updateOrderItem(roomNo);
+						updateOrderItem(roomNo, bm);
 				} else {
 					System.out.println("Invalid Room no. \n");
 				}
@@ -293,7 +293,7 @@ public class RoomService implements Serializable{
 		} else 
 		{
 			System.out.println("\nViewing all Order");
-			System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Item No.", "Food Name",
+			System.out.format("%-15s%-15s%-40s%-20s%-20s%-40s%-15s%-15s\n", "Room No.", "Order No.", "Food Name",
 					"Price (S$)", "Quantity", "Remarks", "Status", "Date/Time");
 			for (Order oo : orders) {
 
@@ -332,11 +332,12 @@ public class RoomService implements Serializable{
 		}
 	}
 
-	public void addOrderItem(String roomNo) {
+	public void addOrderItem(String roomNo, BillMgr bm) {
 
 		Scanner input = new Scanner(System.in);
 		int menuID, quantity;
 		char yesNo;
+		Order order;
 		String remarks;
 
 		int orderNo = errorCheckingInt("Enter the number of order(s): ");
@@ -362,24 +363,29 @@ public class RoomService implements Serializable{
 					System.out.println("Error input\n");
 				}
 			}
-			addOrder(roomNo, menuID, quantity, remarks);
+			order = addOrder(roomNo, menuID, quantity, remarks);
+			bm.addOrderToBill(bm.getBillNoFromRoomNo(order.getRoomNo()),order);
+			System.out.println("Order has been added!");
 		}
 		System.out.println();
 	}
 
-	private void addOrder(String roomNo, int menuID, int quan, String r) {
+	private Order addOrder(String roomNo, int menuID, int quan, String r) {
 		// get the last itemID;
-		int index = getLastItemID(roomNo);
+		int index = getLastItemID(roomNo)+1;
+		Order newOrder;
 
 		for (Menu mm : menus) {
 			if (mm.getID() == menuID) {
-				orders.add(new Order(roomNo, index, mm.getFood(), mm.getPrice(), quan, r));
+				newOrder = new Order(roomNo, index, mm.getFood(), mm.getPrice(), quan, r);
+				orders.add(newOrder);
+				return newOrder;
 			}
 		}
+		return null;
 	}
 
-	public void removeOrder(String roomNo) {
-		//TODO UPDATE BILL
+	public void removeOrder(String roomNo, BillMgr bm) {
 		int index = errorCheckingInt("Enter index to remove item from order: ", getLastItemID(roomNo));
 		Iterator<Order> iter = orders.iterator();
 		
@@ -389,6 +395,7 @@ public class RoomService implements Serializable{
 			if (str.getRoomNo().equals(roomNo) && str.getID() == index && !str.getStatus().equals("Delivered")) {
 				System.out.print("Order number " + str.getID() + " has been removed!");
 				iter.remove();
+				bm.removeOrderFromBill(bm.getBillNoFromRoomNo(str.getRoomNo()),str.getID());
 				return;
 			} else if (str.getRoomNo().equals(roomNo) && str.getID() == index && str.getStatus().equals("Delivered")) {
 				System.out.println("Delivered orders cannot be removed\n");
@@ -413,11 +420,12 @@ public class RoomService implements Serializable{
 
 			if (oo.getRoomNo().equals(roomNo) && oo.getDateTime() == null && flag) {
 				oo.setOrderDateTime(tempDateTime, tempDT);
+
 			}
 		}
 	}
 
-	public void updateOrderItem(String roomNo) {
+	public void updateOrderItem(String roomNo, BillMgr bm) {
 
 		Scanner input = new Scanner(System.in);
 

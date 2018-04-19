@@ -24,6 +24,7 @@ public class Order implements Serializable, Comparable<Order> {
 		price = c;
 		quan = q;
 		ordRemarks = r;
+		status = arrayStatus[0];
 	}
 
 	public String getOrdFName() {
@@ -39,7 +40,7 @@ public class Order implements Serializable, Comparable<Order> {
 	}
 
 	public String getStatus() {
-		return status = arrayStatus[checkTiming()];
+		return status;
 	}
 
 	public int getQuan() {
@@ -54,8 +55,8 @@ public class Order implements Serializable, Comparable<Order> {
 		return orderID;
 	}
 
-	public void setID(int id) {
-		orderID = id;
+	public void setStatus(int choice) {
+		this.status = arrayStatus[choice];
 	}
 
 	public void setOrdRemarks(String ordRemarks) {

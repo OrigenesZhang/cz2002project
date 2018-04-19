@@ -4,16 +4,18 @@ import java.io.Serializable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Reservation implements Serializable, Comparable<Reservation>{
-    private int resvNo, adultNo, kidNo, guestID;
-	String roomNo, resvStatus;
+    private int resvNo, adultNo, kidNo, guestID, roomDays;
+	String roomNo, roomType, resvStatus;
     private LocalDate dateCheckIn, dateCheckOut;
     private LocalTime resvTime;
 
 
     public Reservation(int resvNo,
     				   String roomNo,
+                       String roomType,
                        int guestID,
                        int adultNo,
                        int kidNo,
@@ -27,8 +29,10 @@ public class Reservation implements Serializable, Comparable<Reservation>{
         this.adultNo = adultNo;
         this.kidNo = kidNo;
         this.roomNo = roomNo;
+        this.roomType = roomType;
         this.dateCheckIn = dateCheckIn;
         this.dateCheckOut = dateCheckOut;
+        this.roomDays = (int) ChronoUnit.DAYS.between(dateCheckIn, dateCheckOut);
         this.resvStatus = resvStatus;
         this.resvTime = resvTime;
     }
@@ -54,8 +58,16 @@ public class Reservation implements Serializable, Comparable<Reservation>{
 	}
 
 
+	public int getRoomDays(){ return roomDays; }
+
+
 	public String getRoomNo() {
 		return roomNo;
+	}
+
+
+	public String getRoomType() {
+		return roomType;
 	}
 
 
