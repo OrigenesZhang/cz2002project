@@ -22,12 +22,14 @@ public class GuestMgr {
 	 */
 	private final String[] idTypeName = { "DRIVING LICENSE", "PASSPORT" };
 	/**
-	 * Creates a Guest Manager based on loaded data from a file. If no previous data was present, initialize an empty master list.
+	 * Creates a Guest Manager based on loaded data from a file. If no previous data was present, initialize 10 default guests.
 	 * @param guest The list received from Main. If there was previous data, use this, else, create an empty list.
 	 */
 	public GuestMgr(ArrayList guest) {
-		if (guest == null)
+		if (guest == null){
 			this.guestList = new ArrayList<>();
+			initialize10Guests();
+		}
 		else
 			this.guestList = guest;
 		System.out.println(this.guestList.size() + " Guests loaded!");
@@ -251,7 +253,16 @@ public class GuestMgr {
 
 	
 	//-----------------------------------------------------------------//
-	
+	/**
+	 * Shows the main menu for all guest-related operations such as
+	 * Creating a new guest
+	 * Updating guest details
+	 * Searching for guests
+	 * Removing guests
+	 * Viewing all guests
+	 * Refreshes Guest list (sorts based on guest ID) after every operation
+	 * @param rm The reservation manager object
+	 */
 	public void mainGuestView(ReservationMgr rm){
 		int choice, guestID;
 		Scanner sc = new Scanner(System.in);
@@ -347,7 +358,17 @@ public class GuestMgr {
 			Collections.sort(guestList);
 		} while (choice < 5 && choice > 0);
 	}
-
+	/**
+	 * Shows the menu for updating guest details. Details of a guest that can be updated are:
+	 * First & Last name
+	 * Gender
+	 * Credit card number
+	 * Billing address
+	 * Country
+	 * Identification document type
+	 * National identification number
+	 * @param guestID The unique identifier of the guest
+	 */
 	public void updateGuestByID(int guestID) {
 		Scanner sc = new Scanner(System.in);
 		int ch;
@@ -378,7 +399,18 @@ public class GuestMgr {
 		}
 
 	}
-
+	/**
+	 * Executes the updating of guest details based on choice of detail to update. Details of a guest that can be updated are:
+	 * First & Last name
+	 * Gender
+	 * Credit card number
+	 * Billing address
+	 * Country
+	 * Identification document type
+	 * National identification number
+	 * @param guest The guest to update
+	 * @param choice The choice of detail to update
+	 */
 	private void updateGuestByID(Guest guest, int choice) {
 		Scanner sc = new Scanner(System.in);
 
@@ -402,16 +434,21 @@ public class GuestMgr {
 		case 3:
 			char dummy;
 			while (true) {
-				System.out.printf("Please enter the Gender (M/F), or press Enter to exit: ");
-				dummy = Character.toUpperCase(sc.nextLine().charAt(0));
-				if (dummy == ' ') {
+				try {
+					System.out.printf("Please enter the Gender (M/F), or press Enter to exit: ");
+					dummy = Character.toUpperCase(sc.nextLine().charAt(0));
+					
+					if (dummy == 'M' || dummy == 'F') {
+						guest.setGender(dummy);
+						System.out.printf("* Successfully Updated the Gender to \'" + dummy + "\'\n");
+						break;
+					} else {
+						System.out.println("##Invalid Gender Input!\n");
+					}
+					
+				} catch (StringIndexOutOfBoundsException e)
+				{
 					break;
-				} else if (dummy == 'M' || dummy == 'F') {
-					guest.setGender(dummy);
-					System.out.printf("* Successfully Updated the Gender to \'" + dummy + "\'\n");
-					break;
-				} else {
-					System.out.println("##Invalid Gender Input!\n");
 				}
 			}
 			break;
@@ -474,7 +511,10 @@ public class GuestMgr {
 		}
 
 	}
-
+	/**
+	 * Asks the user for relevant information required for creating a new guest before proceeding to create the new guest
+	 * @return returns the newly created Guest
+	 */
 	public Guest createNewGuest() {
 		Scanner sc = new Scanner(System.in);
 		String dummy, firstName, lastName, creditCardNo, address, country, idNumber;
@@ -537,11 +577,33 @@ public class GuestMgr {
 		sc.nextLine();
 		return newGuest;
 	}
+	/**
+	 * Gets the number of guests in the hotel
+	 * @return returns the number of guests in the hotel
+	 */
 	public int getNumGuest(){
 		return guestList.size();
 	}
-
-	private boolean checkGap() { //Checks if any gap due to previously deleted guest
+	/**
+	 * Initializes a list of 10 guests
+	 */
+	private void initialize10Guests(){
+		guestList.add(new Guest(1,"Alan","Ang",'M',"12345","123 NTU","Singapore",idTypeName[0],"12345"));
+		guestList.add(new Guest(2,"Ben","Boon",'M',"23456","246 NTU","Singapore",idTypeName[1],"23456"));
+		guestList.add(new Guest(3,"Chris","Chee",'M',"34567","555 NTU","Singapore",idTypeName[0],"34567"));
+		guestList.add(new Guest(4,"Denise","Dee",'F',"45678","100 NTU","Singapore",idTypeName[1],"45678"));
+		guestList.add(new Guest(5,"Elaine","Eng",'F',"56789","999 NTU","Singapore",idTypeName[0],"56789"));
+		guestList.add(new Guest(6,"Farhana","Fareed",'F',"67890","900 NTU","Singapore",idTypeName[1],"67890"));
+		guestList.add(new Guest(7,"Gregory","Gan",'M',"09876","928 NTU","Singapore",idTypeName[0],"09876"));
+		guestList.add(new Guest(8,"Hannah","Ho",'F',"98765","101 NTU","Singapore",idTypeName[1],"98765"));
+		guestList.add(new Guest(9,"Iggrite","Inc",'F',"87654","567 NTU","Singapore",idTypeName[0],"87654"));
+		guestList.add(new Guest(10,"Jack","Jo",'M',"76543","001 NTU","Singapore",idTypeName[1],"76543"));
+	}
+	/**
+	 * Checks if there is any gap in guest ID due to previously deleted guests
+	 * @return returns true if there is a gap in guest ID, returns false if all guest IDs are in consecutive order
+	 */
+	private boolean checkGap() {
 		if (guestList.size() == 0)
 			return false;
 		else

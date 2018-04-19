@@ -5,13 +5,30 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-
+/**
+ Represents a hotel Reservation Manager that contains a list of all reservations as well as methods for manipulating those reservations.
+ One ReservationManager can contain many Reservations.
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+ */
 public class ReservationMgr {
-
-	private List<Reservation> rList = null;
+	/**
+	 * An array of the master list of Reservations for the hotel
+	 */
+	private List<Reservation> rList;
+	/**
+	 * An array of the possible statuses for any reservation
+	 */
 	private String[] rStatus = { "CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT" , "EXPIRED"};
-	private int numOfReservation = 0, resNo;
-
+	/**
+	 * A counter for the number of reservations currently
+	 */
+	private int numOfReservation;
+	/**
+	 * Creates a Reservation Manager based on loaded data from a file. If no previous data was present, initialize an empty master list.
+	 * @param reservationList The list received from Main. If there was previous data, use this, else, create an empty list.
+	 */
 	public ReservationMgr(ArrayList reservationList) {
 		if (reservationList == null) { // Initialize
 			this.rList = new ArrayList<>();
@@ -22,13 +39,17 @@ public class ReservationMgr {
 		}
 		System.out.println(numOfReservation + " Reservations loaded!");
 	}
-
+	/**
+	 * Shoes the main menu for all reservation-related operations
+	 * Refreshes Reservation list (sorts based on reservation ID) after every operation
+	 * @param gm the Guest Manager object for guest-related operations
+	 * @param rm the Room Manager object for room-related operations
+	 */
 	public void resvOptions(GuestMgr gm, RoomMgr rm) {
 		int choice;
-		Scanner sc = new Scanner(System.in);
 
 		do {
-			System.out.println("");
+			System.out.println();
 			System.out.println("=>Please select from the following:");
 			System.out.println("(1) Create New RESERVATION");
 			System.out.println("(2) Update RESERVATION detail");
@@ -71,15 +92,22 @@ public class ReservationMgr {
 			Collections.sort(rList);
 		} while (choice != 6);
 	}
-
+	/**
+	 * Asks user for relevant information before creating a new reservation
+	 * Checks if the guest is already in the database or is a new guest
+	 * @param gm the Guest Manager object for guest-related operations
+	 * @param rm the Room Manager object for room-related operations
+	 * @param walkIn a flag to check if the guest is a walk-in guest or has a prior reservation
+	 * @return
+	 */
 	public Reservation createNewResv(GuestMgr gm, RoomMgr rm, boolean walkIn) {
-		int adultNo, kidNo, dayNo, ch;
+		int adultNo, kidNo, ch;
 		boolean valid = false;
 		String roomNo, dateIn, dateOut;
 		LocalDate localDateIn, localDateOut, localDateNow;
 		LocalTime resvTime;
 		Guest guest = null;
-		Reservation resv = null;
+		Reservation resv;
 
 		Scanner sc = new Scanner(System.in);
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -172,7 +200,20 @@ public class ReservationMgr {
 		readReservation(resv);
 		return resv;
 	}
-
+	/**
+	 * Adds a reservation to the master list based on the details provided
+	 * Automatically generates a new unique identifier
+	 * @param roomNo The room number associated with this reservation
+	 * @param roomType The room type associated with this reservation
+	 * @param gID The guest ID associated with this reservation
+	 * @param aNo The number of adults in this reservation
+	 * @param kNo The number of kids in this reservation
+	 * @param dIn The check in date of this reservation
+	 * @param dOut The check out date of this reservation
+	 * @param rStatus the status of this reservation
+	 * @param time the date and time this reservation was placed
+	 * @return the newly created reservation
+	 */
 	public Reservation addResv(String roomNo, String roomType,int gID, int aNo, int kNo, LocalDate dIn, LocalDate dOut,
 								 String rStatus, LocalTime time) {
 
@@ -200,14 +241,19 @@ public class ReservationMgr {
 		}
 		return newResv;
 	}
-
+	/**
+	 * Checks if there is any gap in Reservation ID due to previously deleted reservations
+	 * @return returns true if there is a gap in reservation ID, returns false if all reservation IDs are in consecutive order
+	 */
 	private boolean checkGap() { //Checks if any gap due to previously deleted resv
 		if (numOfReservation == 0)
 			return false;
 		else
 			return !(rList.get(rList.size()-1).getResvNo() == numOfReservation);
 	}
-
+	/**
+	 * Prints out the entire reservation list.
+	 */
 	public void readReservationList() {
 
 		if (rList.size() == 0) {
@@ -224,6 +270,12 @@ public class ReservationMgr {
 			}
 		}
 	}
+	/**
+	 * Prints out selected reservations based on their status.
+	 * @param choice the choice of reservations the user wants to print out
+	 *               1 = "CONFIRMED", 2 = "IN WAITLIST", 3 = "CHECKED-IN", 4 = "CHECKED-OUT", 5 = "EXPIRED"
+	 * @return the number of reservations that match the status selected
+	 */
 	public int readReservationListByStatus(int choice) {
 		//"CONFIRMED", "IN WAITLIST", "CHECKED-IN", "CHECKED-OUT", EXPIRED
 		int count = 0;
@@ -246,6 +298,10 @@ public class ReservationMgr {
 			System.out.println("No " + rStatus[choice - 1] + " Reservations");
 		return count;
 	}
+	/**
+	 * Prints out the details of a specific reservation.
+	 * @param r The reservation to print
+	 */
 	public void readReservation(Reservation r) {
 
 		if (r != null){
@@ -258,7 +314,16 @@ public class ReservationMgr {
 						r.getRoomDays(), r.getResvTime());
 		}
 	}
-
+	/**
+	 * Shows the menu for updating reservation details. Details of a reservation that can be updated are:
+	 * Room number
+	 * Number of adults
+	 * Number of kids
+	 * Check in date
+	 * Check out date
+	 * Reservation Status
+	 * @param rm The room manager for any room-related operations
+	 */
 	public void updateResvOption(RoomMgr rm) {
 		boolean flag = false;
 		Scanner sc = new Scanner(System.in);
@@ -282,7 +347,7 @@ public class ReservationMgr {
 					System.out.print("Enter the number of your choice: ");
 					ch = sc.nextInt();
 					sc.nextLine();
-					updateResv(rm, r, r.getAdultNo()+r.getKidNo(), ch);
+					updateResv(rm, r, ch,r.getAdultNo()+r.getKidNo());
 				} while (ch > 0 && ch < 9);
 				flag = true;
 				break;
@@ -292,7 +357,13 @@ public class ReservationMgr {
 		if(!flag)
 			System.out.println("Reservation no does not exist");
 	}
-
+	/**
+	 * Executes the updating of reservation details based on choice of detail to update.
+	 * @param rm The room manager for any room-related operations
+	 * @param r The Reservation to update
+	 * @param choice The choice of detail to update
+	 * @param numGuest The number of Guests in the selected reservation
+	 */
 	public void updateResv(RoomMgr rm, Reservation r, int choice, int numGuest) {
 
 		Scanner sc = new Scanner(System.in);
@@ -392,9 +463,13 @@ public class ReservationMgr {
 
 		}
 	}
-
+	/**
+	 * Searches for a specific reservation using the unique reservation number.
+	 * @param resvNo the unique reservation number to search for
+	 * @return returns the Reservation object if a match is found
+	 */
 	public Reservation searchReservation(int resvNo) {
-		Reservation resv = null;
+		Reservation resv;
 		for (int i = 0; i < rList.size(); i++) {
 			if (rList.get(i).getResvNo() == resvNo) {
 				resv = rList.get(i);
@@ -402,9 +477,13 @@ public class ReservationMgr {
 			}
 		}
 		System.out.println("Reservation number does not exist!");
-		return resv;
+		return null;
 	}
-
+	/**
+	 * Searches if there is a specific reservation which is made under a specific guest ID, and also if that reservation's status is either confirmed or checked-in
+	 * @param guestID the Guest ID to find a reservation from
+	 * @return returns true if the specified guest has a reservation that is either confirmed or checked-in, else returns false
+	 */
 	public boolean doesGuestHaveResv(int guestID){
 		for (Reservation r : rList){
 			if (r.getGuestID() == guestID && (r.getResvStatus().equals("CONFIRMED") || r.getResvStatus().equals("CHECKED-IN")))
@@ -412,10 +491,13 @@ public class ReservationMgr {
 		}
 		return false;
 	}
-
+	/**
+	 * Asks user for the unique reservation number to remove before attempting to remove if it exists.
+	 * @param rm The room manager for room-specific operations
+	 */
 	public void removeReservation(RoomMgr rm) {
 
-		int rNo = 0;
+		int rNo;
 		boolean flag = false;
 		Scanner input = new Scanner(System.in);
 		Iterator<Reservation> iter = rList.iterator();
@@ -448,6 +530,11 @@ public class ReservationMgr {
 				System.out.println("Reservation no. does not exist!");
 		}
 	}
+	/**
+	 * Checks all reservation check in dates and compares it with the current date.
+	 * If the check in date is before today's date, those reservations will automatically be set to expired.
+	 * @param rm The room manager for room-specific operations
+	 */
 	public void refreshReservations(RoomMgr rm){
 		int count=0;
 		for (Reservation r : rList){
@@ -462,10 +549,20 @@ public class ReservationMgr {
 	}
 	
 	// ----------------------Other Section -----------------------//
+	/**
+	 * Gives the master list back to main to write to file
+	 * @return the master reservation list
+	 */
 	public List<Reservation> saveToFile() {
 		return rList;
 	}
-	
+
+	/**
+	 * To check for any input mismatch or illegal argument such as negative value. The lastItem id will prevent client from exceeding the
+	 * number of available.
+	 * Specifically when checking for number of adults and kids, number of adults must be at least 1 while number of kids can be zero.
+	 * @param display the display for client to see
+	 */
 	private int errorCheckingInt(String display) {
 
 		int tempChoice;
@@ -494,7 +591,13 @@ public class ReservationMgr {
 
 		return tempChoice;
 	}
-
+	/**
+	 * To check for any input mismatch
+	 * or illegal argument such as negative value. The lastItem id will prevent client from exceeding the
+	 * number of available.
+	 * @param display the display for client to see
+	 * @param lastItem for the last option number
+	 */
 	private int errorCheckingInt(String display, int lastItem) {
 		int index;
 		Scanner input = new Scanner(System.in);

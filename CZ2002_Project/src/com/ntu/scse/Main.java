@@ -67,7 +67,7 @@ public class Main {
             System.out.println("(8) Room CHECK-OUT and print BILL invoice");
             System.out.println("(9) Print ROOM STATUS statistic report");
             System.out.println("(10) Exit");
-            System.out.println("");
+            System.out.println();
             System.out.print("Enter the number of your choice: ");
             choice = sc.nextInt();
             switch (choice) {
@@ -92,8 +92,8 @@ public class Main {
                     break;
 
                 case 6: /* (6) Check ROOM Availability */
-                	//roomMgr.viewAllRoomByStatus(1);
-                    billMgr.printBill(1,1);
+                	roomMgr.viewAllRoomByStatus(1);
+                    //billMgr.printBill(1,1);
                     break;
 
                 case 7: /* (7) Room CHECK-IN (for WALK-IN or RESERVATION) */
