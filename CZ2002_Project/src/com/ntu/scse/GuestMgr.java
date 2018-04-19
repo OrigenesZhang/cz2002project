@@ -5,20 +5,38 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Collections;
-
+/**
+ Represents a hotel Guest Manager that contains a list of all guests as well as methods for manipulating those guests.
+ One GuestManager can contain many Guests.
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+ */
 public class GuestMgr {
-
+	/**
+	 * An array of the master list of Guests for the hotel
+	 */
 	private List<Guest> guestList;
+	/**
+	 * An array of the possible identification document types for a guest
+	 */
 	private final String[] idTypeName = { "DRIVING LICENSE", "PASSPORT" };
-
+	/**
+	 * Creates a Guest Manager based on loaded data from a file. If no previous data was present, initialize an empty master list.
+	 * @param guest The list received from Main. If there was previous data, use this, else, create an empty list.
+	 */
 	public GuestMgr(ArrayList guest) {
 		if (guest == null)
 			this.guestList = new ArrayList<>();
 		else
 			this.guestList = guest;
 		System.out.println(this.guestList.size() + " Guests loaded!");
-	}	
-
+	}
+	/**
+	 * Prints out a guest's first and last name based on a given guest ID, and returns the Guest object
+	 * @param guestID the ID of the guest
+	 * @return returns the Guest object if a match is found
+	 */
 	public Guest readGuestInfo(int guestID) {
 		for (Guest g : guestList) {
 			if (g.getGuestID() == guestID) {
@@ -29,7 +47,12 @@ public class GuestMgr {
 		System.out.println("Guest does not exist!");
 		return null;
 	}
-
+	/**
+	 * Gets the guest ID given the guest's first and last name
+	 * @param lastName the last name of the guest
+	 * @param firstName the first name of the guest
+	 * @return returns the Guest's ID
+	 */
 	public int getIDfromName(String lastName, String firstName) {
 		for (Guest g : guestList) {
 			if (g.getLastName().equals(lastName) && g.getFirstName().equals(firstName)) {
@@ -38,6 +61,11 @@ public class GuestMgr {
 		}
 		return -1;
 	}
+	/**
+	 * Gets the guest first and last name given the guest's id
+	 * @param id the ID of the guest
+	 * @return returns the Guest's first and last name
+	 */
 	public String getNamefromID(int id) {
 		for (Guest g : guestList) {
 			if (g.getGuestID()== id) {
@@ -46,7 +74,11 @@ public class GuestMgr {
 		}
 		return "";
 	}
-
+	/**
+	 * Prints out a guest's full details based on a given guest ID, and returns the Guest object
+	 * @param guestID the ID of the guest
+	 * @return returns the Guest object if a match is found
+	 */
 	public Guest searchGuest(int guestID) {
 
 		for (Guest g : guestList) {
@@ -64,6 +96,12 @@ public class GuestMgr {
 		System.out.println("Guest does not exist!");
 		return null;
 	}
+	/**
+	 * Prints out a guest's first and last name based on a given guest first name, and returns the Guest object.
+	 * If more than 1 have the same first name, prompt user to enter guest's last name as well.
+	 * @param firstName the first name of the guest
+	 * @return returns the Guest object if a match is found
+	 */
 	public Guest searchGuest(String firstName) {
 
 		boolean searched = false;
@@ -106,12 +144,14 @@ public class GuestMgr {
 			System.out.println("Guest does not exist!");
 		return tempGuest;
 	}
-
+	/**
+	 * Prints out the entire guest list.
+	 */
 	public void readGuestList() {
-		
+
 		if (guestList.size() < 1) {
 			System.out.println("No guests registered!");
-		} else 
+		} else
 		{
 			System.out.println("\nDisplay Guest List: \n");
 			System.out.format("%-15s%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Guest ID", "First Name", "Last Name",
@@ -122,9 +162,21 @@ public class GuestMgr {
 						g.getLastName(), g.getGender(), g.getCreditCardNo(), g.getAddress(), g.getCountry(), g.getIdType(),
 						g.getIdNumber());
 			}
-		} 
+		}
 	}
-
+	/**
+	 * Tries to create a new Guest with the given guest details.
+	 * Gets a new unique identifier automatically
+	 * @param firstName The Guest first name
+	 * @param lastName The Guest last name
+	 * @param gender The Guest gender
+	 * @param creditCardNo The Guest credit card number
+	 * @param address The Guest address
+	 * @param country The Guest country
+	 * @param idType The Guest identification document type
+	 * @param idNumber The Guest national identification number
+	 * @return returns the newly created guest
+	 */
 	public Guest addNewGuest(String firstName, String lastName, char gender, String creditCardNo, String address,
 			String country, String idType, String idNumber) {
 
@@ -154,7 +206,11 @@ public class GuestMgr {
 
 		return null;
 	}
-
+	/**
+	 * Checks if a given guest ID exists in the master guest list
+	 * @param guestID the guest ID
+	 * @return returns true if the guest exists, else false
+	 */
 	public boolean checkGuestExist(int guestID){
 		for (Guest g : guestList){
 			if (g.getGuestID() == guestID)
@@ -162,9 +218,11 @@ public class GuestMgr {
 		}
 		return false;
 	}
-
+	/**
+	 * Removes a guest from the master list
+	 * @param guestID the guest ID
+	 */
 	public void removeGuest(int guestID) {
-		//TODO CHECK IF ANY RESERVATIONS/OCCUPANCY BEFORE REMOVING
 		boolean flag = false;
 		String fName, lName;
 		Iterator<Guest> iter = guestList.iterator();
@@ -180,11 +238,13 @@ public class GuestMgr {
 				flag = true;
 			}
 		}
-
 		if (!flag)
 			System.out.println("Guest does not exist!");
 	}
-
+	/**
+	 * Gives the master list back to main to write to file
+	 * @return the master guest list
+	 */
 	public List<Guest> saveToFile() {
 		return guestList;
 	}
@@ -192,12 +252,12 @@ public class GuestMgr {
 	
 	//-----------------------------------------------------------------//
 	
-	public void mainGuestView(){
+	public void mainGuestView(ReservationMgr rm){
 		int choice, guestID;
 		Scanner sc = new Scanner(System.in);
 
 		do {
-			System.out.println("");
+			System.out.println();
 			System.out.println("=>Please select from the following:");
 			System.out.println("(1) Create New GUEST detail");
 			System.out.println("(2) Update GUEST detail");
@@ -264,8 +324,12 @@ public class GuestMgr {
 			case 4: /* (4) Remove GUEST details */
 				System.out.printf("Please key in the GuestID: ");
 				guestID = sc.nextInt();
-				if (checkGuestExist(guestID))
-					removeGuest(guestID);
+				if (checkGuestExist(guestID)){
+					if (!rm.doesGuestHaveResv(guestID))
+						removeGuest(guestID);
+					else
+						System.out.printf("Unable to remove guests that have confirmed reservations or already checked in!");
+				}
 				else
 					System.out.printf("Guest does not exist!");
 				break;

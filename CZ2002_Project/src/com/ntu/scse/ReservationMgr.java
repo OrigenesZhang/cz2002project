@@ -405,6 +405,14 @@ public class ReservationMgr {
 		return resv;
 	}
 
+	public boolean doesGuestHaveResv(int guestID){
+		for (Reservation r : rList){
+			if (r.getGuestID() == guestID && (r.getResvStatus().equals("CONFIRMED") || r.getResvStatus().equals("CHECKED-IN")))
+				return true;
+		}
+		return false;
+	}
+
 	public void removeReservation(RoomMgr rm) {
 
 		int rNo = 0;
