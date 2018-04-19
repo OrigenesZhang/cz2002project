@@ -360,7 +360,7 @@ public class GuestMgr {
 	}
 	/**
 	 * Shows the menu for updating guest details. Details of a guest that can be updated are:
-	 * First & Last name
+	 * First and Last name
 	 * Gender
 	 * Credit card number
 	 * Billing address

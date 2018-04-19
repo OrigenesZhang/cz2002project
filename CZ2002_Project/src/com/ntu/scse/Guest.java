@@ -48,6 +48,7 @@ public class Guest implements Serializable, Comparable<Guest>{
     private String idType;
     /**
      * Creates a new Guest.
+     * @param guestID The Guest's unique identification number
      * @param firstName The Guest's first name
      * @param lastName The Guest's last name
      * @param gender The Guest's gender

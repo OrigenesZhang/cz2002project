@@ -383,7 +383,8 @@ public class RoomService implements Serializable {
 
 	/**
 	 * To view all selected orders based on room no
-	 * @param roomID client enter the room no to view selected room order  
+	 * @param roomID client enter the room no to view selected room order
+	 * @return returns true if at least 1 order made by room, if no orders return false
 	 */
 	public boolean viewOrderByRoomID(String roomID) {
 
@@ -650,6 +651,7 @@ public class RoomService implements Serializable {
 	/**
 	 * The method to get the last item from the menu list to increase the index (menuID) 
 	 * for new item
+	 * @return the ID of the last item in the list
 	 */
 	public int getLastItemID() {
 		return (menus.get(menus.size() - 1).getID());
@@ -684,8 +686,8 @@ public class RoomService implements Serializable {
 	 * Get the last item from the order list based on the room no.
 	 * If room makes another order, it will be reflected properly as their nth order.
 	 * @param roomNo the guest room no.
+	 * @return the ID of the last order in the list that matches the room number
 	 */
-
 	public int getLastItemID(String roomNo) {
 
 		int i = 0;
@@ -787,15 +789,17 @@ public class RoomService implements Serializable {
 	}
 
 	/**
-	 * Save the list of menus
+	 * Gives the master list back to main to write to file
+	 * @return the master menu list
 	 */
 	public List<Menu> saveMenuToFile() {
 		return menus;
 	}
-	
-	
+
+
 	/**
-	 * Save the list of orders
+	 * Gives the master list back to main to write to file
+	 * @return the master order list
 	 */
 	public List<Order> saveOrderToFile() {
 		return orders;

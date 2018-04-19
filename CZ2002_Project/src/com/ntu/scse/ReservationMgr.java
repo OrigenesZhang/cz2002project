@@ -98,7 +98,7 @@ public class ReservationMgr {
 	 * @param gm the Guest Manager object for guest-related operations
 	 * @param rm the Room Manager object for room-related operations
 	 * @param walkIn a flag to check if the guest is a walk-in guest or has a prior reservation
-	 * @return
+	 * @return the newly created reservation
 	 */
 	public Reservation createNewResv(GuestMgr gm, RoomMgr rm, boolean walkIn) {
 		int adultNo, kidNo, ch;

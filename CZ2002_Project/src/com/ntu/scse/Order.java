@@ -160,8 +160,8 @@ public class Order implements Serializable, Comparable<Order> {
 	}
 	/**
 	 * Formats the date and time of this order into dd-MM-yyyy HH:mm:ss.
-	 * @param lDateTime the date & time of the order to format.
-	 * @return returns the formatted date & time of the order
+	 * @param lDateTime the date and time of the order to format.
+	 * @return returns the formatted date and time of the order
 	 */
 	public String setOrderDateTime(LocalDateTime lDateTime) {
 
