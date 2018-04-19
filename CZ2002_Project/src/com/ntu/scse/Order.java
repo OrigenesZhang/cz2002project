@@ -40,7 +40,7 @@ public class Order implements Serializable, Comparable<Order> {
 	}
 
 	public String getStatus() {
-		return status;
+		return arrayStatus[checkTiming()];
 	}
 
 	public int getQuan() {
