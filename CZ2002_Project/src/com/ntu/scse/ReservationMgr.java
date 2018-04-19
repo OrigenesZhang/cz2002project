@@ -253,7 +253,7 @@ public class ReservationMgr {
 			System.out.format("%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", "Guest ID", "Num Adult",
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
 
-				System.out.format("%-15d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getGuestID(),
+				System.out.format("%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getGuestID(),
 						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 						r.getResvTime());
 		}
