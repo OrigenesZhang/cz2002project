@@ -41,7 +41,7 @@ public class Main {
             choice = sc.nextInt();
             switch (choice) {
                 case 1: /* (1) Create/Update/Search GUEST detail */
-                	guestMgr.mainGuestView(roomMgr);
+                	guestMgr.mainGuestView();
                     break;
 
                 case 2: /* (2) Create/Update/Remove/Print RESERVATION */

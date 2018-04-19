@@ -196,6 +196,7 @@ public class RoomMgr implements Serializable {
 						choice = input.nextInt();
 						r.setRoomType(roomType[choice - 1]);
 						flag = true;
+						System.out.print("Room type updated!");
 						break;
 					}
 				}
@@ -222,6 +223,7 @@ public class RoomMgr implements Serializable {
 			for (Room r : room) {
 				if (r.getRoomType().equals(rType)) {
 					r.setRoomRate(roomRate);
+					System.out.print("Room rate updated!");
 				}
 			}
 			break;
@@ -243,6 +245,7 @@ public class RoomMgr implements Serializable {
 							System.out.print("Select option: ");
 							choice = input.nextInt();
 							r.setRoomStatus(status[choice - 1]);
+							System.out.print("Room status updated!");
 							flag = true;
 						}
 					}
@@ -251,7 +254,7 @@ public class RoomMgr implements Serializable {
 				if (!flag)
 					System.out.println("Invalid room no");
 			}
-			System.out.println("");
+			System.out.println();
 			break;
 
 		case 4:
@@ -275,6 +278,7 @@ public class RoomMgr implements Serializable {
 										throw new IllegalArgumentException("Error input\n");
 									else {
 										r.setWIFI(trueFalse[choice - 1]);
+										System.out.print("Room WIFI availability updated!");
 										System.out.println("\nAllow smoking?");
 										System.out.println("(1) true");
 										System.out.println("(2) false");
@@ -286,7 +290,8 @@ public class RoomMgr implements Serializable {
 												if (choice < 1 || choice > 2)
 													throw new IllegalArgumentException("Error input\n");
 												else
-													r.setWIFI(trueFalse[choice - 1]);
+													r.setSmoking(trueFalse[choice - 1]);
+													System.out.print("Room smoking permission updated!");
 												break;
 
 											} catch (InputMismatchException e) {

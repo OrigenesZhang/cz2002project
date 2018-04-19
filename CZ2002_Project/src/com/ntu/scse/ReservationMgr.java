@@ -236,7 +236,7 @@ public class ReservationMgr {
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Reservation time");
 			for (Reservation r : rList) {
 				if (r.getResvStatus().equals(rStatus[choice - 1])) {
-					System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15s\n", r.getResvNo(), r.getGuestID(),
+					System.out.format("%-20d%-15s%-15s%-15s%-20s%-35s%-25s%-25s%-15.8s\n", r.getResvNo(), r.getGuestID(),
 							r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 							r.getResvTime());
 				}
@@ -253,7 +253,7 @@ public class ReservationMgr {
 			System.out.format("%-15s%-15s%-15s%-15s%-25s%-15s%-15s%-15s%-15s\n", "Guest ID", "Num Adult",
 					"Num Kid", "Room No.", "Reservation Status", "Check in", "Check out", "Num of nights", "Reservation time");
 
-				System.out.format("%-15d%-15s%-15s%-15s%-25s%-15s%-15s%-15s%-15s\n", r.getGuestID(),
+				System.out.format("%-15d%-15s%-15s%-15s%-25s%-15s%-15s%-15s%-15.8s\n", r.getGuestID(),
 						r.getAdultNo(), r.getKidNo(), r.getRoomNo(), r.getResvStatus(), r.getDateCheckIn(), r.getDateCheckOut(),
 						r.getRoomDays(), r.getResvTime());
 		}

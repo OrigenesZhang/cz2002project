@@ -2,7 +2,13 @@ package com.ntu.scse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
+/**
+ Represents a student enrolled in the school.
+ A student can be enrolled in many courses.
+ @author Cai LingZhi,
+ @version 1.0
+ @s
+ */
 public class Bill implements Serializable, Comparable<Bill> {
 
     private String[] bStatus = { "OPEN", "PAID" };

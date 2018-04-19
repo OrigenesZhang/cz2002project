@@ -8,12 +8,6 @@ import java.util.Collections;
 
 public class GuestMgr {
 
-	// Functional Requirement:
-	// 1. Generate a Lookup table for guestID and first name, last name;
-	// (INITIALIZE)
-	// 2. Given a guestID, read/write his/her information from file;
-	// 3. ASK to create a new guest if not found or required
-
 	private List<Guest> guestList;
 	private final String[] idTypeName = { "DRIVING LICENSE", "PASSPORT" };
 
@@ -198,7 +192,7 @@ public class GuestMgr {
 	
 	//-----------------------------------------------------------------//
 	
-	public void mainGuestView(RoomMgr rm){
+	public void mainGuestView(){
 		int choice, guestID;
 		Scanner sc = new Scanner(System.in);
 
@@ -264,12 +258,16 @@ public class GuestMgr {
 				guestID = sc.nextInt();
 				if (checkGuestExist(guestID))
 					searchGuest(guestID);
+				else
+					System.out.printf("Guest does not exist!");
 				break;
 			case 4: /* (4) Remove GUEST details */
 				System.out.printf("Please key in the GuestID: ");
 				guestID = sc.nextInt();
 				if (checkGuestExist(guestID))
 					removeGuest(guestID);
+				else
+					System.out.printf("Guest does not exist!");
 				break;
 			case 5: /* (5) View all GUEST detail */
 				readGuestList();
