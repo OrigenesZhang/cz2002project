@@ -28,6 +28,7 @@ public class RoomService implements Serializable{
 	public void ShowRoomServiceMenuOption() {
 
 		int choice = 0;
+		Collections.sort(menus);
 		do {
 			System.out.println("Room Service Menu: ");
 			System.out.println("1. Read Menu");
@@ -72,7 +73,7 @@ public class RoomService implements Serializable{
 		String roomNo;
 
 		Scanner input = new Scanner(System.in);
-
+		Collections.sort(orders);
 		do {
 
 			System.out.println("Room Service Order: ");
@@ -80,7 +81,8 @@ public class RoomService implements Serializable{
 			System.out.println("2. Add order");
 			System.out.println("3. Remove order");
 			System.out.println("4. Update order");
-			System.out.println("5. Return");
+			System.out.println("5. Change order status");
+			System.out.println("6. Return");
 			choice = errorCheckingInt("Select an option: ");
 
 			switch (choice) {
@@ -134,8 +136,24 @@ public class RoomService implements Serializable{
 					System.out.println("Invalid Room no. \n");
 				}
 				break;
-
-			case 5: //RETURN
+			case 5: //CHANGE ORDER STATUS
+				int x;
+				System.out.println("Enter Room no. : ");
+				roomNo = input.nextLine();
+				if (rm.checkValidRoomForOrder(roomNo)) {
+					if(viewOrderByRoomID(roomNo)) { //If at least 1 order from room
+						do {
+							System.out.println("(1) Preparing");
+							System.out.println("(2) Delivered");
+							x = input.nextInt();
+						}while(x != 1 || x != 2);
+						changeOrderStatus(roomNo, x);
+					}
+				} else {
+					System.out.println("Invalid Room no. \n");
+				}
+				break;
+			case 6: //RETURN
 				System.out.println("Returning to main.....\n");
 				break;
 
@@ -144,7 +162,7 @@ public class RoomService implements Serializable{
 				break;
 			}
 			Collections.sort(orders);
-		} while (choice != 5);
+		} while (choice != 6);
 	}
 
 	// ----------------------Menu Section -----------------------//
@@ -385,6 +403,17 @@ public class RoomService implements Serializable{
 		}
 		return null;
 	}
+	public void removeAllOrderFromRoom(String roomNo) {
+		Iterator<Order> iter = orders.iterator();
+
+		while (iter.hasNext()) {
+			Order str = iter.next();
+			if (str.getRoomNo().equals(roomNo)) {
+				System.out.println("Order number " + str.getID() + " has been removed!");
+				iter.remove();
+			}
+		}
+	}
 
 	public void removeOrder(String roomNo, BillMgr bm) {
 		int index = errorCheckingInt("Enter index to remove item from order: ", getLastItemID(roomNo));
@@ -424,6 +453,19 @@ public class RoomService implements Serializable{
 
 			}
 		}
+	}
+
+	public void changeOrderStatus(String roomNo, int choice){
+		int count=0;
+		for (Order o : orders){
+			if (o.getRoomNo().equals(roomNo)){
+				o.setStatus(choice);
+				System.out.println("Order number " + o.getID() + "has been set to " + o.getStatus());
+				count++;
+			}
+		}
+		if (count == 0)
+			System.out.println("No orders are under that room number!");
 	}
 
 	public void updateOrderItem(String roomNo, BillMgr bm) {
