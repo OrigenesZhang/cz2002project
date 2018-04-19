@@ -364,7 +364,7 @@ public class RoomService implements Serializable{
 				}
 			}
 			order = addOrder(roomNo, menuID, quantity, remarks);
-			bm.addOrderToBill(bm.getBillNoFromRoomNo(order.getRoomNo()),order);
+			bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo),order);
 			System.out.println("Order has been added!");
 		}
 		System.out.println();

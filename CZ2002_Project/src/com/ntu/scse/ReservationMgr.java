@@ -430,6 +430,7 @@ public class ReservationMgr {
 					else {
 						iter.remove();
 						rm.assignRoom(str.getRoomNo(),0); //Make room vacant
+						numOfReservation--;
 						System.out.println("Reservation number " + rNo + " removed!");
 					}
 					flag = true;
@@ -442,13 +443,14 @@ public class ReservationMgr {
 	public void refreshReservations(RoomMgr rm){
 		int count=0;
 		for (Reservation r : rList){
-			if ((r.getResvStatus() == rStatus[0] || r.getResvStatus() == rStatus[1]) && r.getDateCheckIn().isAfter(LocalDate.now())){
+			if ((r.getResvStatus() == rStatus[0] || r.getResvStatus() == rStatus[1]) && r.getDateCheckIn().isBefore(LocalDate.now())){
 				r.setResvStatus(rStatus[4]);
 				rm.assignRoom(r.getRoomNo(),0);
 				count++;
 			}
 		}
-		System.out.println(count + " Reservations expired!");
+		if (count > 0)
+			System.out.println(count + " Reservations expired!");
 	}
 	
 	// ----------------------Other Section -----------------------//

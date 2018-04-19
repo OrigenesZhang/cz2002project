@@ -51,13 +51,12 @@ public class BillMgr {
     	return null;
     }
     public boolean addOrderToBill(int billNo, Order order){
-    	for (Bill b : billList){
-    		if (b.getBillNo() == billNo){
-    			b.addOrder(order);
-    			return true;
-			}
+    	try {
+			billList.get(billNo - 1).addOrder(order);
+			return true;
+		}catch(IndexOutOfBoundsException e){
+    		return false;
 		}
-		return false;
 	}
 
 	public boolean removeOrderFromBill(int billNo, int orderNo){
