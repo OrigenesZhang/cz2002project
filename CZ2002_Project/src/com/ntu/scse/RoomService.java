@@ -422,7 +422,6 @@ public class RoomService implements Serializable {
 
 		Scanner input = new Scanner(System.in);
 		int menuID, quantity;
-		boolean test;
 		char yesNo;
 		Order order;
 		String remarks;
@@ -451,8 +450,8 @@ public class RoomService implements Serializable {
 				}
 			}
 			order = addOrder(roomNo, menuID, quantity, remarks);
-			test = bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo), order);
-			System.out.println("Order has been added! " + test);
+			bm.addOrderToBill(bm.getBillNoFromRoomNo(roomNo), order);
+			System.out.println("Order has been added!");
 		}
 		System.out.println();
 	}
@@ -509,7 +508,7 @@ public class RoomService implements Serializable {
 			Order str = iter.next();
 
 			if (str.getRoomNo().equals(roomNo) && str.getID() == index && !str.getStatus().equals("Delivered")) {
-				System.out.print("Order number " + str.getID() + " has been removed!");
+				System.out.println("Order number " + str.getID() + " has been removed!\n");
 				iter.remove();
 				bm.removeOrderFromBill(bm.getBillNoFromRoomNo(str.getRoomNo()), str.getID());
 				return;
