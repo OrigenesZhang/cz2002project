@@ -22,7 +22,7 @@ public class GuestMgr {
 	 */
 	private final String[] idTypeName = { "DRIVING LICENSE", "PASSPORT" };
 	/**
-	 * Creates a Guest Manager based on loaded data from a file. If no previous data was present, initialize an empty master list.
+	 * Creates a Guest Manager based on loaded data from a file. If no previous data was present, initialize 10 default guests.
 	 * @param guest The list received from Main. If there was previous data, use this, else, create an empty list.
 	 */
 	public GuestMgr(ArrayList guest) {
@@ -260,6 +260,7 @@ public class GuestMgr {
 	 * Searching for guests
 	 * Removing guests
 	 * Viewing all guests
+	 * Refreshes Guest list (sorts based on guest ID) after every operation
 	 * @param rm The reservation manager object
 	 */
 	public void mainGuestView(ReservationMgr rm){
@@ -359,7 +360,7 @@ public class GuestMgr {
 	}
 	/**
 	 * Shows the menu for updating guest details. Details of a guest that can be updated are:
-	 * First & Last name
+	 * First and Last name
 	 * Gender
 	 * Credit card number
 	 * Billing address

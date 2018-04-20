@@ -101,7 +101,7 @@ public class Main {
                     break;
 
                 case 8: /* (8) Room CHECK-OUT and print BILL invoice */
-                    roomMgr.checkOut(reservationMgr,guestMgr, billMgr, roomService, choice);
+                    roomMgr.checkOut(reservationMgr,guestMgr, billMgr, roomService);
                     break;
 
                 case 9: /* (9) Print ROOM STATUS statistic report */

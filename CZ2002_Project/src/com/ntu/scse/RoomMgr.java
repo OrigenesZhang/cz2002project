@@ -7,15 +7,54 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ Represents the hotel's Room Manager that contains a list of all rooms and the 
+ methods for manipulating room facilities. One Room Manager contains an entire list of room
+
+ @author Cai LingZhi, Liu Fangbing, Christopher Lim, Eliza Wong
+ @version 1.0
+ @since 19/04/2018
+*/
+
 public class RoomMgr implements Serializable {
 
-	private ArrayList<Room> room;
-	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suite" };
-	private String[] bedType = { "Single", "Double" };
-	private String[] facing = { "North", "South", "East", "West" };
-	private String[] status = { "Vacant", "Occupied", "Reserved", "Under Maintenance" };
-	private boolean[] trueFalse = { true, false };
 
+	/**
+	 * An array of list of room
+	 */
+	private List<Room> room;
+	
+	/**
+	 * An array of String for roomType 
+	 */
+	private String[] roomType = { "Single", "Double", "Deluxe", "VIP Suite" };
+	
+	/**
+	 * An array of String for bedType 
+	 */
+	private String[] bedType = { "Single", "Double" };
+	
+	/**
+	 * An array of String for room facing view 
+	 */
+	private String[] facing = { "North", "South", "East", "West" };
+	
+	/**
+	 * An array of String for room status 
+	 */
+	private String[] status = { "Vacant", "Occupied", "Reserved", "Under Maintenance" };
+	
+	/**
+	 * An array of boolean for setting true false option 
+	 */
+	private boolean[] trueFalse = { true, false };
+	
+	
+	/**
+	 * Create a new Room Manager with a list of rooms
+	 * The constructor will check for existing list data
+	 * @param al The list received from Main. If there was previous data, use this, else, create an empty list.
+	 */
 	public RoomMgr(ArrayList al) {
 		if (al == null) {
 			this.room = new ArrayList<>();
@@ -27,6 +66,14 @@ public class RoomMgr implements Serializable {
 		}
 	}
 
+	/**
+	 * Display all the available Room option for client
+	 * 1) View Room allow client to view all room, by status, or selected room
+	 * 2) Update Room Details allow client to make changes to room 
+	 * 3) View Room Statistic Report allow client to view all statistic by room status or room type
+	 * 4) Return to main, return client to main screen
+	 * @param gm from Guest Manager class
+	 */
 	public void ShowRoomMgrMenuOption(GuestMgr gm) {
 		int choice;
 		String name, roomNo;
@@ -99,8 +146,10 @@ public class RoomMgr implements Serializable {
 
 	}
 
-	// ---------------------------------------------------------------------------------------------------------------------------//
 
+	/**
+	 * Display all room and details
+	 */
 	public void viewAllRoom() {
 
 		System.out.println("\nViewing all Room: \n");
@@ -116,6 +165,10 @@ public class RoomMgr implements Serializable {
 		System.out.println("");
 	}
 
+	/**
+	 * View selected room based on room no or guest name
+	 * @param gm from Guest Manager class
+	 */
 	public void viewSelectedRoom(GuestMgr gm) {
 
 		boolean flag = false;
@@ -160,6 +213,14 @@ public class RoomMgr implements Serializable {
 
 	}
 
+	/**
+	 * Options to update room 
+	 * 1) Room type allow client to change the room type
+	 * 2) Room rate allow client to change the default room rate
+	 * 3) Status allow client to change the current room status
+	 * 4) Smoking/WIFI allow client to set whether room is allow for smoking/WIFI
+	 * 5) Return to main 
+	 */
 	public void updateRoom() {
 		int choice = 0;
 		double roomRate = 0;
@@ -332,6 +393,9 @@ public class RoomMgr implements Serializable {
 		}
 	}
 
+	/**
+	 * Display Room Status Statistic by room type occupancy or by room status
+	 */
 	public void RoomStatusStatistic() {
 
 		int lastIndex = 0;
@@ -415,6 +479,11 @@ public class RoomMgr implements Serializable {
 		System.out.println();
 	}
 
+	
+	/**
+	 * View all Room by status "Vacant", "Occupied", "Reserved", "Under Maintenance"
+	 * @param choice the option to view by selected room status
+	 */
 	public void viewAllRoomByStatus(int choice) {
 		boolean flag = false;
 		for (Room r : room) //Check at least 1 of selected room type
@@ -438,6 +507,11 @@ public class RoomMgr implements Serializable {
 			System.out.println("No " + status[choice - 1] + " Rooms");
 	}
 
+	/**
+	 * Display all vacant room for reservation to select
+	 * Based on the number of Guest, certain room will be displayed. 
+	 * @param numGuest the total number of guest (adult+kids)
+	 */
 	public void viewAllVacantRoom(int numGuest) {
         boolean flag = false;
         for (Room r : room) { //Check at least 1 suitable room
@@ -476,8 +550,12 @@ public class RoomMgr implements Serializable {
             System.out.println("No suitable rooms are vacant!");
         }
 	}
-	
 
+	/**
+	 * Checks if a room is occupied. Used to validate room service ordering.
+	 * @param roomNo The room number to check occupancy
+	 * @return return true if the room is occupied, false if room is not occupied.
+	 */
 	public boolean checkValidRoomForOrder(String roomNo) {
 		boolean result = false;
 
@@ -490,7 +568,11 @@ public class RoomMgr implements Serializable {
 
 		return result;
 	}
-
+	/**
+	 * Gets the room type from the room number
+	 * @param roomNo The room number to get the room type
+	 * @return the room type of the room number specified
+	 */
 	public String getRoomTypeFromNum(String roomNo){
 		for (Room r : room) {
 			if (r.getRoomNO().equals(roomNo)) {
@@ -499,7 +581,11 @@ public class RoomMgr implements Serializable {
 		}
 		return null;
 	}
-
+	/**
+	 * Gets the room price per night from the room number
+	 * @param roomNo The room number to get the room rate
+	 * @return the nightly room rate of the room number specified
+	 */
 	private double getRoomRateFromNum(String roomNo){
 		for (Room r : room) {
 			if (r.getRoomNO().equals(roomNo)) {
@@ -508,10 +594,12 @@ public class RoomMgr implements Serializable {
 		}
 		return 0;
 	}
-
+	/**
+	 * Checks if a room is empty or not
+	 * @param roomNo The room number to check if empty
+	 * @return return true if room is vacant, else return false
+	 */
 	public boolean checkRoomEmpty(String roomNo) {
-		boolean result = false;
-
 		for (Room r : room) {
 			if (r.getRoomNO().equals(roomNo)) {
 				if (r.getRoomStatus().equals(status[0])) // if room is vacant
@@ -523,7 +611,13 @@ public class RoomMgr implements Serializable {
 		System.out.println("Room Number does not exist!");
 		return false;
 	}
-
+	/**
+	 * Assigns a room to a desired status. Only applies to making room occupied and reserved.
+	 * @param roomNo The room number to change room status
+	 * @param status The status to change the room to
+	 *               1 = "Occupied", 2 = "Reserved"
+	 * @param name name of guest to assign to room
+	 */
 	public void assignRoom(String roomNo, int status, String name) {
 		// "Vacant", "Occupied", "Reserved", "Under Maintenance"
 		for (Room r : room) {
@@ -541,7 +635,12 @@ public class RoomMgr implements Serializable {
 		}
 		System.out.println("Room does not exist!");
 	}
-
+	/**
+	 * Assigns a room to a desired status, only applies to making room vacant and under maintenance
+	 * @param roomNo The room number to change room status
+	 * @param status The status to change the room to
+	 *               0 = "Vacant", 3 = "Under Maintenance"
+	 */
 	public void assignRoom(String roomNo, int status) {
 		// "Vacant", "Occupied", "Reserved", "Under Maintenance"
 		for (Room r : room) {
@@ -558,9 +657,17 @@ public class RoomMgr implements Serializable {
 		}
 		System.out.println("Room does not exist!");
 	}
-
+	/**
+	 * The checkin process for the guest.
+	 * Asks if guest is walk-in or has a prior reservation.
+	 * If guest is walk-in, automatically set reservation check in date to today.
+	 * Automatically creates a new bill when guest checks in.
+	 * Assign room to occupied.
+	 * @param resvMgr The reservation manager for reservation-related operations
+	 * @param guestMgr The guest manager for guest-related operations
+	 * @param bm The bill manager for bill-related operations
+	 */
 	public void checkIn(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm) {
-		//TODO CREATE BILL
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
 		int choice, resvNo, numResv;
@@ -605,8 +712,18 @@ public class RoomMgr implements Serializable {
 				System.out.println("Invalid Input!");
 		} while (choice != 3);
 	}
-
-	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm, RoomService rs, int paymentMethod) {
+	/**
+	 * The checkout process for the guest.
+	 * Shows all checked-in reservations, and asks user to select which reservation to check out.
+	 * Also asks for payment method by cash or credit.
+	 * When user checks out, set associated room to vacant and remove all room service orders under that room.
+	 * Prints out the final bill for that reservation, including any room service orders.
+	 * @param resvMgr The reservation manager for reservation-related operations
+	 * @param guestMgr The guest manager for guest-related operations
+	 * @param bm The bill manager for bill-related operations
+	 * @param rs The room service manager for room service-related operations
+	 */
+	public void checkOut(ReservationMgr resvMgr, GuestMgr guestMgr, BillMgr bm, RoomService rs) {
 		int resvNo, numResv, choice;
 		Scanner sc = new Scanner(System.in);
 		Reservation resv;
@@ -627,19 +744,25 @@ public class RoomMgr implements Serializable {
 					} while (choice < 1 && choice > 3);
 					if (choice != 3) {
 						bm.printBill(resvNo, choice);
-						assignRoom(resv.getRoomNo(), 0); // set room to vacant
+						String roomNo = resv.getRoomNo();
+						assignRoom(roomNo, 0); // set room to vacant
 						//REMOVE ALL ORDERS FROM ROOM
-						rs.removeAllOrderFromRoom(resv.getRoomNo());
+						rs.removeAllOrderFromRoom(roomNo);
 						resv.setResvStatus("CHECKED-OUT");
-						System.out.println(guestMgr.getNamefromID(resv.getGuestID()) + " has been checked out of room "
-								+ resv.getRoomNo());
+						int guestID = resv.getGuestID();
+						System.out.println(guestMgr.getNamefromID(guestID) + " has been checked out of room "
+								+ roomNo);
 					}
 				} else
 					System.out.println("Please enter a valid checked-in reservation no.!");
 			}
 		}
 	}
-
+	/**
+	 * Counts how many rooms of a specific type there are
+	 * @param roomType the specific room type to count
+	 * @return the number of rooms of the specified type
+	 */
 	private int getNumTypeRoom(String roomType) {
 		int numRoom = 0;
 		for (Room r : room) {
@@ -649,17 +772,11 @@ public class RoomMgr implements Serializable {
 		}
 		return numRoom;
 	}
-
-	private int getNumStatusByRoomType(String roomType, String roomStatus) {
-		int numRoom = 0;
-		for (Room r : room) {
-			if (r.getRoomType().equals(roomType) && r.getRoomStatus().equals(roomStatus)) {
-				numRoom += 1;
-			}
-		}
-		return numRoom;
-	}
-
+	/**
+	 * Counts how many rooms of a specific status there are
+	 * @param roomStatus the specific room status to count
+	 * @return the number of rooms of the specified status
+	 */
 	private int getNumStatusRoom(String roomStatus) {
 		int numRoom = 0;
 		for (Room r : room) {
@@ -669,12 +786,29 @@ public class RoomMgr implements Serializable {
 		}
 		return numRoom;
 	}
-
+	/**
+	 * Counts how many rooms of both specific status and type there are
+	 * @param roomStatus the specific room status to count
+	 * @param roomType the specific room type to count
+	 * @return the number of rooms of both the specified status & type
+	 */
+	private int getNumStatusByRoomType(String roomType, String roomStatus) {
+		int numRoom = 0;
+		for (Room r : room) {
+			if (r.getRoomType().equals(roomType) && r.getRoomStatus().equals(roomStatus)) {
+				numRoom += 1;
+			}
+		}
+		return numRoom;
+	}
+	/**
+	 * Initializes all 48 of the hotel's rooms with random attributes
+	 */
 	private void initializeRoom() {
 
 		int tempBed, tempStatus;
 		boolean isSmoking, isWIFI;
-		String tempRoomType = null, tempRoomNo = null;
+		String tempRoomType, tempRoomNo;
 
 		for (int i = 2; i < 8; i++) {
 			for (int j = 1; j < 9; j++) {
@@ -704,42 +838,30 @@ public class RoomMgr implements Serializable {
 	}
 
 	// ----------------------Other Section -----------------------//
-
+	/**
+	 * Generates a random number from 1 to the max integer specified
+	 * @param max the maximum integer to generate
+	 * @return the random number generated
+	 */
 	private int randomNumber(int max) {
 		Random rand = new Random();
 		int n = rand.nextInt(max);
 		return n;
 	}
-
+	/**
+	 * Gives the master list back to main to write to file
+	 * @return the master room list
+	 */
 	public List<Room> saveToFile() {
 		return room;
 	}
-
-	private int errorCheckingInt(String display) {
-
-		int tempChoice;
-		Scanner input = new Scanner(System.in);
-
-		while (true) {
-			System.out.print("\n" + display);
-			try {
-				tempChoice = input.nextInt();
-				if (tempChoice < 1)
-					throw new IllegalArgumentException("Error input\n");
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Error input \n");
-				input.next();
-			} catch (IllegalArgumentException e) {
-				System.out.println(e);
-			}
-		}
-
-		input.nextLine();
-
-		return tempChoice;
-	}
-
+	/**
+	 * To check for any input mismatch
+	 * or illegal argument such as negative value. The lastItem id will prevent client from exceeding the
+	 * number of available.
+	 * @param display the display for client to see
+	 * @param lastItem for the last option number
+	 */
 	private int errorCheckingInt(String display, int lastItem) {
 		int index;
 		Scanner input = new Scanner(System.in);
@@ -762,29 +884,5 @@ public class RoomMgr implements Serializable {
 		input.nextLine();
 
 		return index;
-	}
-
-	private float errorCheckingFloat(String display) {
-		float price;
-		Scanner input = new Scanner(System.in);
-
-		while (true) {
-			System.out.print(display);
-			try {
-				price = input.nextFloat();
-				if (price <= 0f)
-					throw new IllegalArgumentException("Error input\n");
-				break;
-			} catch (InputMismatchException e) {
-				System.out.println("Error input \n");
-				input.next();
-			} catch (IllegalArgumentException e) {
-				System.out.println(e);
-			}
-		}
-
-		input.nextLine();
-
-		return price;
 	}
 }
